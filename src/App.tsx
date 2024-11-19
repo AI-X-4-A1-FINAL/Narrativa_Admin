@@ -1,11 +1,9 @@
 import React from 'react';
 
-function App() {
+export default function App() {
   return (
-    <div className="App">
-      
+    <div className="text-center text-blue-500 font-bold">
+      Hello Tailwind CSS!
     </div>
   );
 }
-
-export default App;
