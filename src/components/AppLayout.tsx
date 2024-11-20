@@ -14,7 +14,7 @@ const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         {!isExcludedPage && <Header />}
         <div className="flex flex-1 overflow-hidden">
           {!isExcludedPage && <Sidebar />}
-          <main className={`flex-1 p-6 ${!isExcludedPage ? 'overflow-y-auto' : ''}`}>
+          <main className={`flex-1 ${!isExcludedPage ? 'overflow-y-auto' : ''}`}>
             {children}
           </main>
         </div>
