@@ -25,7 +25,7 @@ const StatisticsPage: React.FC = () => {
   }
 
   return (
-    <div className="p-6 space-y-6 bg-white">
+    <div className="flex flex-col justify-center h-full p-6 space-y-6 bg-white">
       <div className="flex flex-col lg:flex-row lg:justify-between items-start lg:items-center space-y-2 lg:space-y-0">
         <h1 className="text-2xl font-nanum font-bold text-pointer">관리자 대시보드</h1>
         <div className="flex items-center space-x-2">
