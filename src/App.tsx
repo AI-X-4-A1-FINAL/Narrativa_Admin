@@ -1,34 +1,43 @@
-import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Sidebar from "./components/AdminSider";
-import Header from "./components/AdminHeader";
-import Footer from "./components/AdminFooter";
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './components/AuthContext';
+import PrivateRoute from './components/PrivateRoute';
+import RedirectRoute from './components/RedirectRoute';
 
-import StatisticsPage from "./pages/StatisticsPage";
-import UserManagementPage from "./pages/UserManagementPage";
-import NoticeManagementPage from "./pages/NoticeManagementPage";
+import AppLayout from './components/AppLayout';
+import LoginPage from './pages/LoginPage';
+import StatisticsPage from './pages/StatisticsPage';
+import UserManagementPage from './pages/UserManagementPage';
+import NoticeManagementPage from './pages/NoticeManagementPage';
+import NotFoundPage from './pages/NotFoundPage';
 
 const Root: React.FC = () => {
   return (
-    <Router>
-      <div className="flex flex-col h-screen">
-        <Header />
-        <div className="flex flex-1 overflow-hidden">
-          <Sidebar />
-          <main className="flex-1 p-6 overflow-y-auto">
-            <Routes>
-              <Route 
-                path="/" 
-                element={<StatisticsPage />} 
-              />
+    <AuthProvider>
+      <Router>
+        <AppLayout>
+          <Routes>
+            {/* 로그인 페이지 */}
+            <Route element={<RedirectRoute />}>
+              <Route path="/login" element={<LoginPage />} />
+            </Route>
+
+            {/* 인증된 사용자 */}
+            <Route element={<PrivateRoute />}>
+              <Route path="/" element={<StatisticsPage />} />
               <Route path="/user-management" element={<UserManagementPage />} />
               <Route path="/notice-management" element={<NoticeManagementPage />} />
-            </Routes>
-          </main>
-        </div>
-        <Footer />
-      </div>
-    </Router>
+            </Route>
+
+            {/* 404 페이지 */}
+            <Route path="/404" element={<NotFoundPage />} />
+
+            {/* 모든 잘못된 경로를 404로 리다이렉트 */}
+            <Route path="*" element={<Navigate to="/404" replace />} />
+          </Routes>
+        </AppLayout>
+      </Router>
+    </AuthProvider>
   );
 };
 
