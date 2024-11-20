@@ -1,16 +1,22 @@
 import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 import { useAuth } from "../components/AuthContext";
+import { useToast } from "../hooks/useToast";
 import { ReactComponent as Mascot } from "../assets/images/side-mascot.svg";
 
 const Sidebar: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const { logout } = useAuth();
+  const { showToast } = useToast();
 
   const handleLogout = () => {
     logout();
     localStorage.removeItem("user");
+
+    showToast("로그아웃 완료!\n 안전하게 로그아웃되었습니다.", "success");
+
     navigate("/login");
   };
 
