@@ -1,8 +1,12 @@
 import React from 'react';
 import { useAuth } from '../components/AuthContext';
+import { useToast } from "../hooks/useToast";
+import { useNavigate } from 'react-router-dom';
 
 const LoginPage: React.FC = () => {
   const { login } = useAuth();
+  const { showToast } = useToast();
+  const navigate = useNavigate();
 
   const handleLogin = () => {
     const mockUser = {
@@ -13,8 +17,12 @@ const LoginPage: React.FC = () => {
       provider: 'google' as const,
       profilePicture: 'https://via.placeholder.com/40',
     };
+
     login(mockUser);
-    window.location.href = '/';
+
+    showToast(`로그인 성공!\n ${mockUser.name}님 환영합니다!`, 'success');
+
+    navigate('/');
   };
 
   return (
