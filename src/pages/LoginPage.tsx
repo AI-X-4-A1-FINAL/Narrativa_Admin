@@ -12,7 +12,7 @@ const LoginPage: React.FC = () => {
     const mockUser = {
       id: '1',
       email: 'mockuser@example.com',
-      name: '테스트 어드민 계정',
+      name: '테스트 계정',
       role: 'admin' as const,
       provider: 'google' as const,
       profilePicture: 'https://via.placeholder.com/40',
