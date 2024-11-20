@@ -10,86 +10,90 @@ const Sidebar: React.FC = () => {
   const location = useLocation(); // 현재 경로 가져오기
 
   return (
-    <div className="h-[calc(90vh)] w-[20%] min-w-[250px] max-w-[300px] bg-main flex flex-col items-center p-5 gap-12">
+    <div className="h-[calc(90vh)] w-[20%] min-w-[80px] max-w-[300px] bg-main flex flex-col items-center p-5 gap-12">
       {/* Version */}
-      <div className="absolute bottom-12 text-sm font-nanum font-bold text-gray-500">V 0.0.1</div>
+      <div className="absolute bottom-12 text-sm font-nanum font-bold text-gray-500">
+        V 0.0.1
+      </div>
 
       {/* Menu List */}
-      <div className="w-[230px] bg-white rounded-lg flex flex-col gap-3 p-2">
+      <div className="w-full bg-white rounded-lg flex flex-col gap-3 p-2">
         {/* Menu Item: 통계 및 조사 */}
         <Link
           to="/"
-          className={`flex justify-between items-center w-full h-[36px] rounded-lg p-2 group ${
-            location.pathname === "/" ? "bg-pointer text-white" : "bg-white hover:bg-pointer hover:text-white"
+          className={`flex lg:justify-start justify-center items-center w-full h-[36px] rounded-lg p-2 group ${
+            location.pathname === "/"
+              ? "bg-pointer text-white"
+              : "bg-white hover:bg-pointer hover:text-white"
           }`}
         >
-          <div className="flex items-center gap-4">
-            <Statistics
-              className={`w-5 h-5 ${
-                location.pathname === "/" ? "text-white" : "text-gray-800 group-hover:text-white"
-              }`}
-            />
-            <span className="text-sm font-nanum font-bold">
-              데이터 및 통계 분석
-            </span>
-          </div>
+          <Statistics
+            className={`w-5 h-5 ${
+              location.pathname === "/"
+                ? "text-white"
+                : "text-gray-800 group-hover:text-white"
+            }`}
+          />
+          <span className="text-sm font-nanum font-bold ml-4 hidden lg:block">
+            데이터 및 통계 분석
+          </span>
         </Link>
 
         {/* Menu Item: 회원 관리 */}
         <Link
           to="/user-management"
-          className={`flex justify-between items-center w-full h-[36px] rounded-lg p-2 group ${
+          className={`flex lg:justify-start justify-center items-center w-full h-[36px] rounded-lg p-2 group ${
             location.pathname === "/user-management"
               ? "bg-pointer text-white"
               : "bg-white hover:bg-pointer hover:text-white"
           }`}
         >
-          <div className="flex items-center gap-4">
-            <User
-              className={`w-5 h-5 ${
-                location.pathname === "/user-management" ? "text-white" : "text-gray-800 group-hover:text-white"
-              }`}
-            />
-            <span className="text-sm font-nanum font-bold">
-              회원 관리
-            </span>
-          </div>
+          <User
+            className={`w-5 h-5 ${
+              location.pathname === "/user-management"
+                ? "text-white"
+                : "text-gray-800 group-hover:text-white"
+            }`}
+          />
+          <span className="text-sm font-nanum font-bold ml-4 hidden lg:block">
+            회원 관리
+          </span>
         </Link>
 
         {/* Menu Item: 공지 관리 */}
         <Link
           to="/notice-management"
-          className={`flex justify-between items-center w-full h-[36px] rounded-lg p-2 group ${
+          className={`flex lg:justify-start justify-center items-center w-full h-[36px] rounded-lg p-2 group ${
             location.pathname === "/notice-management"
               ? "bg-pointer text-white"
               : "bg-white hover:bg-pointer hover:text-white"
           }`}
         >
-          <div className="flex items-center gap-4">
-            <Notice
-              className={`w-5 h-5 ${
-                location.pathname === "/notice-management" ? "text-white" : "text-gray-800 group-hover:text-white"
-              }`}
-            />
-            <span className="text-sm font-nanum font-bold">
-              공지 관리
-            </span>
-          </div>
+          <Notice
+            className={`w-5 h-5 ${
+              location.pathname === "/notice-management"
+                ? "text-white"
+                : "text-gray-800 group-hover:text-white"
+            }`}
+          />
+          <span className="text-sm font-nanum font-bold ml-4 hidden lg:block">
+            공지 관리
+          </span>
         </Link>
       </div>
 
       {/* Logout */}
-      <div className="w-[230px] bg-white rounded-lg flex items-center p-2 hover:bg-pointer group">
-        <div className="flex items-center gap-4">
-          <Logout className="w-5 h-5 text-gray-800 group-hover:text-white" />
-          <span className="text-sm font-nanum font-bold text-gray-800 group-hover:text-white">
-            Log out
-          </span>
-        </div>
+      <div className="w-full bg-white rounded-lg flex lg:justify-start justify-center items-center p-2 hover:bg-pointer group">
+        <Logout className="w-5 h-5 text-gray-800 group-hover:text-white" />
+        <span className="text-sm font-nanum font-bold text-gray-800 group-hover:text-white ml-4 hidden lg:block">
+          Log out
+        </span>
       </div>
 
       {/* Mascot */}
-      <Mascot className="w-180 h-auto text-gray-800 group-hover:text-white" />
+      <div className="mt-auto hidden lg:block">
+        <Mascot className="w-180 h-auto text-gray-800 group-hover:text-white" />
+      </div>
     </div>
   );
 };
