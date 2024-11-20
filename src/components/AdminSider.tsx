@@ -91,7 +91,7 @@ const Sidebar: React.FC = () => {
       </div>
 
       {/* Mascot */}
-      <div className="mt-auto hidden lg:block">
+      <div className="hidden lg:block">
         <Mascot className="w-180 h-auto text-gray-800 group-hover:text-white" />
       </div>
     </div>
