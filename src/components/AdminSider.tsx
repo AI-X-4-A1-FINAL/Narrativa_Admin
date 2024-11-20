@@ -12,7 +12,7 @@ const Sidebar: React.FC = () => {
   return (
     <div className="h-[calc(90vh)] w-[20%] min-w-[250px] max-w-[300px] bg-main flex flex-col items-center p-5 gap-12">
       {/* Version */}
-      <div className="absolute bottom-12 text-sm font-gothic text-gray-500">V 0.0.1</div>
+      <div className="absolute bottom-12 text-sm font-nanum font-bold text-gray-500">V 0.0.1</div>
 
       {/* Menu List */}
       <div className="w-[230px] bg-white rounded-lg flex flex-col gap-3 p-2">
@@ -29,7 +29,7 @@ const Sidebar: React.FC = () => {
                 location.pathname === "/" ? "text-white" : "text-gray-800 group-hover:text-white"
               }`}
             />
-            <span className="text-sm font-gothic font-semibold">
+            <span className="text-sm font-nanum font-bold">
               데이터 및 통계 분석
             </span>
           </div>
@@ -50,7 +50,7 @@ const Sidebar: React.FC = () => {
                 location.pathname === "/user-management" ? "text-white" : "text-gray-800 group-hover:text-white"
               }`}
             />
-            <span className="text-sm font-gothic font-semibold">
+            <span className="text-sm font-nanum font-bold">
               회원 관리
             </span>
           </div>
@@ -71,7 +71,7 @@ const Sidebar: React.FC = () => {
                 location.pathname === "/notice-management" ? "text-white" : "text-gray-800 group-hover:text-white"
               }`}
             />
-            <span className="text-sm font-gothic font-semibold">
+            <span className="text-sm font-nanum font-bold">
               공지 관리
             </span>
           </div>
@@ -82,7 +82,7 @@ const Sidebar: React.FC = () => {
       <div className="w-[230px] bg-white rounded-lg flex items-center p-2 hover:bg-pointer group">
         <div className="flex items-center gap-4">
           <Logout className="w-5 h-5 text-gray-800 group-hover:text-white" />
-          <span className="text-sm font-gothic font-semibold text-gray-800 group-hover:text-white">
+          <span className="text-sm font-nanum font-bold text-gray-800 group-hover:text-white">
             Log out
           </span>
         </div>
