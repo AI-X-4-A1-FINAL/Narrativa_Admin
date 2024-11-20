@@ -1,9 +1,18 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../components/AuthContext";
 import { ReactComponent as Mascot } from "../assets/images/side-mascot.svg";
 
 const Sidebar: React.FC = () => {
-  const location = useLocation(); // 현재 경로 가져오기
+  const location = useLocation();
+  const navigate = useNavigate();
+  const { logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    localStorage.removeItem("user");
+    navigate("/login");
+  };
 
   return (
     <div className="h-[calc(90vh)] w-[20%] min-w-[80px] max-w-[300px] bg-main flex flex-col items-center p-5 gap-12">
@@ -14,7 +23,6 @@ const Sidebar: React.FC = () => {
 
       {/* Menu List */}
       <div className="w-full bg-white rounded-lg flex flex-col gap-3 p-2">
-        {/* Menu Item: 통계 및 조사 */}
         <Link
           to="/"
           className={`flex lg:justify-start justify-center items-center w-full h-[36px] rounded-lg p-2 group ${
@@ -35,7 +43,6 @@ const Sidebar: React.FC = () => {
           </span>
         </Link>
 
-        {/* Menu Item: 회원 관리 */}
         <Link
           to="/user-management"
           className={`flex lg:justify-start justify-center items-center w-full h-[36px] rounded-lg p-2 group ${
@@ -58,7 +65,6 @@ const Sidebar: React.FC = () => {
           </span>
         </Link>
 
-        {/* Menu Item: 공지 관리 */}
         <Link
           to="/notice-management"
           className={`flex lg:justify-start justify-center items-center w-full h-[36px] rounded-lg p-2 group ${
@@ -83,7 +89,10 @@ const Sidebar: React.FC = () => {
       </div>
 
       {/* Logout */}
-      <div className="w-full bg-white rounded-lg flex justify-center items-center p-2 hover:bg-pointer group">
+      <div
+        className="w-full bg-white rounded-lg flex justify-center items-center p-2 hover:bg-pointer group cursor-pointer"
+        onClick={handleLogout}
+      >
         <span className="material-icons w-5 h-5 group-hover:text-white text-gray-800">
           logout
         </span>
