@@ -15,7 +15,7 @@ const dummyMetricData: Metric[] = [
     title: '총 사용자',
     value: 2847,
     change: 12.5,
-    icon: null // 아이콘은 컴포넌트에서 처리
+    icon: null
   },
   {
     id: 2,
@@ -50,7 +50,7 @@ export const fetchTrafficData = async (): Promise<TrafficData[]> => {
 
   // 더미 데이터 반환
   return new Promise((resolve) => {
-    setTimeout(() => resolve(dummyTrafficData), 500); // 0.5초 지연
+    setTimeout(() => resolve(dummyTrafficData), 1000);
   });
 };
 
@@ -64,6 +64,6 @@ export const fetchMetricData = async (): Promise<Metric[]> => {
 
   // 더미 데이터 반환
   return new Promise((resolve) => {
-    setTimeout(() => resolve(dummyMetricData), 500); // 0.5초 지연
+    setTimeout(() => resolve(dummyMetricData), 1000);
   });
 };
