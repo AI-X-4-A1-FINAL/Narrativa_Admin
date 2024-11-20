@@ -1,9 +1,5 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { ReactComponent as Statistics } from "../assets/images/statistics-icon.svg";
-import { ReactComponent as User } from "../assets/images/user-icon.svg";
-import { ReactComponent as Notice } from "../assets/images/notice-icon.svg";
-import { ReactComponent as Logout } from "../assets/images/logout-icon.svg";
 import { ReactComponent as Mascot } from "../assets/images/side-mascot.svg";
 
 const Sidebar: React.FC = () => {
@@ -27,13 +23,13 @@ const Sidebar: React.FC = () => {
               : "bg-white hover:bg-pointer hover:text-white"
           }`}
         >
-          <Statistics
-            className={`w-5 h-5 ${
-              location.pathname === "/"
-                ? "text-white"
-                : "text-gray-800 group-hover:text-white"
+          <span
+            className={`material-icons w-5 h-5 group-hover:text-white ${
+              location.pathname === "/" ? "text-white" : "text-gray-800"
             }`}
-          />
+          >
+            bar_chart
+          </span>
           <span className="text-sm font-nanum font-bold ml-4 hidden lg:block">
             데이터 및 통계 분석
           </span>
@@ -48,13 +44,15 @@ const Sidebar: React.FC = () => {
               : "bg-white hover:bg-pointer hover:text-white"
           }`}
         >
-          <User
-            className={`w-5 h-5 ${
+          <span
+            className={`material-icons w-5 h-5 group-hover:text-white ${
               location.pathname === "/user-management"
                 ? "text-white"
-                : "text-gray-800 group-hover:text-white"
+                : "text-gray-800"
             }`}
-          />
+          >
+            person
+          </span>
           <span className="text-sm font-nanum font-bold ml-4 hidden lg:block">
             회원 관리
           </span>
@@ -69,13 +67,15 @@ const Sidebar: React.FC = () => {
               : "bg-white hover:bg-pointer hover:text-white"
           }`}
         >
-          <Notice
-            className={`w-5 h-5 ${
+          <span
+            className={`material-icons w-5 h-5 group-hover:text-white ${
               location.pathname === "/notice-management"
                 ? "text-white"
-                : "text-gray-800 group-hover:text-white"
+                : "text-gray-800"
             }`}
-          />
+          >
+            campaign
+          </span>
           <span className="text-sm font-nanum font-bold ml-4 hidden lg:block">
             공지 관리
           </span>
@@ -83,8 +83,10 @@ const Sidebar: React.FC = () => {
       </div>
 
       {/* Logout */}
-      <div className="w-full bg-white rounded-lg flex lg:justify-start justify-center items-center p-2 hover:bg-pointer group">
-        <Logout className="w-5 h-5 text-gray-800 group-hover:text-white" />
+      <div className="w-full bg-white rounded-lg flex justify-center items-center p-2 hover:bg-pointer group">
+        <span className="material-icons w-5 h-5 group-hover:text-white text-gray-800">
+          logout
+        </span>
         <span className="text-sm font-nanum font-bold text-gray-800 group-hover:text-white ml-4 hidden lg:block">
           Log out
         </span>
