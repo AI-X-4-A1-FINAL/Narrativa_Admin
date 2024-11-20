@@ -2,8 +2,8 @@ import React from "react";
 
 const Footer: React.FC = () => {
   return (
-    <footer className="w-full h-[5vh] flex justify-center items-center bg-black">
-      <div className="text-sm font-gothic font-semibold text-white">
+    <footer className="w-full h-[3vh] flex justify-center items-center bg-black">
+      <div className="text-sm font-nanum font-medium text-white">
         Copyright © 2024 Nova. All rights reserved.
       </div>
     </footer>

@@ -7,7 +7,7 @@ const Header: React.FC = () => {
   const profilePicture = "https://via.placeholder.com/40";
 
   return (
-    <header className="w-full h-[10vh] flex items-center justify-between px-4 bg-black">
+    <header className="w-full h-[8vh] flex items-center justify-between px-4 bg-black">
       {/* 왼쪽: 로고 */}
       <Link to="/" className="flex items-center gap-x-4">
         <img src={HeaderLogo} alt="Header Logo" className="w-5 h-[26px]" />
@@ -18,7 +18,7 @@ const Header: React.FC = () => {
 
       {/* 오른쪽: 관리자 정보 */}
       <div className="flex items-center gap-x-4">
-        <span className="text-white text-sm font-medium">{adminName}</span>
+        <span className="text-white text-sm font-medium font-nanum">{adminName}</span>
         <img
           src={profilePicture}
           alt={`${adminName}'s profile`}

@@ -9,6 +9,7 @@ module.exports = {
       fontFamily: {
         calistoga: ['Calistoga', ...defaultTheme.fontFamily.serif],
         gothic: ['Gothic A1', ...defaultTheme.fontFamily.sans],
+        nanum: ['nanum', ...defaultTheme.fontFamily.sans],
       },
       colors: {
         black: '#000000',
