@@ -1,6 +1,5 @@
 import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import Swal from "sweetalert2";
 import { useAuth } from "../components/AuthContext";
 import { useToast } from "../hooks/useToast";
 import { ReactComponent as Mascot } from "../assets/images/side-mascot.svg";
