@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { Search, Plus, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Notice, NoticeStatus} from '../../types/notice';
 import PageLayout from '../../components/PageLayout';
+import LoadingAnimation from '../../components/LoadingAnimation';
 
 const NoticeList = () => {
   const ITEMS_PER_PAGE = 5; // 페이지당 표시할 항목 수
@@ -73,7 +74,7 @@ const NoticeList = () => {
     setLoading(true);
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 300);
+    }, 1000);
 
     return () => clearTimeout(timer);
   }, [searchKeyword]);
@@ -143,6 +144,19 @@ const NoticeList = () => {
     </button>
   );
 
+  if (loading) {
+    return (
+      <div className="h-full w-full p-6 text-center" 
+      style={{
+        backgroundImage: "linear-gradient(to top, #bdc2e8 0%, #bdc2e8 1%, #e6dee9 100%)",
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat"
+      }}>
+        <LoadingAnimation />
+      </div>
+    );
+  }
+
   return (
     <PageLayout 
         title="공지사항" 
@@ -173,9 +187,7 @@ const NoticeList = () => {
 
     {/* Notice List */}
     <div className="bg-white rounded-lg shadow">
-        {loading ? (
-        <div className="p-8 text-center text-gray-500">로딩 중...</div>
-        ) : getFilteredNotices().length === 0 ? (
+        {getFilteredNotices().length === 0 ? (
         <div className="p-8 text-center font-nanum text-gray-500">
             {searchKeyword ? "검색 결과가 없습니다." : "공지사항이 없습니다."}
         </div>
