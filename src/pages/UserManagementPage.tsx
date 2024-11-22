@@ -5,6 +5,7 @@ import UserTable from "../components/UserManagement/UserTable";
 import { useToast } from "../hooks/useToast";
 import { useConfirm } from "../hooks/useConfirm";
 import LoadingAnimation from "../components/LoadingAnimation";
+import PageLayout from '../components/PageLayout';
 
 type User = {
   id: number;
@@ -354,8 +355,7 @@ const UserManagementPage: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col justify-center h-full p-6 space-y-6 bg-gray-300">
-      <h1 className="text-2xl font-nanum font-bold text-pointer">회원 관리</h1>
+    <PageLayout title="회원 관리">
       <SearchBar searchTerm={searchTerm} onSearch={handleSearch} />
       <UserTable
         users={filteredUsers}
@@ -372,7 +372,7 @@ const UserManagementPage: React.FC = () => {
           </div>
         </div>
       )}
-    </div>
+    </PageLayout>
   );
 };
 

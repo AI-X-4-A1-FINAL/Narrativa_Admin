@@ -8,8 +8,12 @@ import AppLayout from './components/AppLayout';
 import LoginPage from './pages/LoginPage';
 import StatisticsPage from './pages/StatisticsPage';
 import UserManagementPage from './pages/UserManagementPage';
-import NoticeManagementPage from './pages/NoticeManagementPage';
 import NotFoundPage from './pages/NotFoundPage';
+
+import NoticeList from './pages/notice/NoticeList';
+import NoticeDetail from './pages/notice/NoticeDetail';
+import NoticeCreate from './pages/notice/NoticeCreate';
+import NoticeEdit from './pages/notice/NoticeEdit';
 
 const Root: React.FC = () => {
   return (
@@ -25,8 +29,11 @@ const Root: React.FC = () => {
             {/* 인증된 사용자 */}
             <Route element={<PrivateRoute />}>
               <Route path="/" element={<StatisticsPage />} />
-              <Route path="/user-management" element={<UserManagementPage />} />
-              <Route path="/notice-management" element={<NoticeManagementPage />} />
+              <Route path="/users" element={<UserManagementPage />} />
+              <Route path="/notices" element={<NoticeList />} />
+              <Route path="/notices/create" element={<NoticeCreate />} />
+              <Route path="/notices/:id" element={<NoticeDetail />} />
+              <Route path="/notices/:id/edit" element={<NoticeEdit />} />
             </Route>
 
             {/* 404 페이지 */}
