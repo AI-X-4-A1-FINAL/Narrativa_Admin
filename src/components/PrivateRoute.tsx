@@ -10,11 +10,22 @@ const PrivateRoute: React.FC = () => {
     return <Navigate to="/login" replace />;
   }
 
-  const isValidPath = ['/user-management', '/notice-management', '/'].includes(
-    location.pathname
-  );
+  // 유효한 경로 패턴을 체크하는 함수
+  const isValidPath = (path: string) => {
+    // 기본 경로들
+    const exactPaths = ['/', '/users', '/notices', '/notices/create'];
+    if (exactPaths.includes(path)) return true;
 
-  if (!isValidPath) {
+    // 동적 경로 패턴
+    const dynamicPathPatterns = [
+      /^\/notices\/\d+$/,
+      /^\/notices\/\d+\/edit$/
+    ];
+
+    return dynamicPathPatterns.some(pattern => pattern.test(path));
+  };
+
+  if (!isValidPath(location.pathname)) {
     return <Navigate to="/404" replace />;
   }
 

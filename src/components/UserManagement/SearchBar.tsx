@@ -19,7 +19,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ searchTerm, onSearch }) => {
   };
 
   return (
-    <div className="w-full max-w-md">
+    <div className="w-full max-w-md mb-4">
       <div
         className={`flex items-center gap-2 px-4 py-2.5 bg-white rounded-lg
           border-2 shadow-sm
