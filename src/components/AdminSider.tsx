@@ -10,6 +10,9 @@ const Sidebar: React.FC = () => {
   const { logout } = useAuth();
   const { showToast } = useToast();
 
+  // 현재 경로가 특정 경로로 시작하는지 확인하는 함수 추가
+  const isPathActive = (path: string) => location.pathname.startsWith(path);
+
   const handleLogout = () => {
     logout();
     localStorage.removeItem("user");
@@ -49,16 +52,16 @@ const Sidebar: React.FC = () => {
         </Link>
 
         <Link
-          to="/user-management"
+          to="/users"
           className={`flex lg:justify-start justify-center items-center w-full h-[36px] rounded-lg p-2 group ${
-            location.pathname === "/user-management"
+            location.pathname === "/users"
               ? "bg-pointer text-white"
               : "bg-white hover:bg-pointer hover:text-white"
           }`}
         >
           <span
             className={`material-icons w-5 h-5 group-hover:text-white ${
-              location.pathname === "/user-management"
+              location.pathname === "/users"
                 ? "text-white"
                 : "text-gray-800"
             }`}
@@ -71,16 +74,16 @@ const Sidebar: React.FC = () => {
         </Link>
 
         <Link
-          to="/notice-management"
+          to="/notices"
           className={`flex lg:justify-start justify-center items-center w-full h-[36px] rounded-lg p-2 group ${
-            location.pathname === "/notice-management"
+            isPathActive("/notices")
               ? "bg-pointer text-white"
               : "bg-white hover:bg-pointer hover:text-white"
           }`}
         >
           <span
             className={`material-icons w-5 h-5 group-hover:text-white ${
-              location.pathname === "/notice-management"
+              isPathActive("/notices")
                 ? "text-white"
                 : "text-gray-800"
             }`}

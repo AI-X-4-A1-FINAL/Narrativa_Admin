@@ -4,11 +4,21 @@ import MetricCard from '../components/dashboard/MetricCard';
 import TrafficChart from '../components/dashboard/TrafficChart';
 import { useDashboardData } from '../hooks/useDashboardData';
 import LoadingAnimation from '../components/LoadingAnimation';
+import PageLayout from '../components/PageLayout';
+
 
 const StatisticsPage: React.FC = () => {
+  const TitleRight = (
+    <div className="flex items-center space-x-2">
+      <Clock className="h-5 w-5 text-pointer" />
+      <span className="text-sm font-nanum text-pointer">
+        최근 업데이트: {new Date().toLocaleString()}
+      </span>
+    </div>
+  );
+
   const { trafficData, metrics, loading, error } = useDashboardData();
 
-  // 아이콘 매핑
   const iconMapping = {
     '총 사용자': <Users className="h-6 w-6" />,
     '활성 사용자': <Activity className="h-6 w-6" />,
@@ -17,7 +27,16 @@ const StatisticsPage: React.FC = () => {
   };
 
   if (loading) {
-    return <LoadingAnimation />;
+    return (
+    <div className="h-full w-full flex flex-col justify-center p-6 text-center" 
+    style={{
+      backgroundImage: "linear-gradient(to top, #bdc2e8 0%, #bdc2e8 1%, #e6dee9 100%)",
+      backgroundSize: "cover",
+      backgroundRepeat: "no-repeat"
+    }}>
+      <LoadingAnimation />
+    </div>
+    );
   }
 
   if (error) {
@@ -25,19 +44,12 @@ const StatisticsPage: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-col justify-center h-full p-6 space-y-6 bg-gray-300">
-      <div className="flex flex-col lg:flex-row lg:justify-between items-start lg:items-center space-y-2 lg:space-y-0">
-        <h1 className="text-2xl font-nanum font-bold text-pointer">관리자 대시보드</h1>
-        <div className="flex items-center space-x-2">
-          <Clock className="h-5 w-5 text-pointer" />
-          <span className="text-sm font-nanum text-pointer">
-            최근 업데이트: {new Date().toLocaleString()}
-          </span>
-        </div>
-      </div>
+    <PageLayout 
+      title="관리자 대시보드" 
+      rightElement={TitleRight}
+    >
 
-      {/* 주요 메트릭 카드 */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
         {metrics.map((metric) => (
           <MetricCard
             key={metric.id}
@@ -51,7 +63,7 @@ const StatisticsPage: React.FC = () => {
 
       {/* 트래픽 차트 */}
       <TrafficChart data={trafficData} />
-    </div>
+    </PageLayout>
   );
 };
 
