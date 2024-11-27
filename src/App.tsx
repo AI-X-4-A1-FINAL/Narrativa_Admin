@@ -1,14 +1,15 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider } from './components/AuthContext';
-import PrivateRoute from './components/PrivateRoute';
-import RedirectRoute from './components/RedirectRoute';
+import { AuthProvider } from './components/auth/AuthContext';
+import PrivateRoute from './components/auth/PrivateRoute';
+import RedirectRoute from './components/auth/RedirectRoute';
 
-import AppLayout from './components/AppLayout';
-import LoginPage from './pages/LoginPage';
+import AppLayout from './components/ui/AppLayout';
+import LoginPage from './pages/login/LoginPage';
+
 import StatisticsPage from './pages/StatisticsPage';
 import UserManagementPage from './pages/UserManagementPage';
-import NotFoundPage from './pages/NotFoundPage';
+import NotFoundPage from './components/util/NotFoundPage';
 
 import NoticeList from './pages/notice/NoticeList';
 import NoticeDetail from './pages/notice/NoticeDetail';

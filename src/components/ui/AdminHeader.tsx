@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import HeaderLogo from "../assets/images/header-logo.svg";
-import { useAuth } from "../components/AuthContext";
+import HeaderLogo from "../../assets/images/header-logo.svg";
+import { useAuth } from "../auth/AuthContext";
 
 const Header: React.FC = () => {
   const { user } = useAuth();

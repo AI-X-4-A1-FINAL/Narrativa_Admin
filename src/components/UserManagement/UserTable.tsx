@@ -1,52 +1,36 @@
 import React, { useState } from "react";
-import { ChevronUp, ChevronDown, ChevronLeft, ChevronRight, Check, ChevronsUpDown } from "lucide-react";
+import {
+  ChevronUp,
+  ChevronDown,
+  ChevronLeft,
+  ChevronRight,
+  Check,
+  ChevronsUpDown,
+} from "lucide-react";
+import { User, Role, UserTableProps, ROLES, STATUS_ACTIONS } from "../../types/user";
 
-type User = {
-  id: number;
-  name: string;
-  email: string;
-  role: string;
-  registrationDate: string;
-  status: "ACTIVE" | "SUSPENDED" | "BANNED";
-};
-
-interface UserTableProps {
-  users: User[];
-  onSort: (key: keyof User, direction: "asc" | "desc") => void;
-  onUpdateRole: (userId: number, newRole: string) => void;
-  onUpdateStatus: (userId: number, newStatus: User["status"]) => void;
-  currentPage: number;
-  onPageChange: (page: number) => void;
-}
-
-const ROLES = ["USER", "ADMIN"] as const;
-const STATUS_ACTIONS = [
-  { value: "ACTIVE", label: "활성화", color: "text-green-600" },
-  { value: "SUSPENDED", label: "정지", color: "text-yellow-600" },
-  { value: "BANNED", label: "영구정지", color: "text-red-600" },
-] as const;
-
-const UserTable: React.FC<UserTableProps> = ({ 
-  users, 
-  onSort, 
-  onUpdateRole, 
-  onUpdateStatus, 
-  currentPage, 
-  onPageChange 
+const UserTable: React.FC<UserTableProps> = ({
+  users,
+  onSort,
+  onUpdateRole,
+  onUpdateStatus,
+  currentPage,
+  onPageChange,
 }) => {
   const [sortConfig, setSortConfig] = useState<{
     key: keyof User | null;
     direction: "asc" | "desc";
   }>({ key: null, direction: "asc" });
-  
-  const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
-  const [openStatusDropdownId, setOpenStatusDropdownId] = useState<number | null>(null);
-  
+
+  const [openDropdownId, setOpenDropdownId] = useState<string | null>(null);
+  const [openStatusDropdownId, setOpenStatusDropdownId] = useState<string | null>(null);
+
   const itemsPerPage = 7;
   const totalPages = Math.ceil(Math.max(users.length, 1) / itemsPerPage);
-  
+
   const handleSort = (key: keyof User) => {
-    const direction = sortConfig.key === key && sortConfig.direction === "asc" ? "desc" : "asc";
+    const direction =
+      sortConfig.key === key && sortConfig.direction === "asc" ? "desc" : "asc";
     setSortConfig({ key, direction });
     onSort(key, direction);
   };
@@ -55,7 +39,7 @@ const UserTable: React.FC<UserTableProps> = ({
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
     const currentData = users.slice(startIndex, endIndex);
-    
+
     const emptyRows = Array(itemsPerPage - currentData.length).fill(null);
     return [...currentData, ...emptyRows];
   };
@@ -71,26 +55,34 @@ const UserTable: React.FC<UserTableProps> = ({
     );
   };
 
-  const handleRoleUpdate = (userId: number, newRole: string) => {
+  const handleRoleUpdate = (userId: string, newRole: Role) => {
     onUpdateRole(userId, newRole);
     setOpenDropdownId(null);
   };
 
   const getStatusColor = (status: User["status"]) => {
     switch (status) {
-      case "ACTIVE": return "text-green-600";
-      case "SUSPENDED": return "text-yellow-600";
-      case "BANNED": return "text-red-600";
-      default: return "text-gray-600";
+      case "ACTIVE":
+        return "text-green-600";
+      case "SUSPENDED":
+        return "text-yellow-600";
+      case "BANNED":
+        return "text-red-600";
+      default:
+        return "text-gray-600";
     }
   };
 
   const getStatusLabel = (status: User["status"]) => {
     switch (status) {
-      case "ACTIVE": return "활성화";
-      case "SUSPENDED": return "정지";
-      case "BANNED": return "영구정지";
-      default: return status;
+      case "ACTIVE":
+        return "활성화";
+      case "SUSPENDED":
+        return "정지";
+      case "BANNED":
+        return "영구정지";
+      default:
+        return status;
     }
   };
 
@@ -157,7 +149,9 @@ const UserTable: React.FC<UserTableProps> = ({
                 {user ? (
                   <div className="relative w-full">
                     <button
-                      onClick={() => setOpenDropdownId(openDropdownId === user.id ? null : user.id)}
+                      onClick={() =>
+                        setOpenDropdownId(openDropdownId === user.id ? null : user.id)
+                      }
                       className="flex items-center justify-between w-full px-3 py-1.5 text-sm font-medium bg-white border border-gray-300 rounded-md hover:bg-gray-50"
                     >
                       <span>{user.role}</span>
@@ -187,12 +181,19 @@ const UserTable: React.FC<UserTableProps> = ({
                   "\u00A0"
                 )}
               </div>
+              {/* 상태 드롭다운 */}
               <div className="px-6 flex items-center relative">
                 {user ? (
                   <div className="relative w-full">
                     <button
-                      onClick={() => setOpenStatusDropdownId(openStatusDropdownId === user.id ? null : user.id)}
-                      className={`flex items-center justify-between w-full px-3 py-1.5 text-sm font-medium bg-white border border-gray-300 rounded-md hover:bg-gray-50 ${getStatusColor(user.status)}`}
+                      onClick={() =>
+                        setOpenStatusDropdownId(
+                          openStatusDropdownId === user.id ? null : user.id
+                        )
+                      }
+                      className={`flex items-center justify-between w-full px-3 py-1.5 text-sm font-medium bg-white border border-gray-300 rounded-md hover:bg-gray-50 ${getStatusColor(
+                        user.status
+                      )}`}
                     >
                       <span>{getStatusLabel(user.status)}</span>
                       <ChevronsUpDown className="w-4 h-4 ml-2" />
@@ -204,7 +205,7 @@ const UserTable: React.FC<UserTableProps> = ({
                             <li key={status.value}>
                               <button
                                 onClick={() => {
-                                  onUpdateStatus(user.id, status.value as User["status"]);
+                                  onUpdateStatus(user.id, status.value);
                                   setOpenStatusDropdownId(null);
                                 }}
                                 className={`flex items-center justify-between w-full px-3 py-1.5 text-sm hover:bg-gray-100 ${status.color}`}
@@ -253,9 +254,10 @@ const UserTable: React.FC<UserTableProps> = ({
                 key={page}
                 onClick={() => onPageChange(page)}
                 className={`px-3 py-1 text-sm rounded-md 
-                  ${currentPage === page
-                    ? "bg-pointer text-white"
-                    : "text-gray-700 bg-white border border-gray-300 hover:bg-gray-50"
+                  ${
+                    currentPage === page
+                      ? "bg-pointer text-white"
+                      : "text-gray-700 bg-white border border-gray-300 hover:bg-gray-50"
                   }`}
               >
                 {page}

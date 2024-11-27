@@ -5,7 +5,7 @@ import { ArrowLeft } from 'lucide-react';
 import { Notice, NoticeStatus } from '../../types/notice';
 import { useConfirm } from '../../hooks/useConfirm';
 import { useToast } from 'hooks/useToast';
-import LoadingAnimation from '../../components/LoadingAnimation';
+import LoadingAnimation from '../../components/ui/LoadingAnimation';
 
 const modules = {
   toolbar: [
@@ -79,7 +79,7 @@ const NoticeEdit = () => {
     };
 
     fetchNotice();
-  }, []);
+  }, [showToast]);
 
   const hasChanges = () => {
     if (!originalNotice) return false;

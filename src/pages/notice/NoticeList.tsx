@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, Plus, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Notice, NoticeStatus} from '../../types/notice';
-import PageLayout from '../../components/PageLayout';
-import LoadingAnimation from '../../components/LoadingAnimation';
+import PageLayout from '../../components/ui/PageLayout';
+import LoadingAnimation from '../../components/ui/LoadingAnimation';
 
 const NoticeList = () => {
   const ITEMS_PER_PAGE = 5; // 페이지당 표시할 항목 수

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import Lottie from 'lottie-react';
-import NotFoundPageAnimation from "../assets/animations/404.json";
+import NotFoundPageAnimation from "../../assets/animations/404.json";
 
 const NotFoundPage: React.FC = () => {
   return (

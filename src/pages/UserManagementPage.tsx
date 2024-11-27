@@ -2,18 +2,9 @@ import React, { useState, useEffect } from "react";
 import SearchBar from "../components/UserManagement/SearchBar";
 import UserTable from "../components/UserManagement/UserTable";
 import { useToast } from "../hooks/useToast";
-import { useConfirm } from "../hooks/useConfirm";
-import LoadingAnimation from "../components/LoadingAnimation";
-import PageLayout from '../components/PageLayout';
-
-type User = {
-  id: number;
-  name: string;
-  email: string;
-  role: string;
-  registrationDate: string;
-  status: "ACTIVE" | "SUSPENDED" | "BANNED";
-};
+import LoadingAnimation from "../components/ui/LoadingAnimation";
+import PageLayout from '../components/ui/PageLayout';
+import { User } from "types/user";
 
 const UserManagementPage: React.FC = () => {
   const [users, setUsers] = useState<User[]>([]);
@@ -22,7 +13,6 @@ const UserManagementPage: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [isUpdating, setIsUpdating] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const { showConfirm } = useConfirm();
   const { showToast } = useToast();
 
   useEffect(() => {
@@ -42,7 +32,7 @@ const UserManagementPage: React.FC = () => {
             id: 2,
             name: "김철수",
             email: "kim@example.com",
-            role: "ADMIN",
+            role: "USER",
             registrationDate: "2023-10-15",
             status: "ACTIVE",
           },
@@ -90,7 +80,7 @@ const UserManagementPage: React.FC = () => {
             id: 8,
             name: "윤서준",
             email: "seojun@example.com",
-            role: "ADMIN",
+            role: "USER",
             registrationDate: "2023-09-15",
             status: "ACTIVE",
           },
