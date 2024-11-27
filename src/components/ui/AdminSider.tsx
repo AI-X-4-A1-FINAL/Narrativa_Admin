@@ -1,8 +1,8 @@
 import React from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import { useAuth } from "../components/AuthContext";
-import { useToast } from "../hooks/useToast";
-import { ReactComponent as Mascot } from "../assets/images/side-mascot.svg";
+import { useAuth } from "../auth/AuthContext";
+import { useToast } from "../../hooks/useToast";
+import { ReactComponent as Mascot } from "../../assets/images/side-mascot.svg";
 
 const Sidebar: React.FC = () => {
   const location = useLocation();

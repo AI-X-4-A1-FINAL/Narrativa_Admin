@@ -1,6 +1,6 @@
 // components/layout/PageLayout.tsx
 import React from 'react';
-import PageTitle from '../components/PageTitle';
+import PageTitle from '../../components/ui/PageTitle';
 
 interface PageLayoutProps {
   title: string;

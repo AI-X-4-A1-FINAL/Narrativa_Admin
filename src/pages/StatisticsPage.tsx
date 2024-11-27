@@ -3,8 +3,8 @@ import { Users, Activity, Globe, Gamepad, Clock } from 'lucide-react';
 import MetricCard from '../components/dashboard/MetricCard';
 import TrafficChart from '../components/dashboard/TrafficChart';
 import { useDashboardData } from '../hooks/useDashboardData';
-import LoadingAnimation from '../components/LoadingAnimation';
-import PageLayout from '../components/PageLayout';
+import LoadingAnimation from '../components/ui/LoadingAnimation';
+import PageLayout from '../components/ui/PageLayout';
 
 
 const StatisticsPage: React.FC = () => {
