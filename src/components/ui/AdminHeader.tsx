@@ -4,9 +4,9 @@ import HeaderLogo from "../../assets/images/header-logo.svg";
 import { useAuth } from "../auth/AuthContext";
 
 const Header: React.FC = () => {
-  const { user } = useAuth();
-  const adminName = user?.name || "Admin";
-  const profilePicture = user?.profilePicture || "https://via.placeholder.com/40";
+  const { admin } = useAuth();
+  const adminName = admin?.username || "Admin";
+  const profilePicture = admin?.profilePicture || "https://via.placeholder.com/40";
 
   return (
     <header className="w-full h-[8vh] flex items-center justify-between px-4 bg-black">

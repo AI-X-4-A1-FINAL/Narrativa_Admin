@@ -1,7 +1,12 @@
-import { User } from "./user";
+import { AdminUser, AdminRole } from "./admin";
 
-export type AuthContextProps = {
-  user: User | null;
-  login: (user: User) => void;
+interface AuthContextProps {
+  admin: AdminUser | null;
+  userRole: AdminRole;
+  setUserRole: (role: AdminRole) => void;
+  login: (adminUser: AdminUser) => void;
   logout: () => void;
-};
+  updateUserRole: (newRole: AdminRole) => void;
+}
+
+export default AuthContextProps;
