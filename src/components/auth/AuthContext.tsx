@@ -1,27 +1,54 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
-import {User} from "../../types/user";
-import { AuthContextProps } from "../../types/authContext";
+import { AdminUser, AdminRole } from "../../types/admin";
+
+interface AuthContextProps {
+  admin: AdminUser | null;
+  userRole: AdminRole;
+  setUserRole: (role: AdminRole) => void;
+  login: (adminUser: AdminUser) => void;
+  logout: () => void;
+  updateUserRole: (newRole: AdminRole) => void;
+}
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
-export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<User | null>(() => {
-    const storedUser = sessionStorage.getItem("user");
-    return storedUser ? JSON.parse(storedUser) : null;
+export const AuthProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
+  const [admin, setAdmin] = useState<AdminUser | null>(() => {
+    const storedAdmin = sessionStorage.getItem("admin");
+    return storedAdmin ? JSON.parse(storedAdmin) : null;
   });
 
-  const login = (user: User) => {
-    setUser(user);
-    sessionStorage.setItem("user", JSON.stringify(user));
+  const [userRole, setUserRole] = useState<AdminRole>(() => {
+    return admin ? admin.role : "WAITING";
+  });
+
+  const login = (adminUser: AdminUser) => {
+    setAdmin(adminUser);
+    setUserRole(adminUser.role);
+    sessionStorage.setItem("admin", JSON.stringify(adminUser));
   };
 
   const logout = () => {
-    setUser(null);
-    sessionStorage.removeItem("user");
+    setAdmin(null);
+    setUserRole("WAITING");
+    sessionStorage.removeItem("admin");
+  };
+
+  const updateUserRole = (newRole: AdminRole) => {
+    if (admin) {
+      const updatedAdminUser = { ...admin, role: newRole };
+      setAdmin(updatedAdminUser);
+      setUserRole(newRole);
+      sessionStorage.setItem("admin", JSON.stringify(updatedAdminUser));
+    }
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider
+      value={{ admin, userRole, setUserRole, login, logout, updateUserRole }}
+    >
       {children}
     </AuthContext.Provider>
   );

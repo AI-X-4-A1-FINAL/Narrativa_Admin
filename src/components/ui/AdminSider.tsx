@@ -15,7 +15,7 @@ const Sidebar: React.FC = () => {
 
   const handleLogout = () => {
     logout();
-    localStorage.removeItem("user");
+    localStorage.removeItem("admin");
 
     showToast("로그아웃 완료!\n 안전하게 로그아웃되었습니다.", "success");
 
@@ -52,6 +52,26 @@ const Sidebar: React.FC = () => {
         </Link>
 
         <Link
+          to="/admins"
+          className={`flex lg:justify-start justify-center items-center w-full h-[36px] rounded-lg p-2 group ${
+            location.pathname === "/admins"
+              ? "bg-pointer text-white"
+              : "bg-white hover:bg-pointer hover:text-white"
+          }`}
+        >
+          <span
+            className={`material-icons w-5 h-5 group-hover:text-white ${
+              location.pathname === "/admins" ? "text-white" : "text-gray-800"
+            }`}
+          >
+            admin_panel_settings
+          </span>
+          <span className="text-sm font-nanum font-bold ml-4 hidden lg:block">
+            관리자 관리
+          </span>
+        </Link>
+
+        <Link
           to="/users"
           className={`flex lg:justify-start justify-center items-center w-full h-[36px] rounded-lg p-2 group ${
             location.pathname === "/users"
@@ -61,9 +81,7 @@ const Sidebar: React.FC = () => {
         >
           <span
             className={`material-icons w-5 h-5 group-hover:text-white ${
-              location.pathname === "/users"
-                ? "text-white"
-                : "text-gray-800"
+              location.pathname === "/users" ? "text-white" : "text-gray-800"
             }`}
           >
             person
@@ -83,9 +101,7 @@ const Sidebar: React.FC = () => {
         >
           <span
             className={`material-icons w-5 h-5 group-hover:text-white ${
-              isPathActive("/notices")
-                ? "text-white"
-                : "text-gray-800"
+              isPathActive("/notices") ? "text-white" : "text-gray-800"
             }`}
           >
             campaign
