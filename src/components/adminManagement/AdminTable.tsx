@@ -149,7 +149,7 @@ const AdminTable: React.FC<AdminTableProps> = ({
           {renderHeader("createdAt", "가입 날짜")}
         </div>
 
-        <div className="divide-y divide-gray-200 overflow-y-auto h-[500px]">
+        <div className="divide-y divide-gray-200 overflow-y-auto h-[500px] scrollbar-thin scrollbar-thumb-pointer2 scrollbar-track-transparent">
           {getCurrentPageData().map((admin, index) => (
             <div
               key={admin?.id || `empty-${index}`}

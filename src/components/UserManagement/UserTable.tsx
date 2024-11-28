@@ -259,10 +259,7 @@ const UserTable: React.FC<UserTableProps> = ({
           {renderHeader("createdAt", "가입일")}
         </div>
 
-        <div
-          className="divide-y divide-gray-200 overflow-y-auto"
-          style={{ height: "500px" }}
-        >
+        <div className="divide-y divide-gray-200 overflow-y-auto h-[500px]  scrollbar-thin scrollbar-thumb-pointer2 scrollbar-track-transparent">
           {getCurrentPageData().map((user, index) => (
             <div
               key={user?.id || `empty-${index}`}
