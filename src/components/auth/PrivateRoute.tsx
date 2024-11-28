@@ -18,12 +18,12 @@ const PrivateRoute: React.FC = () => {
 
   // 유효한 경로 확인
   const isValidPath = (path: string) => {
-    const exactPaths = ['/', '/users', '/notices', '/notices/create'];
+    const exactPaths = ['/', '/users', '/notices', '/notices/create', '/admins'];
     if (exactPaths.includes(path)) return true;
 
     const dynamicPathPatterns = [
-      /^\/notices\/\d+$/,       // 상세 공지 페이지
-      /^\/notices\/\d+\/edit$/, // 공지 수정 페이지
+      /^\/notices\/\d+$/,
+      /^\/notices\/\d+\/edit$/,
     ];
 
     return dynamicPathPatterns.some((pattern) => pattern.test(path));

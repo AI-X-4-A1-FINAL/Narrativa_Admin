@@ -52,6 +52,28 @@ const Sidebar: React.FC = () => {
         </Link>
 
         <Link
+          to="/admins"
+          className={`flex lg:justify-start justify-center items-center w-full h-[36px] rounded-lg p-2 group ${
+            location.pathname === "/admins"
+              ? "bg-pointer text-white"
+              : "bg-white hover:bg-pointer hover:text-white"
+          }`}
+        >
+          <span
+            className={`material-icons w-5 h-5 group-hover:text-white ${
+              location.pathname === "/admins"
+                ? "text-white"
+                : "text-gray-800"
+            }`}
+          >
+            admin_panel_settings
+          </span>
+          <span className="text-sm font-nanum font-bold ml-4 hidden lg:block">
+            관리자 권한 관리
+          </span>
+        </Link>
+
+        <Link
           to="/users"
           className={`flex lg:justify-start justify-center items-center w-full h-[36px] rounded-lg p-2 group ${
             location.pathname === "/users"

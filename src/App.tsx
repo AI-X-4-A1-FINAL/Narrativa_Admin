@@ -9,6 +9,7 @@ import LoginPage from './pages/login/LoginPage';
 
 import StatisticsPage from './pages/StatisticsPage';
 import UserManagementPage from './pages/UserManagementPage';
+import AdminManagementPage from 'pages/AdminManagementPage';
 import NotFoundPage from './components/util/NotFoundPage';
 
 import NoticeList from './pages/notice/NoticeList';
@@ -31,6 +32,7 @@ const Root: React.FC = () => {
             <Route element={<PrivateRoute />}>
               <Route path="/" element={<StatisticsPage />} />
               <Route path="/users" element={<UserManagementPage />} />
+              <Route path="/admins" element={<AdminManagementPage />} />
               <Route path="/notices" element={<NoticeList />} />
               <Route path="/notices/create" element={<NoticeCreate />} />
               <Route path="/notices/:id" element={<NoticeDetail />} />
