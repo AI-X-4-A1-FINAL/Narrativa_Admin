@@ -1,5 +1,3 @@
-// types/admin.ts
-
 export type AdminRole =
   | "SUPER_ADMIN"
   | "SYSTEM_ADMIN"
