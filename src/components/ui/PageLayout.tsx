@@ -1,6 +1,5 @@
-// components/layout/PageLayout.tsx
-import React from 'react';
-import PageTitle from '../../components/ui/PageTitle';
+import React from "react";
+import PageTitle from "../../components/ui/PageTitle";
 
 interface PageLayoutProps {
   title: string;
@@ -10,20 +9,21 @@ interface PageLayoutProps {
 
 const PageLayout = ({ title, rightElement, children }: PageLayoutProps) => {
   return (
-    <div className="h-full w-full flex flex-col"
-    style={{
-      backgroundImage: "linear-gradient(to top, #bdc2e8 0%, #bdc2e8 1%, #e6dee9 100%)",
-      backgroundSize: "cover",
-      backgroundRepeat: "no-repeat"
-    }}>
+    <div
+      className="h-full w-full flex flex-col"
+      style={{
+        backgroundImage:
+          "linear-gradient(to top, #bdc2e8 0%, #bdc2e8 1%, #e6dee9 100%)",
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
+      }}
+    >
       <div className="mx-8 mt-1 h-15">
         <PageTitle title={title} rightElement={rightElement} />
       </div>
-      
+
       <div className="p-6 h-full @apply bg-bg2">
-        <div className='h-full flex flex-col justify-center'>
-          {children}
-        </div>
+        <div className="h-full flex flex-col justify-center">{children}</div>
       </div>
     </div>
   );
