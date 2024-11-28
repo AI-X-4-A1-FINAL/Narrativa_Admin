@@ -1,30 +1,27 @@
-import React from 'react';
-import { Navigate, Outlet, useLocation } from 'react-router-dom';
-import { useAuth } from './AuthContext';
+import { Navigate, Outlet, useLocation } from "react-router-dom";
+import { useAuth } from "./AuthContext";
 
-const PrivateRoute: React.FC = () => {
-  const { user } = useAuth();
+const PrivateRoute = () => {
+  const { admin } = useAuth();
   const location = useLocation();
 
   // 로그인되지 않은 경우 로그인 페이지로 리다이렉트
-  if (!user) {
-    return <Navigate to="/login" replace />;
-  }
-
-  // 권한 검증: waiting 또는 user일 경우 로그인 페이지로 리다이렉트
-  if (user.role === 'WAITING' || user.role === 'USER') {
+  if (!admin) {
     return <Navigate to="/login" replace />;
   }
 
   // 유효한 경로 확인
   const isValidPath = (path: string) => {
-    const exactPaths = ['/', '/users', '/notices', '/notices/create', '/admins'];
+    const exactPaths = [
+      "/",
+      "/users",
+      "/notices",
+      "/notices/create",
+      "/admins",
+    ];
     if (exactPaths.includes(path)) return true;
 
-    const dynamicPathPatterns = [
-      /^\/notices\/\d+$/,
-      /^\/notices\/\d+\/edit$/,
-    ];
+    const dynamicPathPatterns = [/^\/notices\/\d+$/, /^\/notices\/\d+\/edit$/];
 
     return dynamicPathPatterns.some((pattern) => pattern.test(path));
   };
