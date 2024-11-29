@@ -13,14 +13,38 @@ RUN npm install
 # 5. 소스 코드 복사
 COPY . .
 
-# 6. 프로젝트 빌드
+# 6. 환경 변수 파일 복사 (컴포즈에서 전달된 환경 변수 사용)
+ARG REACT_APP_API_BASE_URL
+ARG REACT_APP_BACKEND_URL
+ARG REACT_APP_FIREBASE_API_KEY
+ARG REACT_APP_FIREBASE_AUTH_DOMAIN
+ARG REACT_APP_FIREBASE_PROJECT_ID
+ARG REACT_APP_FIREBASE_STORAGE_BUCKET
+ARG REACT_APP_FIREBASE_MESSAGING_SENDER_ID
+ARG REACT_APP_FIREBASE_APP_ID
+ARG REACT_APP_GITHUB_CLIENT_ID
+ARG REACT_APP_GITHUB_CLIENT_SECRET
+
+# 7. 환경변수를 React 애플리케이션으로 주입
+RUN echo "REACT_APP_API_BASE_URL=${REACT_APP_API_BASE_URL}" > .env && \
+    echo "REACT_APP_BACKEND_URL=${REACT_APP_BACKEND_URL}" >> .env && \
+    echo "REACT_APP_FIREBASE_API_KEY=${REACT_APP_FIREBASE_API_KEY}" >> .env && \
+    echo "REACT_APP_FIREBASE_AUTH_DOMAIN=${REACT_APP_FIREBASE_AUTH_DOMAIN}" >> .env && \
+    echo "REACT_APP_FIREBASE_PROJECT_ID=${REACT_APP_FIREBASE_PROJECT_ID}" >> .env && \
+    echo "REACT_APP_FIREBASE_STORAGE_BUCKET=${REACT_APP_FIREBASE_STORAGE_BUCKET}" >> .env && \
+    echo "REACT_APP_FIREBASE_MESSAGING_SENDER_ID=${REACT_APP_FIREBASE_MESSAGING_SENDER_ID}" >> .env && \
+    echo "REACT_APP_FIREBASE_APP_ID=${REACT_APP_FIREBASE_APP_ID}" >> .env && \
+    echo "REACT_APP_GITHUB_CLIENT_ID=${REACT_APP_GITHUB_CLIENT_ID}" >> .env && \
+    echo "REACT_APP_GITHUB_CLIENT_SECRET=${REACT_APP_GITHUB_CLIENT_SECRET}" >> .env
+
+# 8. React 애플리케이션 빌드
 RUN npm run build
 
-# 7. 'serve' 패키지 전역 설치
+# 9. 'serve' 패키지 전역 설치
 RUN npm install -g serve
 
-# 8. 컨테이너 시작 시 'serve'를 통해 빌드된 파일 제공
+# 10. 컨테이너 시작 시 'serve'를 통해 빌드된 파일 제공
 CMD ["serve", "-s", "build", "-l", "3030"]
 
-# 9. 컨테이너 외부에 노출할 포트 설정
+# 11. 컨테이너 외부에 노출할 포트 설정
 EXPOSE 3030
