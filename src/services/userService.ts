@@ -9,7 +9,7 @@ export const getUsers = async (
   search?: string
 ): Promise<UserPageResponse> => {
   const response = await fetch(
-    `${BASE_URL}/api/admin/users?page=${page}&size=${size}${
+    `${BASE_URL}/api/admin/usersManage?page=${page}&size=${size}${
       search ? `&search=${search}` : ""
     }`
   );
@@ -21,12 +21,12 @@ export const updateUserRole = async (
   userId: number,
   role: UserRole
 ): Promise<void> => {
-  await axios.patch(`${BASE_URL}/api/admin/users/${userId}/role`, { role });
+  await axios.patch(`${BASE_URL}/api/admin/usersManage/${userId}/role`, { role });
 };
 
 export const updateUserStatus = async (
   userId: number,
   status: User["status"]
 ): Promise<void> => {
-  await axios.patch(`${BASE_URL}/api/admin/users/${userId}/status`, { status });
+  await axios.patch(`${BASE_URL}/api/admin/usersManage/${userId}/status`, { status });
 };
