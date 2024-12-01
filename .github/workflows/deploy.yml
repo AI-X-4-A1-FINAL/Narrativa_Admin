@@ -1,9 +1,8 @@
-name: Deploy to EC2
+name: Release and Deploy
 
 on:
   push:
     branches:
-
       - main # 메인 브랜치에 병합될 때 자동 실행
   workflow_dispatch: # 수동 실행 지원
 
@@ -20,7 +19,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "18" # Node.js 버전
+          node-version: "18"
 
       ### 3. package.json에서 버전 읽기
       - name: Read Version from package.json
@@ -32,13 +31,15 @@ jobs:
 
       ### 4. 태그 생성 및 푸시
       - name: Create and Push Tag
+        env:
+          PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         run: |
           TAG="v${{ env.VERSION }}"
           echo "Creating tag: $TAG"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
           git tag $TAG
-          git push origin $TAG
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          git push https://x-access-token:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/${{ github.repository }} $TAG
 
       ### 5. 릴리즈 노트 생성
       - name: Generate Release Notes
@@ -46,7 +47,7 @@ jobs:
         run: |
           echo "## Changes" > notes.md
           git log $(git describe --tags --abbrev=0)..HEAD --oneline >> notes.md
-          cat notes.md
+          echo "notes_body=$(cat notes.md)" >> $GITHUB_ENV
 
       ### 6. 릴리즈 생성
       - name: Create Release with Notes
@@ -54,7 +55,7 @@ jobs:
         with:
           tag_name: "v${{ env.VERSION }}"
           release_name: "Release v${{ env.VERSION }}"
-          body: ${{ steps.generate_notes.outputs.body }}
+          body: ${{ env.notes_body }}
           draft: false
           prerelease: false
 
@@ -74,31 +75,6 @@ jobs:
           EC2_HOST: ${{ secrets.EC2_HOST }}
         run: |
           ssh -o StrictHostKeyChecking=no -i ec2_key.pem ubuntu@${{ secrets.EC2_HOST }} << EOF
-=======
-      - main
-  workflow_dispatch: # 수동 실행 지원
-
-jobs:
-  deploy:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
-
-      - name: Set up SSH key
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-
-      - name: Upload TAR to EC2
-        run: |
-          scp -o StrictHostKeyChecking=no narrativa-admin.tar ubuntu@<EC2_SSH_KEY>:~/
-
-      - name: Connect to EC2 and Deploy
-        run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@<EC2_HOST> << EOF
           docker stop narrativa-admin || true
           docker rm narrativa-admin || true
           docker rmi narrativa-admin || true
