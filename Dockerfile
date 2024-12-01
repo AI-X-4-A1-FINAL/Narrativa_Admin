@@ -13,6 +13,9 @@ RUN npm install
 # 5. 소스 코드 복사
 COPY . .
 
+# .babelrc 파일 복사 추가
+COPY .babelrc .babelrc
+
 # 6. 환경 변수 파일 복사
 COPY .env .env
 
