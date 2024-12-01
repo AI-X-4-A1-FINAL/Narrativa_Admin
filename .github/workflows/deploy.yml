@@ -3,8 +3,8 @@ name: Release and Deploy
 on:
   push:
     branches:
-      - main # 메인 브랜치에 병합될 때 자동 실행
-  workflow_dispatch: # 수동 실행 지원
+      - main
+  workflow_dispatch:
 
 jobs:
   release_and_deploy:
@@ -14,6 +14,8 @@ jobs:
       ### 1. 저장소 체크아웃
       - name: Checkout repository
         uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
 
       ### 2. Node.js 환경 설정
       - name: Setup Node.js
@@ -29,17 +31,20 @@ jobs:
           echo "Version from package.json: $VERSION"
           echo "VERSION=$VERSION" >> $GITHUB_ENV
 
+      ### NEW: Configure Git to Use PAT
+      - name: Configure Git to Use PAT
+        run: |
+          git remote set-url origin https://x-access-token:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/${{ github.repository }}
+
       ### 4. 태그 생성 및 푸시
       - name: Create and Push Tag
-        env:
-          PERSONAL_ACCESS_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         run: |
           TAG="v${{ env.VERSION }}"
           echo "Creating tag: $TAG"
           git config user.name "GitHub Actions Bot"
           git config user.email "actions@github.com"
           git tag $TAG
-          git push https://x-access-token:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/${{ github.repository }} $TAG
+          git push origin $TAG
 
       ### 5. 릴리즈 노트 생성
       - name: Generate Release Notes
@@ -53,6 +58,7 @@ jobs:
       - name: Create Release with Notes
         uses: actions/create-release@v1
         with:
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           tag_name: "v${{ env.VERSION }}"
           release_name: "Release v${{ env.VERSION }}"
           body: ${{ env.notes_body }}
@@ -72,9 +78,10 @@ jobs:
       ### 8. EC2에 접속하여 배포
       - name: Connect to EC2 and Deploy
         env:
+          EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
           EC2_HOST: ${{ secrets.EC2_HOST }}
         run: |
-          ssh -o StrictHostKeyChecking=no -i ec2_key.pem ubuntu@${{ secrets.EC2_HOST }} << EOF
+          ssh -i ec2_key.pem -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} << EOF
           docker stop narrativa-admin || true
           docker rm narrativa-admin || true
           docker rmi narrativa-admin || true
