@@ -91,9 +91,9 @@ jobs:
           EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
           EC2_HOST: ${{ secrets.EC2_HOST }}
         run: |
-          echo "${EC2_SSH_KEY}" > ec2_key.pem
-          chmod 600 ec2_key.pem
-          scp -i ec2_key.pem -o StrictHostKeyChecking=no narrativa-admin.tar ubuntu@${{ secrets.EC2_HOST }}:~/
+          echo "${EC2_SSH_KEY}" > narraa-admin.pem
+          chmod 600 narraa-admin.pem
+          scp -i narraa-admin.pem -o StrictHostKeyChecking=no narrativa-admin.tar ubuntu@${{ secrets.EC2_HOST }}:~/
 
       ### 11. EC2에 접속하여 배포
       - name: Connect to EC2 and Deploy
