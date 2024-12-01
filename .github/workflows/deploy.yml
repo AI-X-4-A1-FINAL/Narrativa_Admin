@@ -1,0 +1,37 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: # 수동 실행 지원
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+
+      - name: Upload TAR to EC2
+        run: |
+          scp -o StrictHostKeyChecking=no narrativa-admin.tar ubuntu@<EC2_SSH_KEY>:~/
+
+      - name: Connect to EC2 and Deploy
+        run: |
+          ssh -o StrictHostKeyChecking=no ubuntu@<EC2_HOST> << EOF
+          docker stop narrativa-admin || true
+          docker rm narrativa-admin || true
+          docker rmi narrativa-admin || true
+          docker load -i narrativa-admin.tar
+          docker run -d -p 3030:3030 --name narrativa-admin narrativa-admin
+          EOF
+        env:
+          EC2_HOST: ${{ secrets.EC2_HOST }}
