@@ -233,4 +233,7 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+# AWS 
+*.pem
+
 # End of https://www.toptal.com/developers/gitignore/api/windows,macos,visualstudiocode,react,node
