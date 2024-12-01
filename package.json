@@ -24,6 +24,7 @@
     "sweetalert2": "^11.14.5",
     "typescript": "^4.9.5",
     "web-vitals": "^2.1.4"
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.0"
   },
   "scripts": {
     "start": "react-scripts start",
