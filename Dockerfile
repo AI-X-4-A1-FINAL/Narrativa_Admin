@@ -1,5 +1,5 @@
 # 1. Node.js 18 공식 이미지 사용
-FROM node:18 AS build
+FROM node:18-slim AS build
 
 # 2. 작업 디렉토리 설정
 WORKDIR /app
@@ -8,7 +8,8 @@ WORKDIR /app
 COPY package*.json ./
 
 # 4. 의존성 설치
-RUN npm install
+COPY package*.json ./
+RUN npm install --legacy-peer-deps
 
 # 5. 소스 코드 복사
 COPY . .
