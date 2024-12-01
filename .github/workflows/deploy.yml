@@ -57,8 +57,9 @@ jobs:
       ### 6. 릴리즈 생성
       - name: Create Release with Notes
         uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
         with:
-          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           tag_name: "v${{ env.VERSION }}"
           release_name: "Release v${{ env.VERSION }}"
           body: ${{ env.notes_body }}
