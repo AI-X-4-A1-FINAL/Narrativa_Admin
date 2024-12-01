@@ -3,6 +3,78 @@ name: Deploy to EC2
 on:
   push:
     branches:
+
+      - main # 메인 브랜치에 병합될 때 자동 실행
+  workflow_dispatch: # 수동 실행 지원
+
+jobs:
+  release_and_deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      ### 1. 저장소 체크아웃
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      ### 2. Node.js 환경 설정
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18" # Node.js 버전
+
+      ### 3. package.json에서 버전 읽기
+      - name: Read Version from package.json
+        id: read_version
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "Version from package.json: $VERSION"
+          echo "VERSION=$VERSION" >> $GITHUB_ENV
+
+      ### 4. 태그 생성 및 푸시
+      - name: Create and Push Tag
+        run: |
+          TAG="v${{ env.VERSION }}"
+          echo "Creating tag: $TAG"
+          git tag $TAG
+          git push origin $TAG
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      ### 5. 릴리즈 노트 생성
+      - name: Generate Release Notes
+        id: generate_notes
+        run: |
+          echo "## Changes" > notes.md
+          git log $(git describe --tags --abbrev=0)..HEAD --oneline >> notes.md
+          cat notes.md
+
+      ### 6. 릴리즈 생성
+      - name: Create Release with Notes
+        uses: actions/create-release@v1
+        with:
+          tag_name: "v${{ env.VERSION }}"
+          release_name: "Release v${{ env.VERSION }}"
+          body: ${{ steps.generate_notes.outputs.body }}
+          draft: false
+          prerelease: false
+
+      ### 7. TAR 파일 업로드
+      - name: Upload TAR to EC2
+        env:
+          EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+        run: |
+          echo "${EC2_SSH_KEY}" > ec2_key.pem
+          chmod 600 ec2_key.pem
+          scp -i ec2_key.pem -o StrictHostKeyChecking=no narrativa-admin.tar ubuntu@${{ secrets.EC2_HOST }}:~/
+
+      ### 8. EC2에 접속하여 배포
+      - name: Connect to EC2 and Deploy
+        env:
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+        run: |
+          ssh -o StrictHostKeyChecking=no -i ec2_key.pem ubuntu@${{ secrets.EC2_HOST }} << EOF
+=======
       - main
   workflow_dispatch: # 수동 실행 지원
 
@@ -33,5 +105,3 @@ jobs:
           docker load -i narrativa-admin.tar
           docker run -d -p 3030:3030 --name narrativa-admin narrativa-admin
           EOF
-        env:
-          EC2_HOST: ${{ secrets.EC2_HOST }}
