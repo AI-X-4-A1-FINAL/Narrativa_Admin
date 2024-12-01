@@ -68,6 +68,8 @@ jobs:
 
       ### 8. 프로젝트 빌드 및 Docker 이미지 생성
       - name: Build Project and Create Docker Image
+        env:
+          CI: false
         run: |
           # 필요한 패키지 설치
           npm install
