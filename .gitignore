@@ -235,5 +235,7 @@ $RECYCLE.BIN/
 
 # AWS 
 *.pem
+uduntu@*
+*.tar
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,macos,visualstudiocode,react,node
