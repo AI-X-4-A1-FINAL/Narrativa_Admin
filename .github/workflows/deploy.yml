@@ -59,10 +59,16 @@ jobs:
          npm run build
          
          # Docker 이미지 빌드
-         docker build -t narrativa-admin .
+         docker build -t narrativa-admin:latest .
+         
+         # Docker 이미지 확인
+         docker images
          
          # Docker 이미지를 tar 파일로 저장
-         docker save narrativa-admin -o narrativa-admin.tar
+         docker save -o narrativa-admin.tar narrativa-admin:latest
+         
+         # 생성된 tar 파일 확인
+         ls -l narrativa-admin.tar
 
      ### 6. SSH 설정
      - name: Configure SSH
