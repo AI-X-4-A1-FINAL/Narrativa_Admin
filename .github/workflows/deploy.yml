@@ -39,8 +39,8 @@ jobs:
          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
          aws-region: ${{ secrets.AWS_REGION }}
 
-     ### 5. 프로젝트 빌드
-     - name: Build Project
+     ### 5. 프로젝트 빌드 및 Docker 이미지 생성
+     - name: Build Project and Create Docker Image
        env:
          CI: false
          REACT_APP_API_BASE_URL: ${{ secrets.REACT_APP_API_BASE_URL }}
@@ -54,9 +54,15 @@ jobs:
          REACT_APP_GITHUB_CLIENT_ID: ${{ secrets.REACT_APP_GITHUB_CLIENT_ID }}
          REACT_APP_GITHUB_CLIENT_SECRET: ${{ secrets.REACT_APP_GITHUB_CLIENT_SECRET }}
        run: |
+         # 프로젝트 빌드
          npm install
          npm run build
-         tar -czf build.tar.gz build/
+         
+         # Docker 이미지 빌드
+         docker build -t narrativa-admin .
+         
+         # Docker 이미지를 tar 파일로 저장
+         docker save narrativa-admin -o narrativa-admin.tar
 
      ### 6. SSH 설정
      - name: Configure SSH
@@ -69,16 +75,15 @@ jobs:
      ### 7. EC2로 파일 전송 및 배포
      - name: Deploy to EC2
        run: |
-         scp -i ~/.ssh/narraa-admin.pem build.tar.gz ubuntu@${{ secrets.EC2_HOST }}:~/
+         scp -i ~/.ssh/narraa-admin.pem narrativa-admin.tar ubuntu@${{ secrets.EC2_HOST }}:~/
          ssh -i ~/.ssh/narraa-admin.pem ubuntu@${{ secrets.EC2_HOST }} '
            cd /home/ubuntu
-           tar -xzf build.tar.gz
            docker stop narrativa-admin || true
            docker rm narrativa-admin || true
            docker rmi narrativa-admin || true
-           docker build -t narrativa-admin .
+           docker load -i narrativa-admin.tar
            docker run -d -p 3030:3030 --name narrativa-admin narrativa-admin
-           rm -f build.tar.gz
+           rm -f narrativa-admin.tar
          '
 
      ### 8. Git PAT 설정
