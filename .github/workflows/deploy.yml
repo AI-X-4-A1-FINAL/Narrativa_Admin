@@ -55,8 +55,8 @@ jobs:
         run: |
           npm install
           npm run build
-          docker build -t narrativa-admin:${{ env.VERSION }} .
-          docker save -o narrativa-admin.tar narrativa-admin:${{ env.VERSION }}
+          docker build -t narrativa-admin .
+          docker save -o narrativa-admin.tar narrativa-admin
 
       ### 6. 배포 설정 및 실행
       - name: Deploy to EC2
@@ -72,9 +72,9 @@ jobs:
           ssh -i ~/.ssh/narraa-admin.pem -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} "
             docker stop narrativa-admin || true
             docker rm narrativa-admin || true
-            docker rmi narrativa-admin:${{ env.VERSION }} || true
+            docker rmi narrativa-admin || true
             docker load -i narrativa-admin.tar
-            docker run -d -p 3030:3030 --name narrativa-admin narrativa-admin:${{ env.VERSION }}
+            docker run -d -p 3030:3030 --name narrativa-admin narrativa-admin
             rm -f narrativa-admin.tar
           "
 
