@@ -53,12 +53,11 @@ jobs:
       ### 6. TAR 파일 업로드
       - name: Upload TAR to EC2
         env:
+          EC2_SSH_KEY_BASE64: ${{ secrets.EC2_SSH_KEY_BASE64 }}
           EC2_HOST: ${{ secrets.EC2_HOST }}
         run: |
           # SSH 키 파일 생성
-          cat << 'EOF' > narraa-admin.pem
-          ${{ secrets.EC2_SSH_KEY }}
-          EOF
+          echo "${EC2_SSH_KEY_BASE64}" | base64 -d > narraa-admin.pem
           chmod 600 narraa-admin.pem
           # SCP로 파일 전송
           scp -v -i narraa-admin.pem -o StrictHostKeyChecking=no narrativa-admin.tar ubuntu@${{ secrets.EC2_HOST }}:~/
