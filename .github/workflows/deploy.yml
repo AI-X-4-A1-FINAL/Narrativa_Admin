@@ -100,12 +100,19 @@ jobs:
      - name: Generate Release Notes
        id: generate_notes
        run: |
-         echo "## Release v${{ env.VERSION }}" > notes.md
-         echo "### Deployment Information" >> notes.md
-         echo "- Deployment Date: $(date +'%Y-%m-%d %H:%M:%S')" >> notes.md
-         echo "### Changes" >> notes.md
-         git log $(git describe --tags --abbrev=0)..HEAD --oneline >> notes.md
-         echo "notes_body=$(cat notes.md)" >> $GITHUB_ENV
+         RELEASE_NOTE=$(cat << 'EOF'
+         ## Release v${{ env.VERSION }}
+         
+         ### Deployment Information
+         - Deployment Date: $(date +'%Y-%m-%d %H:%M:%S')
+         
+         ### Changes
+         $(git log $(git describe --tags --abbrev=0 2>/dev/null || git rev-list --max-parents=0 HEAD)..HEAD --oneline)
+         EOF
+         )
+         echo "RELEASE_NOTE<<EOF" >> $GITHUB_ENV
+         echo "$RELEASE_NOTE" >> $GITHUB_ENV
+         echo "EOF" >> $GITHUB_ENV
 
      ### 11. 릴리즈 생성
      - name: Create Release with Notes
@@ -115,6 +122,6 @@ jobs:
        with:
          tag_name: "v${{ env.VERSION }}"
          release_name: "Release v${{ env.VERSION }}"
-         body: ${{ env.notes_body }}
+         body: ${{ env.RELEASE_NOTE }}
          draft: false
          prerelease: false
