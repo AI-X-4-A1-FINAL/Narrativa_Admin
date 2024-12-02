@@ -62,15 +62,15 @@ jobs:
      - name: Configure SSH
        run: |
          mkdir -p ~/.ssh
-         echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/id_rsa
-         chmod 600 ~/.ssh/id_rsa
+         echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/narraa-admin.pem
+         chmod 600 ~/.ssh/narraa-admin.pem
          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
 
      ### 7. EC2로 파일 전송 및 배포
      - name: Deploy to EC2
        run: |
-         scp -i ~/.ssh/id_rsa build.tar.gz ubuntu@${{ secrets.EC2_HOST }}:~/
-         ssh -i ~/.ssh/id_rsa ubuntu@${{ secrets.EC2_HOST }} '
+         scp -i ~/.ssh/narraa-admin.pem build.tar.gz ubuntu@${{ secrets.EC2_HOST }}:~/
+         ssh -i ~/.ssh/narraa-admin.pem ubuntu@${{ secrets.EC2_HOST }} '
            cd /home/ubuntu
            tar -xzf build.tar.gz
            docker stop narrativa-admin || true
