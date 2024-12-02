@@ -69,7 +69,7 @@ jobs:
          aws ssm send-command \
            --instance-ids ${{ secrets.EC2_INSTANCE_ID }} \
            --document-name "AWS-RunShellScript" \
-           --parameters commands=[
+           --parameters '{"commands":[
              "cd /home/ubuntu",
              "aws s3 cp s3://${{ secrets.S3_BUCKET }}/config/narrativa-admin.tar.gz .",
              "tar -xzf narrativa-admin.tar.gz",
@@ -79,7 +79,7 @@ jobs:
              "docker build -t narrativa-admin .",
              "docker run -d -p 3030:3030 --name narrativa-admin narrativa-admin",
              "rm -f narrativa-admin.tar.gz"
-           ]
+           ]}'
 
      ### 8. Git PAT 설정
      - name: Configure Git to Use PAT
