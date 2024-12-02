@@ -100,19 +100,21 @@ jobs:
      - name: Generate Release Notes
        id: generate_notes
        run: |
-         RELEASE_NOTE=$(cat << 'EOF'
-         ## Release v${{ env.VERSION }}
+         # 임시 파일에 릴리즈 노트 내용 작성
+         echo "## Release v${{ env.VERSION }}" > release_notes.txt
+         echo "" >> release_notes.txt
+         echo "### Deployment Information" >> release_notes.txt
+         echo "- Deployment Date: $(date +'%Y-%m-%d %H:%M:%S')" >> release_notes.txt
+         echo "" >> release_notes.txt
+         echo "### Changes" >> release_notes.txt
+         git log $(git describe --tags --abbrev=0 2>/dev/null || git rev-list --max-parents=0 HEAD)..HEAD --oneline >> release_notes.txt
          
-         ### Deployment Information
-         - Deployment Date: $(date +'%Y-%m-%d %H:%M:%S')
-         
-         ### Changes
-         $(git log $(git describe --tags --abbrev=0 2>/dev/null || git rev-list --max-parents=0 HEAD)..HEAD --oneline)
-         EOF
-         )
-         echo "RELEASE_NOTE<<EOF" >> $GITHUB_ENV
-         echo "$RELEASE_NOTE" >> $GITHUB_ENV
-         echo "EOF" >> $GITHUB_ENV
+         # GITHUB_ENV에 멀티라인 값 설정
+         {
+           echo "RELEASE_NOTES<<EOF"
+           cat release_notes.txt
+           echo "EOF"
+         } >> $GITHUB_ENV
 
      ### 11. 릴리즈 생성
      - name: Create Release with Notes
@@ -122,6 +124,6 @@ jobs:
        with:
          tag_name: "v${{ env.VERSION }}"
          release_name: "Release v${{ env.VERSION }}"
-         body: ${{ env.RELEASE_NOTE }}
+         body: ${{ env.RELEASE_NOTES }}
          draft: false
          prerelease: false
