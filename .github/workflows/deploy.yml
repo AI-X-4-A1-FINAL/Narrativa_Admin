@@ -30,7 +30,6 @@ jobs:
           VERSION=$(node -p "require('./package.json').version")
           echo "Version from package.json: $VERSION"
           echo "VERSION=$VERSION" >> $GITHUB_ENV
-
       ### 4. 프로젝트 빌드 및 Docker 이미지 생성
       - name: Build Project and Create Docker Image
         env:
@@ -38,49 +37,41 @@ jobs:
         run: |
           # 필요한 패키지 설치
           npm install
-
           # 프로젝트 빌드
           npm run build
-
           # Docker 이미지 빌드
           docker build -t narrativa-admin .
-
       ### 5. Docker 이미지 저장(TAR 파일 생성)
       - name: Save Docker Image as TAR
         run: |
           docker save narrativa-admin -o narrativa-admin.tar
-
       ### 6. TAR 파일 업로드
       - name: Upload TAR to EC2
-        env:
-          EC2_SSH_KEY_BASE64: ${{ secrets.EC2_SSH_KEY }}
-          EC2_HOST: ${{ secrets.EC2_HOST }}
-        run: |
-          # SSH 키 파일 생성
-          echo "${EC2_SSH_KEY}" | base64 -d > narraa-admin.pem
-          chmod 600 narraa-admin.pem
-          # SCP로 파일 전송
-          scp -v -i narraa-admin.pem -o StrictHostKeyChecking=no narrativa-admin.tar ubuntu@${{ secrets.EC2_HOST }}:~/
-
-      ### 7. EC2에 접속하여 배포
-      - name: Connect to EC2 and Deploy
         env:
           EC2_SSH_KEY: ${{ secrets.EC2_SSH_KEY }}
           EC2_HOST: ${{ secrets.EC2_HOST }}
         run: |
-          ssh -i narraa-admin.pem -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_HOST }} << EOF
+          # SSH 키 파일 생성
+          cat << 'EOF' > narraa-admin.pem
+          ${EC2_SSH_KEY}
+          EOF
+          chmod 600 narraa-admin.pem
+          # SCP로 파일 전송
+          scp -v -i narraa-admin.pem -o StrictHostKeyChecking=no narrativa-admin.tar ubuntu@$EC2_HOST:~/
+      ### 7. EC2에 접속하여 배포
+      - name: Connect to EC2 and Deploy
+        run: |
+          ssh -i narraa-admin.pem -o StrictHostKeyChecking=no ubuntu@$EC2_HOST << EOF
           docker stop narrativa-admin || true
           docker rm narrativa-admin || true
           docker rmi narrativa-admin || true
           docker load -i narrativa-admin.tar
           docker run -d -p 3030:3030 --name narrativa-admin narrativa-admin
           EOF
-
       ### 8. Git PAT 설정
       - name: Configure Git to Use PAT
         run: |
           git remote set-url origin https://x-access-token:${{ secrets.PERSONAL_ACCESS_TOKEN }}@github.com/${{ github.repository }}
-
       ### 9. 태그 생성 및 푸시
       - name: Create and Push Tag
         run: |
@@ -90,7 +81,6 @@ jobs:
           git config user.email "actions@github.com"
           git tag $TAG
           git push origin $TAG
-
       ### 10. 릴리즈 노트 생성
       - name: Generate Release Notes
         id: generate_notes
@@ -98,7 +88,6 @@ jobs:
           echo "## Changes" > notes.md
           git log $(git describe --tags --abbrev=0)..HEAD --oneline >> notes.md
           echo "notes_body=$(cat notes.md)" >> $GITHUB_ENV
-
       ### 11. 릴리즈 생성
       - name: Create Release with Notes
         uses: actions/create-release@v1
