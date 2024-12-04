@@ -1,7 +1,7 @@
 // src/types/notice.ts
 
 // Notice Status Enum
-export type NoticeStatus = 'DRAFT' | 'PUBLISHED' | 'ARCHIVED';
+export type NoticeStatus = 'ACTIVE' | 'INACTIVE';
 
 // Base Notice Type (공통 필드)
 export interface NoticeBase {
@@ -13,14 +13,14 @@ export interface NoticeBase {
 // Notice Type (전체 Notice 타입)
 export interface Notice extends NoticeBase {
   id: number;
-  admin_user_id: number;
+  createdBy: String;
   createdAt: string;
   updatedAt: string;
 }
 
 // Create Notice Input Type (생성 시 필요한 필드)
 export interface NoticeCreate extends NoticeBase {
-  admin_user_id: number;
+  createdBy: String;
 }
 
 // Update Notice Input Type (수정 시 필요한 필드)

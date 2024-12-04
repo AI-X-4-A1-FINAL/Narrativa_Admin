@@ -1,13 +1,25 @@
-import React from "react";
-import Lottie from "lottie-react";
-import loadingAnimation from "../../assets/animations/loading.json";
+import React from 'react';
+import Lottie from 'lottie-react';
+import loadingAnimation from '../../assets/animations/loading.json';
 
-const LoadingAnimation: React.FC = () => {
+const LoadingAnimation = () => {
+  const defaultOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: loadingAnimation,
+    rendererSettings: {
+      preserveAspectRatio: 'xMidYMid slice'
+    }
+  };
+
   return (
-    <div className="flex items-center justify-center min-h-screen">
-      <Lottie animationData={loadingAnimation} loop={true} className="w-64 h-64" />
+    <div className="flex justify-center items-center">
+      <Lottie
+        {...defaultOptions}
+        style={{ width: 200, height: 200 }}
+      />
     </div>
   );
 };
 
-export default LoadingAnimation;
+export default React.memo(LoadingAnimation);
