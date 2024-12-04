@@ -1,5 +1,5 @@
 import axios from "axios";
-import { AdminUser } from "../types/admin";
+import { AdminUser, AdminStatus } from "../types/admin";
 import { getAuth } from "firebase/auth";
 
 const BASE_URL = process.env.REACT_APP_BACKEND_URL;
@@ -63,17 +63,30 @@ export const adminService = {
     return response.data;
   },
 
-  updateAdminStatus: async (userId: number, status: AdminUser["status"]) => {
+  updateAdminStatus: async (userId: number, newStatus: AdminStatus) => {
     const auth = getAuth();
     const idToken = await auth.currentUser?.getIdToken();
+    
+    if (!idToken) {
+      throw new Error("인증 토큰이 없습니다.");
+    }
 
-    const response = await axios.patch(
+    const response = await fetch(
       `${BASE_URL}/api/admin/users/${userId}/status`,
-      { status },
       {
-        headers: { Authorization: `Bearer ${idToken}` },
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${idToken}`,
+        },
+        body: JSON.stringify({ status: newStatus }),
       }
     );
-    return response.data;
+
+    if (!response.ok) {
+      throw new Error("상태 수정에 실패했습니다.");
+    }
+
+    return response.json();
   },
 };

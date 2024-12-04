@@ -72,6 +72,19 @@ const AdminManagementPage: React.FC = () => {
     }
   };
 
+  const handleUpdateStatus = async (userId: number, newStatus: AdminUser["status"]) => {
+    setIsUpdating(true);
+    try {
+      await adminService.updateAdminStatus(userId, newStatus);
+      await fetchAdmins();
+      showToast("관리자 상태가 성공적으로 수정되었습니다.", "success");
+    } catch (error: any) {
+      showToast(error.message || "상태 수정에 실패했습니다.", "error");
+    } finally {
+      setIsUpdating(false);
+    }
+  };
+
   const handleSort = (key: keyof AdminUser, direction: "asc" | "desc") => {
     setCurrentPage(1);
     const sorted = [...filteredAdmins].sort((a, b) => {
@@ -108,6 +121,7 @@ const AdminManagementPage: React.FC = () => {
           admins={filteredAdmins}
           onSort={handleSort}
           onUpdateRole={handleUpdateRole}
+          onUpdateStatus={handleUpdateStatus}
           currentPage={currentPage}
           onPageChange={setCurrentPage}
           currentUserRole={admin?.role || "WAITING"}
