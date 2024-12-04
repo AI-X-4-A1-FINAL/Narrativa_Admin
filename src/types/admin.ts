@@ -8,29 +8,16 @@ export type AdminRole =
 export type AdminStatus = "ACTIVE" | "INACTIVE" | "SUSPENDED";
 
 export interface AdminUser {
-  id: number;
-  username: string;
+  id?: number;
+  uid: string;
   email: string;
+  username: string;
   role: AdminRole;
   status: AdminStatus;
-  lastLoginAt: string | null;
-  createdAt: string;
-  updatedAt: string;
   profilePicture?: string;
-  provider?: "google";
-}
-
-export interface AdminTableProps {
-  admins: AdminUser[];
-  onSort: (key: keyof AdminUser, direction: "asc" | "desc") => void;
-  onUpdateRole: (
-    userId: number,
-    currentRole: AdminRole,
-    newRole: AdminRole
-  ) => void;
-  currentPage: number;
-  onPageChange: (page: number) => void;
-  currentUserRole: AdminRole;
+  lastLoginAt?: string;
+  createdAt?: string;
+  updatedAt?: string;
 }
 
 export const ADMIN_ROLES: AdminRole[] = [
@@ -54,4 +41,24 @@ export const ADMIN_STATUS_ACTIONS: {
 export interface AdminSearchBarProps {
   searchTerm: string;
   onSearch: (term: string) => void;
+}
+
+export interface AdminTableProps {
+  admins: AdminUser[];
+  onSort: (key: keyof AdminUser, direction: "asc" | "desc") => void;
+  onUpdateRole: (userId: number, currentRole: AdminRole, newRole: AdminRole) => void;
+  onUpdateStatus: (userId: number, newStatus: AdminStatus) => void;
+  currentPage: number;
+  onPageChange: (page: number) => void;
+  currentUserRole: AdminRole;
+}
+
+export interface AuthContextProps {
+  admin: AdminUser | null;
+  userRole: AdminRole;
+  setUserRole: (role: AdminRole) => void;
+  login: () => Promise<void>;
+  logout: () => Promise<void>;
+  updateUserRole: (userId: number, newRole: AdminRole) => Promise<void>;
+  isLoading: boolean;
 }
