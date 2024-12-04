@@ -8,7 +8,7 @@ const ApprovalPendingPage: React.FC = () => {
     <div
       className="min-h-screen flex items-center justify-center bg-gray-100"
       style={{
-        backgroundImage: `url('/admin-bg.png')`,
+        backgroundImage: `url('/admin-bg.webp')`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",
