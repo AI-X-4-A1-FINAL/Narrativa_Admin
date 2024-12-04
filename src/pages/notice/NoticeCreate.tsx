@@ -5,6 +5,9 @@ import { ArrowLeft } from "lucide-react";
 import { NoticeStatus } from "../../types/notice";
 import { useConfirm } from "../../hooks/useConfirm";
 import { useToast } from "hooks/useToast";
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { getAuth } from 'firebase/auth';
 
 const modules = {
   toolbar: [
@@ -36,10 +39,14 @@ const formats = [
 const NoticeCreate = () => {
   const { showToast } = useToast();
   const { showConfirm } = useConfirm();
+  const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [status, setStatus] = useState<NoticeStatus>("DRAFT");
+  const [status, setStatus] = useState<'ACTIVE' | 'INACTIVE'>('ACTIVE');
+
+  const auth = getAuth();
+  const currentUser = auth.currentUser;
 
   const handleBack = () => {
     if (title.trim() || content.trim()) {
@@ -50,50 +57,84 @@ const NoticeCreate = () => {
         cancelButtonText: "취소",
       }).then((result) => {
         if (result) {
-          window.history.back();
+          navigate('/notices');
         }
       });
     } else {
-      window.history.back();
+      navigate('/notices');
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+  
     if (!title.trim()) {
       showToast(`제목을 입력해주세요.`, "error");
       return;
     }
-
-    if (!content.trim()) {
+  
+    const cleanContent = (html: string): string => {
+      const allowedTags = {
+        p: '\n',          // 단락
+        br: '\n',         // 줄바꿈
+      };
+    
+      let text = html;
+      
+      Object.entries(allowedTags).forEach(([tag, replacement]) => {
+        text = text.replace(new RegExp(`<${tag}[^>]*>`, 'g'), replacement)
+                  .replace(new RegExp(`</${tag}>`, 'g'), '');
+      });
+      
+      text = text.replace(/<[^>]*>/g, '');
+      text = text.replace(/\n{3,}/g, '\n\n');
+      
+      return text.trim();
+    };
+  
+    const processedContent = cleanContent(content);  // 함수 실행
+  
+    if (!processedContent.trim()) {  // 처리된 콘텐츠 검사
       showToast(`내용을 입력해주세요.`, "error");
       return;
     }
-
-    const confirmMessage =
-      status === "PUBLISHED"
-        ? "공지사항을 게시하시겠습니까?"
-        : "공지사항을 임시저장하시겠습니까?";
-
+  
+    const confirmMessage = status === "ACTIVE"
+      ? "공지사항을 게시하시겠습니까?"
+      : "공지사항을 임시저장하시겠습니까?";
+  
     const confirmed = await showConfirm({
       title: confirmMessage,
-      confirmButtonText: status === "PUBLISHED" ? "게시" : "저장",
+      confirmButtonText: status === "ACTIVE" ? "게시" : "저장",
     });
-
+  
     if (confirmed) {
       try {
         setIsLoading(true);
-
-        // 성공 메시지
+        
+        await axios.post(
+          `${process.env.REACT_APP_BACKEND_URL}/api/notices`,
+          {
+            title,
+            content: processedContent,  // 처리된 콘텐츠 전송
+            status
+          },
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Firebase-Token': currentUser?.uid
+            }
+          }
+        );
+  
         showToast(
-          status === "PUBLISHED" ? "게시되었습니다" : "임시저장되었습니다",
+          status === "ACTIVE" ? "게시되었습니다" : "임시저장되었습니다",
           "success"
         );
-
-        // 목록으로 이동
-        window.history.back();
+  
+        navigate('/notices');
       } catch (error) {
+        console.error('Failed to create notice:', error);
         showToast("저장 중 오류가 발생했습니다.", "error");
       } finally {
         setIsLoading(false);
@@ -172,11 +213,11 @@ const NoticeCreate = () => {
           <div className="flex items-center gap-2">
             <select
               value={status}
-              onChange={(e) => setStatus(e.target.value as NoticeStatus)}
+              onChange={(e) => setStatus(e.target.value as 'ACTIVE' | 'INACTIVE')}
               className="px-3 py-2 border font-nanum border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pointer"
             >
-              <option value="DRAFT">임시저장</option>
-              <option value="PUBLISHED">게시</option>
+              <option value="INACTIVE">임시저장</option>
+              <option value="ACTIVE">게시</option>
             </select>
           </div>
 
@@ -195,7 +236,7 @@ const NoticeCreate = () => {
             >
               {isLoading
                 ? "저장 중..."
-                : status === "PUBLISHED"
+                : status === "ACTIVE"
                 ? "게시"
                 : "임시저장"}
             </button>

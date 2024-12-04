@@ -8,6 +8,7 @@ interface AuthContextProps {
   login: (adminUser: AdminUser) => void;
   logout: () => void;
   updateUserRole: (newRole: AdminRole) => void;
+  updateProfile?: (photoURL: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);

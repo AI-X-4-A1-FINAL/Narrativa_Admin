@@ -1,46 +1,80 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { ArrowLeft, Edit2, Trash2, Clock, User } from 'lucide-react';
-import { Notice } from '../../types/notice';
+import { getAuth } from 'firebase/auth';
+import axios from 'axios';
+import { Notice, NoticeStatus } from '../../types/notice';
 import { useConfirm } from '../../hooks/useConfirm';
-import { useToast } from 'hooks/useToast';
+import { useToast } from '../../hooks/useToast';
+import LoadingAnimation from '../../components/ui/LoadingAnimation';
 
-// Mock data
-const notice: Notice = {
-  id: 1,
-  title: "시스템 점검 안내",
-  content: `안녕하세요. 시스템 점검 안내드립니다.
+const StatusBadge = ({ status }: { status: NoticeStatus }) => {
+  const statusStyles = {
+    ACTIVE: { className: 'bg-green-100 text-green-600', label: '게시됨' },
+    INACTIVE: { className: 'bg-gray-100 text-gray-600', label: '비활성' }
+  };
 
-점검 일시: 2024년 12월 1일 새벽 2시 ~ 4시
-점검 내용: 
-- 서버 안정성 개선
-- 보안 업데이트 적용
-- 신규 기능 배포
+  const { className, label } = statusStyles[status];
+  return (
+    <span className={`px-2 py-1 text-xs rounded font-nanum ${className}`}>
+      {label}
+    </span>
+  );
+};
 
-점검 시간 동안에는 서비스 이용이 제한될 수 있습니다.
-이용에 참고 부탁드립니다.
-
-※ 점검 시간은 작업 상황에 따라 변동될 수 있습니다.`,
-  status: "PUBLISHED",
-  admin_user_id: 1,
-  createdAt: "2024-11-22T09:00:00",
-  updatedAt: "2024-11-22T09:00:00"
+const formatDate = (dateString: string) => {
+  return new Intl.DateTimeFormat('ko-KR', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  }).format(new Date(dateString));
 };
 
 const NoticeDetail = () => {
+  const { id } = useParams<{ id: string }>();
+  const noticeId = id ? parseInt(id, 10) : null;
   const navigate = useNavigate();
   const { showToast } = useToast();
   const { showConfirm } = useConfirm();
-  
-  const handleBack = () => {
-    navigate(`/notices`);
-  };
 
-  const handleEdit = () => {
-    navigate(`/notices/${notice.id}/edit`);
-  };
+  const [notice, setNotice] = useState<Notice | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const auth = getAuth();
+  const currentUser = auth.currentUser;
 
+  useEffect(() => {
+    const fetchNoticeDetail = async () => {
+      if (!noticeId) {
+        setError('유효하지 않은 공지사항 ID입니다.');
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const response = await axios.get<Notice>(
+          `${process.env.REACT_APP_BACKEND_URL}/api/notices/${noticeId}`
+        );
+        setNotice(response.data);
+      } catch (err) {
+        console.error('Failed to fetch notice:', err);
+        setError('공지사항을 불러오는데 실패했습니다.');
+        showToast('공지사항을 불러오는데 실패했습니다.', 'error');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchNoticeDetail();
+  }, [noticeId, showToast]);
+
+  const handleBack = () => navigate('/notices');
+  const handleEdit = () => navigate(`/notices/${noticeId}/edit`);
   const handleDelete = async () => {
+    if (!noticeId) return;
+
     const isConfirmed = await showConfirm({
       title: '공지사항을 삭제하시겠습니까?',
       html: '삭제된 공지사항은 복구할 수 없습니다.',
@@ -50,58 +84,66 @@ const NoticeDetail = () => {
 
     if (isConfirmed) {
       try {
-        // API 나중에 추가
-        console.log('Deleting notice', notice.id);
-        
-        showToast(`삭제되었습니다`, 'success');
-
+        await axios.put(
+          `${process.env.REACT_APP_BACKEND_URL}/api/notices/${noticeId}/delete`,
+          {},
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'Firebase-Token': currentUser.uid
+            }
+          }
+        );
+        showToast('삭제되었습니다', 'success');
         navigate('/notices');
-        
       } catch (error) {
-        showToast(`삭제 중 오류가 발생했습니다.`, 'error');
+        console.error('Failed to delete notice:', error);
+        showToast('삭제 중 오류가 발생했습니다.', 'error');
       }
     }
   };
 
-  const StatusBadge = ({ status }: { status: Notice['status'] }) => {
-    const statusColors = {
-      DRAFT: 'bg-gray-100 text-gray-600 font-nanum',
-      PUBLISHED: 'bg-green-100 text-green-600 font-nanum',
-      ARCHIVED: 'bg-yellow-100 text-yellow-600 font-nanum'
-    };
-
-    const statusLabels = {
-      DRAFT: '초안',
-      PUBLISHED: '게시됨',
-      ARCHIVED: '보관됨'
-    };
-
+  if (loading) {
     return (
-      <span className={`px-2 py-1 text-xs rounded ${statusColors[status]}`}>
-        {statusLabels[status]}
-      </span>
+      <div 
+        className="h-full w-full p-6 text-center"
+        style={{
+          backgroundImage: "linear-gradient(to top, #bdc2e8 0%, #bdc2e8 1%, #e6dee9 100%)",
+          backgroundSize: "cover",
+          backgroundRepeat: "no-repeat"
+        }}
+      >
+        <LoadingAnimation />
+      </div>
     );
-  };
+  }
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat('ko-KR', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    }).format(date);
-  };
+  // 에러 상태
+  if (error || !notice) {
+    return (
+      <div className="h-full w-full p-6 text-center">
+        <p className="text-red-500">{error || '공지사항을 찾을 수 없습니다.'}</p>
+        <button
+          onClick={handleBack}
+          className="mt-4 px-4 py-2 text-pointer hover:text-white font-nanum"
+        >
+          목록으로 돌아가기
+        </button>
+      </div>
+    );
+  }
 
+  // 메인 렌더링
   return (
-    <div className="h-full w-full p-6"
-    style={{
+    <div 
+      className="h-full w-full p-6"
+      style={{
         backgroundImage: "linear-gradient(to top, #bdc2e8 0%, #bdc2e8 1%, #e6dee9 100%)",
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat"
-      }}>
-      {/* Header */}
+      }}
+    >
+      {/* 헤더 섹션 */}
       <div className="flex items-center justify-between mb-6">
         <button
           onClick={handleBack}
@@ -128,17 +170,19 @@ const NoticeDetail = () => {
         </div>
       </div>
 
-      {/* Notice Content */}
+      {/* 콘텐츠 섹션 */}
       <div className="bg-white rounded-lg shadow p-6">
         <div className="flex items-center gap-3 mb-2">
           <StatusBadge status={notice.status} />
-          <h1 className="text-2xl font-nanum font-bold text-gray-800">{notice.title}</h1>
+          <h1 className="text-2xl font-nanum font-bold text-gray-800">
+            {notice.title}
+          </h1>
         </div>
 
         <div className="flex items-center gap-4 font-nanum text-sm text-gray-500 mb-6">
           <div className="flex items-center gap-1">
             <User className="w-4 h-4" />
-            관리자 {notice.admin_user_id}
+            관리자 {notice.createdBy}
           </div>
           <div className="flex items-center gap-1 font-nanum">
             <Clock className="w-4 h-4" />
@@ -150,17 +194,6 @@ const NoticeDetail = () => {
             </div>
           )}
         </div>
-
-        {notice.status === 'DRAFT' && (
-          <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-            <div className="flex items-center text-yellow-800">
-              <span className="font-nanum font-medium">초안 상태의 공지사항입니다</span>
-            </div>
-            <p className="mt-1 font-nanum text-sm text-yellow-700">
-              이 공지사항은 아직 발행되지 않은 초안입니다. 발행하기 전에는 일반 사용자에게 보이지 않습니다.
-            </p>
-          </div>
-        )}
 
         <div className="prose max-w-none">
           {notice.content.split('\n').map((paragraph, index) => (
