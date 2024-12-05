@@ -73,6 +73,24 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     return () => unsubscribe();
   }, []);
 
+  useEffect(() => {
+    const handleBeforeUnload = async () => {
+      try {
+        await auth.signOut();
+        setAdmin(null);
+        setUserRole("WAITING");
+      } catch (error) {
+        console.error("Error during sign out on unload:", error);
+      }
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
+  }, []);
+
   const login = async () => {
     try {
       // Google 로그인 팝업을 통해 Firebase 인증
