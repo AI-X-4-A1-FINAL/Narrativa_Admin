@@ -176,14 +176,16 @@ const UserTable: React.FC<UserTableProps> = ({
         <button
           onClick={() => onPageChange(1)}
           disabled={currentPage === 1}
-          className="px-3 py-1 text-sm text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-3 py-1 text-sm text-gray-700 bg-white border border-gray-300 rounded-md 
+          hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           처음
         </button>
         <button
           onClick={() => onPageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="px-3 py-1 text-sm text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-3 py-1 text-sm text-gray-700 bg-white border border-gray-300 rounded-md 
+          hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <ChevronLeft className="w-4 h-4" />
         </button>
@@ -232,14 +234,16 @@ const UserTable: React.FC<UserTableProps> = ({
         <button
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
-          className="px-3 py-1 text-sm text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-3 py-1 text-sm text-gray-700 bg-white border border-gray-300 rounded-md 
+          over:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <ChevronRight className="w-4 h-4" />
         </button>
         <button
           onClick={() => onPageChange(totalPages)}
           disabled={currentPage === totalPages}
-          className="px-3 py-1 text-sm text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+          className="px-3 py-1 text-sm text-gray-700 bg-white border border-gray-300 rounded-md 
+          hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           마지막
         </button>
@@ -259,7 +263,7 @@ const UserTable: React.FC<UserTableProps> = ({
           {renderHeader("createdAt", "가입일")}
         </div>
 
-        <div className="divide-y divide-gray-200 overflow-y-auto h-[500px]  scrollbar-thin scrollbar-thumb-pointer2 scrollbar-track-transparent">
+        <div className="divide-y divide-gray-200 overflow-y-auto h-[500px]">
           {getCurrentPageData().map((user, index) => (
             <div
               key={user?.id || `empty-${index}`}

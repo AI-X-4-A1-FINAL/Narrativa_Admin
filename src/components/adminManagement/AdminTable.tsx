@@ -149,7 +149,7 @@ const AdminTable: React.FC<AdminTableProps> = ({
           {renderHeader("createdAt", "가입 날짜")}
         </div>
 
-        <div className="divide-y divide-gray-200 overflow-y-auto h-[500px] scrollbar-thin scrollbar-thumb-pointer2 scrollbar-track-transparent">
+        <div className="divide-y divide-gray-200 overflow-y-auto h-[500px]">
           {getCurrentPageData().map((admin, index) => (
             <div
               key={admin?.id || `empty-${index}`}
@@ -197,7 +197,8 @@ const AdminTable: React.FC<AdminTableProps> = ({
           <button
             onClick={() => onPageChange(Math.max(currentPage - 1, 1))}
             disabled={currentPage === 1}
-            className="px-3 py-1 text-sm text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-3 py-1 text-sm text-gray-700 bg-white border border-gray-300 rounded-md 
+            hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
@@ -219,7 +220,8 @@ const AdminTable: React.FC<AdminTableProps> = ({
           <button
             onClick={() => onPageChange(Math.min(currentPage + 1, totalPages))}
             disabled={currentPage === totalPages}
-            className="px-3 py-1 text-sm text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-3 py-1 text-sm text-gray-700 bg-white border border-gray-300 rounded-md 
+            hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <ChevronRight className="w-4 h-4" />
           </button>
