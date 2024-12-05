@@ -1,9 +1,11 @@
-import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
-import { AdminUser, AdminRole, AdminStatus } from "../../types/admin";
-import { auth } from "../../configs/firebaseConfig";
-import { onAuthStateChanged, User, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
+import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { onAuthStateChanged, User, signInWithPopup, GoogleAuthProvider } from 'firebase/auth';
+import { auth } from '../../configs/firebaseConfig';
+import { RootState } from '../../store';
+import { setLogoutStartTime } from '../../store/authSlice';
+import { AdminUser, AdminRole, AdminStatus } from '../../types/admin';
 
-// API URL 상수 정의
 const API_BASE_URL = process.env.REACT_APP_BACKEND_URL;
 
 if (!API_BASE_URL) {
@@ -18,22 +20,41 @@ interface AuthContextProps {
   logout: () => void;
   updateUserRole: (userId: number, newRole: AdminRole) => void;
   isLoading: boolean;
+  resetLogoutTimer: () => void;
+  logoutStartTime: number | null;
 }
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
-export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const dispatch = useDispatch();
+  const { logoutStartTime } = useSelector((state: RootState) => state.auth);
+  const logoutTimerRef = useRef<NodeJS.Timeout | null>(null);
+  
   const [admin, setAdmin] = useState<AdminUser | null>(null);
   const [userRole, setUserRole] = useState<AdminRole>("WAITING");
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setLoading] = useState(true);
 
   useEffect(() => {
+    // 세션 스토리지에서 로그아웃 타이머 복원
+    const storedLogoutStartTime = sessionStorage.getItem("logoutStartTime");
+    if (storedLogoutStartTime) {
+      const elapsedTime = Date.now() - Number(storedLogoutStartTime);
+      const remainingTime = 1800000 - elapsedTime; // 30분 - 경과 시간
+      if (remainingTime > 0) {
+        dispatch(setLogoutStartTime(Number(storedLogoutStartTime)));
+        logoutTimerRef.current = setTimeout(() => {
+          logout();
+        }, remainingTime);
+      } else {
+        logout();
+      }
+    }
+
     const unsubscribe = onAuthStateChanged(auth, async (user: User | null) => {
       try {
         if (user) {
           const token = await user.getIdToken();
-          
-          // Firebase 토큰 검증
           const response = await fetch(`${API_BASE_URL}/api/admin/auth/verify`, {
             method: 'POST',
             headers: {
@@ -52,8 +73,12 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
               status: adminData.status as AdminStatus,
             });
             setUserRole(adminData.role);
+            
+            // 저장된 로그아웃 시간이 없을 때만 새로운 타이머 시작
+            if (!sessionStorage.getItem("logoutStartTime")) {
+              startLogoutTimer();
+            }
           } else {
-            console.error('Admin verification failed:', await response.text());
             setAdmin(null);
             setUserRole("WAITING");
           }
@@ -66,83 +91,39 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setAdmin(null);
         setUserRole("WAITING");
       } finally {
-        setIsLoading(false);
+        setLoading(false);
       }
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [dispatch]);
 
-  useEffect(() => {
-    const handleBeforeUnload = async () => {
-      try {
-        await auth.signOut();
-        setAdmin(null);
-        setUserRole("WAITING");
-      } catch (error) {
-        console.error("Error during sign out on unload:", error);
-      }
-    };
+  const startLogoutTimer = () => {
+    if (logoutTimerRef.current) {
+      clearTimeout(logoutTimerRef.current);
+    }
+    const currentTime = Date.now();
+    dispatch(setLogoutStartTime(currentTime));
+    sessionStorage.setItem("logoutStartTime", currentTime.toString());
 
-    window.addEventListener("beforeunload", handleBeforeUnload);
+    logoutTimerRef.current = setTimeout(() => {
+      logout();
+    }, 1800000);
+  };
 
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-    };
-  }, []);
+  const resetLogoutTimer = () => {
+    startLogoutTimer();
+  };
 
   const login = async () => {
     try {
-      // Google 로그인 팝업을 통해 Firebase 인증
       const provider = new GoogleAuthProvider();
       const userCredential = await signInWithPopup(auth, provider);
       const user = userCredential.user;
-      
+
       if (!user) throw new Error("로그인에 실패했습니다.");
 
       const idToken = await user.getIdToken();
-      
-      // 회큰 검증 먼저 시도
-      try {
-        const verifyResponse = await fetch(`${API_BASE_URL}/api/admin/auth/verify`, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ idToken }),
-        });
-
-        if (verifyResponse.ok) {
-          const adminData = await verifyResponse.json();
-          setAdmin({
-            uid: adminData.uid,
-            email: adminData.email,
-            username: adminData.username,
-            role: adminData.role as AdminRole,
-            status: adminData.status as AdminStatus,
-          });
-          setUserRole(adminData.role);
-          return; // 이미 등록된 사용자는 여기서 종료
-        }
-      } catch (error) {
-        console.log("Not registered user, trying registration...");
-      }
-
-      // 미등록 사용자의 경우 회원가입 진행
-      const registerResponse = await fetch(`${API_BASE_URL}/api/admin/auth/register`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ idToken }),
-      });
-
-      if (!registerResponse.ok) {
-        const errorText = await registerResponse.text();
-        throw new Error(`Login failed: ${errorText}`);
-      }
-
-      // 회원가입 후 다시 verify
       const verifyResponse = await fetch(`${API_BASE_URL}/api/admin/auth/verify`, {
         method: "POST",
         headers: {
@@ -151,24 +132,40 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         body: JSON.stringify({ idToken }),
       });
 
-      if (!verifyResponse.ok) {
-        throw new Error(`Login failed: ${await verifyResponse.text()}`);
+      if (verifyResponse.ok) {
+        const adminData = await verifyResponse.json();
+        setAdmin({
+          uid: adminData.uid,
+          email: adminData.email,
+          username: adminData.username,
+          role: adminData.role as AdminRole,
+          status: adminData.status as AdminStatus,
+        });
+        setUserRole(adminData.role);
+        startLogoutTimer();
+      } else {
+        throw new Error("Login failed");
       }
-
-      const adminData = await verifyResponse.json();
-      setAdmin({
-        uid: adminData.uid,
-        email: adminData.email,
-        username: adminData.username,
-        role: adminData.role as AdminRole,
-        status: adminData.status as AdminStatus,
-      });
-      setUserRole(adminData.role);
     } catch (error) {
       console.error("Login error:", error);
       await auth.signOut();
       setAdmin(null);
       setUserRole("WAITING");
+      throw error;
+    }
+  };
+
+  const logout = async () => {
+    try {
+      if (logoutTimerRef.current) {
+        clearTimeout(logoutTimerRef.current);
+      }
+      await auth.signOut();
+      setAdmin(null);
+      setUserRole("WAITING");
+      sessionStorage.removeItem("logoutStartTime");
+    } catch (error) {
+      console.error("Logout error:", error);
       throw error;
     }
   };
@@ -179,7 +176,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       if (!user || !admin) throw new Error("No authenticated user");
 
       const token = await user.getIdToken();
-      
       const response = await fetch(`${API_BASE_URL}/api/admin/users/${userId}/role`, {
         method: 'PATCH',
         headers: {
@@ -194,7 +190,6 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         throw new Error(`Role update failed: ${errorText}`);
       }
 
-      // 역할 업데이트 성공 시 현재 사용자 정보 갱신
       if (admin.uid === userId.toString()) {
         setUserRole(newRole);
       }
@@ -204,27 +199,18 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     }
   };
 
-  const logout = async () => {
-    try {
-      await auth.signOut();
-      setAdmin(null);
-      setUserRole("WAITING");
-    } catch (error) {
-      console.error("Logout error:", error);
-      throw error;
-    }
-  };
-
   return (
     <AuthContext.Provider
-      value={{ 
-        admin, 
-        userRole, 
-        setUserRole, 
-        login, 
-        logout, 
+      value={{
+        admin,
+        userRole: admin?.role || "WAITING",
+        setUserRole,
+        login,
+        logout,
         updateUserRole,
-        isLoading 
+        isLoading,
+        resetLogoutTimer,
+        logoutStartTime
       }}
     >
       {children}
