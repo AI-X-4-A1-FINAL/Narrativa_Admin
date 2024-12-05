@@ -36,7 +36,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ searchTerm, onSearch }) => {
         />
         <input
           type="text"
-          placeholder="회원 검색 (이름 또는 이메일)"
+          placeholder="회원 검색 (이름, 권한, 로그인 타입)"
           value={searchTerm}
           onChange={handleChange}
           onFocus={() => setIsFocused(true)}

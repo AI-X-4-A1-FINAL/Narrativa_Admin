@@ -6,143 +6,192 @@ import LoadingAnimation from "../components/ui/LoadingAnimation";
 import PageLayout from "../components/ui/PageLayout";
 import { User, UserRole, UserPageResponse } from "types/user";
 import {
-  getUsers,
-  updateUserRole,
-  updateUserStatus,
+ getUsers,
+ updateUserRole,
+ updateUserStatus,
 } from "../services/userService";
+import { RefreshCw } from 'lucide-react';
 
 const UserManagementPage: React.FC = () => {
-  const [users, setUsers] = useState<User[]>([]);
-  const [searchTerm, setSearchTerm] = useState<string>("");
-  const [currentPage, setCurrentPage] = useState(1);
-  const [isUpdating, setIsUpdating] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const { showToast } = useToast();
-  const [totalItems, setTotalItems] = useState<number>(0);
+ const [users, setUsers] = useState<User[]>([]);
+ const [filteredUsers, setFilteredUsers] = useState<User[]>([]);
+ const [searchTerm, setSearchTerm] = useState<string>("");
+ const [currentPage, setCurrentPage] = useState(1);
+ const [isUpdating, setIsUpdating] = useState(false);
+ const [isLoading, setIsLoading] = useState(true);
+ const [isRefreshing, setIsRefreshing] = useState(false);
+ const { showToast } = useToast();
+ const [totalItems, setTotalItems] = useState<number>(0);
 
-  const itemsPerPage = 7;
+ const itemsPerPage = 7;
 
-  useEffect(() => {
-    const fetchUsersData = async () => {
-      setIsLoading(true);
-      try {
-        const data: UserPageResponse = await getUsers(
-          currentPage - 1,
-          itemsPerPage,
-          searchTerm
-        );
-        setUsers(data.content);
-        setTotalItems(data.totalElements);
-      } catch (error) {
-        showToast("사용자 데이터 로드에 실패했습니다.", "error");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchUsersData();
-  }, [currentPage, searchTerm]);
+ const fetchUsers = async () => {
+   setIsLoading(true);
+   try {
+     const data: UserPageResponse = await getUsers(0, 1000); 
+     setUsers(data.content);
+     setFilteredUsers(data.content);
+     setTotalItems(data.content.length);
+   } catch (error) {
+     showToast("사용자 데이터 로드에 실패했습니다.", "error");
+   } finally {
+     setIsLoading(false);
+   }
+ };
 
-  const handleUpdateRole = async (userId: number, newRole: UserRole) => {
-    // 선택한 권한과 현재 권한이 같다면 실행하지 않음
-    const currentUser = users.find((user) => user.id === userId);
-    if (currentUser && currentUser.role === newRole) {
-      showToast("이미 해당 권한입니다.", "info");
-      return;
-    }
+ useEffect(() => {
+   fetchUsers();
+ }, []);
 
-    setIsUpdating(true);
-    try {
-      await updateUserRole(userId, newRole);
-      setUsers((prevUsers) =>
-        prevUsers.map((user) =>
-          user.id === userId ? { ...user, role: newRole } : user
-        )
-      );
-      showToast("권한이 성공적으로 변경되었습니다.", "success");
-    } catch (error) {
-      showToast("권한 변경에 실패했습니다.", "error");
-    } finally {
-      setIsUpdating(false);
-    }
-  };
+ const handleSearch = (term: string) => {
+  setSearchTerm(term);
+  setCurrentPage(1);
 
-  const handleUpdateStatus = async (
-    userId: number,
-    newStatus: User["status"]
-  ) => {
-    // 현재 상태와 같은 경우 변경하지 않음
-    const currentUser = users.find((user) => user.id === userId);
-    if (currentUser && currentUser.status === newStatus) {
-      showToast("이미 해당 상태입니다.", "info");
-      return;
-    }
-
-    setIsUpdating(true);
-    try {
-      await updateUserStatus(userId, newStatus);
-      setUsers((prevUsers) =>
-        prevUsers.map((user) =>
-          user.id === userId ? { ...user, status: newStatus } : user
-        )
-      );
-      showToast("상태가 성공적으로 변경되었습니다.", "success");
-    } catch (error) {
-      showToast("상태 변경에 실패했습니다.", "error");
-    } finally {
-      setIsUpdating(false);
-    }
-  };
-
-  const handleSearch = (term: string) => {
-    setSearchTerm(term);
-    setCurrentPage(1);
-  };
-
-  if (isLoading) {
-    return (
-      <div
-        className="h-full w-full p-6 text-center"
-        style={{
-          backgroundImage:
-            "linear-gradient(to top, #bdc2e8 0%, #bdc2e8 1%, #e6dee9 100%)",
-          backgroundSize: "cover",
-          backgroundRepeat: "no-repeat",
-        }}
-      >
-        <LoadingAnimation />
-      </div>
-    );
+  const searchValue = term.trim().toLowerCase();
+  if (!searchValue) {
+    setFilteredUsers(users);
+    setTotalItems(users.length);
+    return;
   }
 
-  return (
-    <PageLayout title="회원 관리">
-      <SearchBar searchTerm={searchTerm} onSearch={handleSearch} />
-      <UserTable
-        users={users}
-        onSort={(key, direction) => {
-          const sortedUsers = [...users].sort((a, b) => {
-            if (a[key] < b[key]) return direction === "asc" ? -1 : 1;
-            if (a[key] > b[key]) return direction === "asc" ? 1 : -1;
-            return 0;
-          });
-          setUsers(sortedUsers);
-        }}
-        onUpdateRole={handleUpdateRole}
-        onUpdateStatus={handleUpdateStatus}
-        currentPage={currentPage}
-        onPageChange={setCurrentPage}
-        itemsPerPage={itemsPerPage}
-        totalItems={totalItems}
-      />
-      {isUpdating && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-          <div className="p-4 rounded-lg">
-            <LoadingAnimation />
-          </div>
-        </div>
-      )}
-    </PageLayout>
+  const filtered = users.filter(
+    (user) =>
+      (user.username?.toLowerCase() || '').includes(searchValue) ||
+      (user.role?.toLowerCase() || '').includes(searchValue) ||
+      (user.loginType?.toLowerCase() || '').includes(searchValue)
   );
+  setFilteredUsers(filtered);
+  setTotalItems(filtered.length);
+};
+
+ const handleReFetchUsers = async () => {
+   setIsRefreshing(true);
+   try {
+     await fetchUsers();
+     setSearchTerm("");
+     showToast("새로고침 완료", "success");
+   } catch (error) {
+     showToast("새로고침 실패", "error");
+   } finally {
+     setIsRefreshing(false);
+   }
+ };
+
+ const handleUpdateRole = async (userId: number, newRole: UserRole) => {
+   const currentUser = users.find((user) => user.id === userId);
+   if (currentUser && currentUser.role === newRole) {
+     showToast("이미 해당 권한입니다.", "info");
+     return;
+   }
+
+   setIsUpdating(true);
+   try {
+     await updateUserRole(userId, newRole);
+     const updatedUsers = users.map((user) =>
+       user.id === userId ? { ...user, role: newRole } : user
+     );
+     setUsers(updatedUsers);
+     setFilteredUsers(
+       filteredUsers.map((user) =>
+         user.id === userId ? { ...user, role: newRole } : user
+       )
+     );
+     showToast("권한이 성공적으로 변경되었습니다.", "success");
+   } catch (error) {
+     showToast("권한 변경에 실패했습니다.", "error");
+   } finally {
+     setIsUpdating(false);
+   }
+ };
+
+ const handleUpdateStatus = async (userId: number, newStatus: User["status"]) => {
+   const currentUser = users.find((user) => user.id === userId);
+   if (currentUser && currentUser.status === newStatus) {
+     showToast("이미 해당 상태입니다.", "info");
+     return;
+   }
+
+   setIsUpdating(true);
+   try {
+     await updateUserStatus(userId, newStatus);
+     const updatedUsers = users.map((user) =>
+       user.id === userId ? { ...user, status: newStatus } : user
+     );
+     setUsers(updatedUsers);
+     setFilteredUsers(
+       filteredUsers.map((user) =>
+         user.id === userId ? { ...user, status: newStatus } : user
+       )
+     );
+     showToast("상태가 성공적으로 변경되었습니다.", "success");
+   } catch (error) {
+     showToast("상태 변경에 실패했습니다.", "error");
+   } finally {
+     setIsUpdating(false);
+   }
+ };
+
+ const handleSort = (key: keyof User, direction: "asc" | "desc") => {
+   const sorted = [...filteredUsers].sort((a, b) => {
+     const aValue = a[key];
+     const bValue = b[key];
+
+     if (direction === "asc") {
+       return aValue < bValue ? -1 : aValue > bValue ? 1 : 0;
+     } else {
+       return aValue > bValue ? -1 : aValue < bValue ? 1 : 0;
+     }
+   });
+
+   setFilteredUsers(sorted);
+ };
+
+ if (isLoading) {
+   return (
+     <div className="h-full w-full p-6 text-center">
+       <LoadingAnimation />
+     </div>
+   );
+ }
+
+ return (
+   <PageLayout title="회원 관리">
+     <div className="space-y-6">
+       <div className="flex flex-row justify-start gap-x-4">
+         <SearchBar searchTerm={searchTerm} onSearch={handleSearch} />
+         <button 
+           onClick={handleReFetchUsers}
+           disabled={isRefreshing}
+           className="w-10 h-10 p-2 bg-white hover:bg-gray-100 rounded-xl transition-all 
+             hover:shadow-sm active:scale-95 disabled:opacity-50 flex items-center justify-center"
+           aria-label="새로고침"
+         >
+           <RefreshCw className={`w-5 h-5 text-gray-600 ${isRefreshing ? 'animate-spin' : ''}`} />
+         </button>
+       </div>
+       <UserTable
+         users={filteredUsers.slice(
+           (currentPage - 1) * itemsPerPage,
+           currentPage * itemsPerPage
+         )}
+         onSort={handleSort}
+         onUpdateRole={handleUpdateRole}
+         onUpdateStatus={handleUpdateStatus}
+         currentPage={currentPage}
+         onPageChange={setCurrentPage}
+         itemsPerPage={itemsPerPage}
+         totalItems={totalItems}
+       />
+     </div>
+     {isUpdating && (
+       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+         <div className="p-4 rounded-lg">
+           <LoadingAnimation />
+         </div>
+       </div>
+     )}
+   </PageLayout>
+ );
 };
 
 export default UserManagementPage;

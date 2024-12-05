@@ -7,6 +7,7 @@ import { adminService } from "../services/adminService";
 import AdminSearchBar from "../components/adminManagement/AdminSearchBar";
 import AdminTable from "../components/adminManagement/AdminTable";
 import { useAuth } from "../components/auth/AuthContext";
+import { RefreshCw } from 'lucide-react';
 
 const AdminManagementPage: React.FC = () => {
   const [admins, setAdmins] = useState<AdminUser[]>([]);
@@ -17,6 +18,8 @@ const AdminManagementPage: React.FC = () => {
   const [isUpdating, setIsUpdating] = useState(false);
   const { showToast } = useToast();
   const { admin } = useAuth();
+  const [isRefreshing, setIsRefreshing] = useState(false);
+
 
   const fetchAdmins = async () => {
     try {
@@ -30,6 +33,19 @@ const AdminManagementPage: React.FC = () => {
       );
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleReFetchAdmin = async () => {
+    setIsRefreshing(true);
+    try {
+      await fetchAdmins();
+      setSearchTerm("");
+      showToast("새로고침 완료", "success");
+    } catch (error) {
+      showToast("새로고침 실패", "error");
+    } finally {
+      setIsRefreshing(false);
     }
   };
 
@@ -116,7 +132,18 @@ const AdminManagementPage: React.FC = () => {
   return (
     <PageLayout title="관리자 권한 관리">
       <div className="space-y-6">
-        <AdminSearchBar searchTerm={searchTerm} onSearch={handleSearch} />
+        <div className="flex flex-row justify-start gap-x-4">
+          <AdminSearchBar searchTerm={searchTerm} onSearch={handleSearch} />
+          <button 
+            onClick={handleReFetchAdmin}
+            disabled={isRefreshing}
+            className="w-10 h-10 p-2 bg-white hover:bg-gray-100 rounded-xl transition-all 
+            hover:shadow-sm active:scale-95 disabled:opacity-50 flex items-center justify-center"
+            aria-label="새로고침"
+          >
+            <RefreshCw className={`w-5 h-5 text-gray-600 ${isRefreshing ? 'animate-spin' : ''}`} />
+          </button>
+        </div>
         <AdminTable
           admins={filteredAdmins}
           onSort={handleSort}

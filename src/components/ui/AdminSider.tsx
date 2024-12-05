@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 import { useToast } from "../../hooks/useToast";
 import { ReactComponent as Mascot } from "../../assets/images/side-mascot.svg";
+import packageJson from '../../../package.json';
 
 const Sidebar: React.FC = () => {
   const location = useLocation();
@@ -25,8 +26,8 @@ const Sidebar: React.FC = () => {
   return (
     <div className="h-[calc(90vh)] w-[20%] min-w-[80px] max-w-[300px] bg-main flex flex-col items-center p-5 gap-12">
       {/* Version */}
-      <div className="absolute bottom-12 text-sm font-nanum font-bold text-gray-500">
-        V 0.0.1
+      <div className="absolute bottom-12 text-sm font-nanum font-bold text-white tracking-widest">
+        V {packageJson.version}
       </div>
 
       {/* Menu List */}
