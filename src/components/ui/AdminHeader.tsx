@@ -19,13 +19,8 @@ const Header: React.FC = () => {
       </Link>
 
       {/* 오른쪽: 관리자 정보 */}
-      <div className="flex items-center gap-x-4">
-        <span className="text-white text-sm font-medium font-nanum">{adminName}</span>
-        <img
-          src={profilePicture}
-          alt={`${adminName}'s profile`}
-          className="w-10 h-10 rounded-full object-cover"
-        />
+      <div className="flex items-center">
+        <span className="text-white text-sm font-medium font-nanum">{adminName}님 환영합니다!</span>
       </div>
     </header>
   );
