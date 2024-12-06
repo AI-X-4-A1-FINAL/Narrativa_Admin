@@ -18,6 +18,8 @@ const PrivateRoute = () => {
       "/notices",
       "/notices/create",
       "/admins",
+      "/music/list",
+      "/music/upload"
     ];
     if (exactPaths.includes(path)) return true;
 
