@@ -1,8 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 import { useToast } from "../../hooks/useToast";
 import { ReactComponent as Mascot } from "../../assets/images/side-mascot.svg";
+import { ChevronDown, ChevronRight } from 'lucide-react';
 import packageJson from '../../../package.json';
 
 const Sidebar: React.FC = () => {
@@ -10,16 +11,16 @@ const Sidebar: React.FC = () => {
   const navigate = useNavigate();
   const { logout } = useAuth();
   const { showToast } = useToast();
+  const [isMusicSubmenuOpen, setIsMusicSubmenuOpen] = useState(
+    location.pathname.startsWith('/music')
+  );
 
-  // 현재 경로가 특정 경로로 시작하는지 확인하는 함수 추가
   const isPathActive = (path: string) => location.pathname.startsWith(path);
 
   const handleLogout = () => {
     logout();
     localStorage.removeItem("admin");
-
     showToast("로그아웃 완료!\n 안전하게 로그아웃되었습니다.", "success");
-
     navigate("/login");
   };
 
@@ -32,12 +33,11 @@ const Sidebar: React.FC = () => {
 
       {/* Menu List */}
       <div className="w-full bg-white rounded-lg flex flex-col gap-3 p-2">
+        {/* 데이터 및 통계 분석 */}
         <Link
           to="/"
           className={`flex lg:justify-start justify-center items-center w-full h-[36px] rounded-lg p-2 group ${
-            location.pathname === "/"
-              ? "bg-pointer text-white"
-              : "bg-white hover:bg-pointer hover:text-white"
+            location.pathname === "/" ? "bg-pointer text-white" : "bg-white hover:bg-pointer hover:text-white"
           }`}
         >
           <span
@@ -52,12 +52,11 @@ const Sidebar: React.FC = () => {
           </span>
         </Link>
 
+        {/* 관리자 관리 */}
         <Link
           to="/admins"
           className={`flex lg:justify-start justify-center items-center w-full h-[36px] rounded-lg p-2 group ${
-            location.pathname === "/admins"
-              ? "bg-pointer text-white"
-              : "bg-white hover:bg-pointer hover:text-white"
+            location.pathname === "/admins" ? "bg-pointer text-white" : "bg-white hover:bg-pointer hover:text-white"
           }`}
         >
           <span
@@ -72,12 +71,11 @@ const Sidebar: React.FC = () => {
           </span>
         </Link>
 
+        {/* 회원 관리 */}
         <Link
           to="/users"
           className={`flex lg:justify-start justify-center items-center w-full h-[36px] rounded-lg p-2 group ${
-            location.pathname === "/users"
-              ? "bg-pointer text-white"
-              : "bg-white hover:bg-pointer hover:text-white"
+            location.pathname === "/users" ? "bg-pointer text-white" : "bg-white hover:bg-pointer hover:text-white"
           }`}
         >
           <span
@@ -92,12 +90,11 @@ const Sidebar: React.FC = () => {
           </span>
         </Link>
 
+        {/* 공지 관리 */}
         <Link
           to="/notices"
           className={`flex lg:justify-start justify-center items-center w-full h-[36px] rounded-lg p-2 group ${
-            isPathActive("/notices")
-              ? "bg-pointer text-white"
-              : "bg-white hover:bg-pointer hover:text-white"
+            isPathActive("/notices") ? "bg-pointer text-white" : "bg-white hover:bg-pointer hover:text-white"
           }`}
         >
           <span
@@ -111,6 +108,77 @@ const Sidebar: React.FC = () => {
             공지 관리
           </span>
         </Link>
+
+        {/* 공백 */}
+        <span className="mb-2"></span>
+
+        {/* 음악 버킷 관리 */}
+        <div className="flex flex-col">
+          <button
+            onClick={() => setIsMusicSubmenuOpen(!isMusicSubmenuOpen)}
+            className={`flex lg:justify-start justify-center items-center w-full h-[36px] rounded-lg p-2 group ${
+              isPathActive("/music") ? "bg-pointer text-white" : "bg-white hover:bg-pointer hover:text-white"
+            }`}
+          >
+            <div className="flex items-center justify-center w-5 h-5">
+              <span className={`material-icons text-xl group-hover:text-white ${
+                isPathActive("/music") ? "text-white" : "text-gray-800"
+              }`}>
+                library_music
+              </span>
+            </div>
+            <div className="hidden lg:flex flex-1 items-center">
+              <span className="text-sm font-nanum font-bold ml-4">
+                음악 관리
+              </span>
+              {isMusicSubmenuOpen ? (
+                <ChevronDown className="w-4 h-4 ml-auto" />
+              ) : (
+                <ChevronRight className="w-4 h-4 ml-auto" />
+              )}
+            </div>
+          </button>
+
+          {/* 버킷 서브메뉴 */}
+          {isMusicSubmenuOpen && (
+            <div className="ml-4 mt-2 flex flex-col gap-2">
+              <Link
+                to="/music/list"
+                className={`flex lg:justify-start justify-center items-center w-full h-[32px] rounded-lg p-2 group ${
+                  location.pathname === "/music/list" ? "bg-pointer text-white" : "bg-white hover:bg-pointer hover:text-white"
+                }`}
+              >
+                <div className="flex items-center justify-center w-4 h-4">
+                  <span className={`material-icons text-lg group-hover:text-white ${
+                    location.pathname === "/music/list" ? "text-white" : "text-gray-800"
+                  }`}>
+                    format_list_bulleted
+                  </span>
+                </div>
+                <span className="text-sm font-nanum font-bold ml-4 hidden lg:block">
+                  음악 목록
+                </span>
+              </Link>
+              <Link
+                to="/music/upload"
+                className={`flex lg:justify-start justify-center items-center w-full h-[32px] rounded-lg p-2 group ${
+                  location.pathname === "/music/upload" ? "bg-pointer text-white" : "bg-white hover:bg-pointer hover:text-white"
+                }`}
+              >
+                <div className="flex items-center justify-center w-4 h-4">
+                  <span className={`material-icons text-lg group-hover:text-white ${
+                    location.pathname === "/music/upload" ? "text-white" : "text-gray-800"
+                  }`}>
+                    upload_file
+                  </span>
+                </div>
+                <span className="text-sm font-nanum font-bold ml-4 hidden lg:block">
+                  음악 업로드
+                </span>
+              </Link>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Logout */}

@@ -22,6 +22,7 @@ interface AuthContextProps {
   isLoading: boolean;
   resetLogoutTimer: () => void;
   logoutStartTime: number | null;
+  getIdToken: () => Promise<string>;
 }
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
@@ -113,6 +114,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const resetLogoutTimer = () => {
     startLogoutTimer();
+  };
+
+  const getIdToken = async (): Promise<string> => {
+    const user = auth.currentUser;
+    if (!user) {
+      throw new Error("No authenticated user");
+    }
+    return user.getIdToken();
   };
 
   const login = async () => {
@@ -210,7 +219,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         updateUserRole,
         isLoading,
         resetLogoutTimer,
-        logoutStartTime
+        logoutStartTime,
+        getIdToken
       }}
     >
       {children}

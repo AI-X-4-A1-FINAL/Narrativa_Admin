@@ -24,6 +24,9 @@ import NoticeDetail from "./pages/notice/NoticeDetail";
 import NoticeCreate from "./pages/notice/NoticeCreate";
 import NoticeEdit from "./pages/notice/NoticeEdit";
 
+import MusicList from "./pages/music/MusicList";
+import MusicUpload from "./pages/music/MusicUpload";
+
 const Root: React.FC = () => {
   return (
     <AuthProvider>
@@ -48,6 +51,11 @@ const Root: React.FC = () => {
                 <Route path="notices/create" element={<NoticeCreate />} />
                 <Route path="notices/:id" element={<NoticeDetail />} />
                 <Route path="notices/:id/edit" element={<NoticeEdit />} />
+                <Route path="music">
+                  <Route index element={<Navigate to="/music/list" replace />} />
+                  <Route path="list" element={<MusicList />} />
+                  <Route path="upload" element={<MusicUpload />} />
+                </Route>
               </Route>
             </Route>
 
