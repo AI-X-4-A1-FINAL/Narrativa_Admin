@@ -16,7 +16,7 @@ const AppLayout: React.FC = () => {
       {!isExcludedPage && <Header />}
       <div className="flex flex-1 overflow-hidden">
         {!isExcludedPage && <Sidebar />}
-        <main className={`flex-1 ${!isExcludedPage ? "overflow-y-auto" : ""}`}>
+        <main className={`flex-1 overflow-y-hidden`}>
           <Outlet /> {/* children 대신 Outlet 사용 */}
         </main>
       </div>
