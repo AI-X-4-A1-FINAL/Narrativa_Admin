@@ -25,7 +25,7 @@ const Sidebar: React.FC = () => {
   };
 
   return (
-    <div className="h-[calc(90vh)] w-[20%] min-w-[80px] max-w-[300px] bg-main flex flex-col items-center p-5 gap-12">
+    <div className="h-[calc(90vh)] w-[20%] min-w-[80px] max-w-[300px] bg-main flex flex-col justify-start items-center p-5 gap-12">
       {/* Version */}
       <div className="absolute bottom-12 text-sm font-nanum font-bold text-white tracking-widest">
         V {packageJson.version}
