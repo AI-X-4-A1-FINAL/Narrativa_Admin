@@ -7,9 +7,10 @@ import { RefreshCw } from 'lucide-react';
 import { useToast } from "../hooks/useToast";
 import { TrafficChart } from '../components/charts/TrafficChart';
 import { GenreBarChart, GenrePieChart } from '../components/charts/GenreStats';
-import { BasicStats, GamePlaytime, GenrePlaytime } from '../types/stats';
+import { ActiveUserStats, BasicStats, GamePlaytime, GenrePlaytime } from '../types/stats';
 import PlaytimeStats from '../components/charts/PlaytimeStats';
 import { useAuth } from '../components/auth/AuthContext';
+import ActiveUsersChart from '../components/charts/ActiveUsersChart';
 
 const StatisticsPage: React.FC = () => {
  const [stats, setStats] = useState<BasicStats | null>(null);
@@ -25,6 +26,7 @@ const StatisticsPage: React.FC = () => {
  const [targetGroupHealth, setTargetGroupHealth] = useState<Record<string, any[]>>({});
  const [gamePlaytimes, setGamePlaytimes] = useState<GamePlaytime[]>([]);
  const [genrePlaytimes, setGenrePlaytimes] = useState<GenrePlaytime[]>([]);
+ const [activeUsers, setActiveUsers] = useState<ActiveUserStats | null>(null);
  
  // 인터벌 ID를 ref로 관리하여 새로고침 시 초기화할 수 있도록 함
  const intervalRef = useRef<NodeJS.Timeout | null>(null);
@@ -82,13 +84,32 @@ const StatisticsPage: React.FC = () => {
    }
  };
 
+ const fetchActiveUsers = async () => {
+  try {
+    const idToken = await auth.currentUser?.getIdToken();
+    const response = await axios.get<ActiveUserStats>(
+      `${BASE_URL}/api/admin/active-users`,
+      {
+        headers: {
+          Authorization: `Bearer ${idToken}`
+        }
+      }
+    );
+    setActiveUsers(response.data);
+  } catch (error) {
+    console.error('활성 사용자 데이터 조회 에러:', error);
+    showToast("활성 사용자 데이터 조회에 실패했습니다", "error");
+  }
+};
+
  const fetchData = async () => {
    setIsRefreshing(true);
    try {
      await Promise.all([
        fetchStats(),
        fetchTargetGroupHealth(),
-       fetchPlaytimeStats()
+       fetchPlaytimeStats(),
+       fetchActiveUsers()
      ]);
    } catch (error) {
      console.error('데이터 조회 에러:', error);
@@ -186,6 +207,9 @@ const StatisticsPage: React.FC = () => {
    >
      <div className="space-y-6 overflow-y-auto">
        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="lg:col-span-2">
+          {activeUsers && <ActiveUsersChart data={activeUsers} />}
+        </div>
          <TrafficChart 
            view={trafficView}
            stats={stats}
@@ -206,10 +230,19 @@ const StatisticsPage: React.FC = () => {
              />
            </div>
          </div>
+       </div>
 
-         {/* AWS 배포현황 섹션 */}
+       {/* 두 번째 그리드 섹션 */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="">
+            <GenreBarChart gamesByGenre={stats?.gamesByGenre || {}} />
+          </div>
+          <div className="">
+            <GenrePieChart gamesByGenre={stats?.gamesByGenre || {}} />
+          </div>
+          {/* AWS 배포현황 섹션 */}
          <div className="bg-white rounded-lg shadow-md p-6 col-span-1 md:col-span-2">
-           <h2 className="text-lg font-nanum font-semibold text-gray-700">AWS 배포현황</h2>
+           <h2 className="text-lg font-nanum font-semibold text-gray-700">AWS 현황</h2>
            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
              {Object.entries(targetGroupHealth).map(([groupName, healthDescriptions]) => (
                <div key={groupName} className="p-4 bg-gray-50 rounded-lg">
@@ -232,17 +265,7 @@ const StatisticsPage: React.FC = () => {
              ))}
            </div>
          </div>
-       </div>
-
-       {/* 두 번째 그리드 섹션 */}
-       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-         <div className="">
-           <GenreBarChart gamesByGenre={stats?.gamesByGenre || {}} />
-         </div>
-         <div className="">
-           <GenrePieChart gamesByGenre={stats?.gamesByGenre || {}} />
-         </div>
-       </div>
+        </div>
      </div>
    </PageLayout>
  );

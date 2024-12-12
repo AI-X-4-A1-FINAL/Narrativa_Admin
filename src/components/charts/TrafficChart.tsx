@@ -19,7 +19,7 @@ export const TrafficChart: React.FC<TrafficChartProps> = ({ view, stats, onViewC
             className={`px-3 py-1 font-nanum text-sm rounded-md transition-all ${
               view === 'daily'
                 ? 'bg-pointer2 text-white'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                : 'text-gray-600 font-nanum hover:bg-gray-200'
             }`}
           >
             일간

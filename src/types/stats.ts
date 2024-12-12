@@ -27,3 +27,12 @@ export interface GamePlaytime {
     gamePlaytimes: GamePlaytime[];
     genrePlaytimes: GenrePlaytime[];
   }
+  export interface DailyStats {
+    date: string;
+    count: number;
+  }
+  
+  export interface ActiveUserStats {
+    dauStats: DailyStats[];
+    mauStats: DailyStats[];
+  }
