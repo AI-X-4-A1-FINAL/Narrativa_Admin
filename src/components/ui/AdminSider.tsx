@@ -48,7 +48,7 @@ const Sidebar: React.FC = () => {
             bar_chart
           </span>
           <span className="text-sm font-nanum font-bold ml-4 hidden lg:block">
-            데이터 및 통계 분석
+            통계 대시보드
           </span>
         </Link>
 

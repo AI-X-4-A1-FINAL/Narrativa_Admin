@@ -148,11 +148,11 @@ const UserManagementPage: React.FC = () => {
 
  if (isLoading) {
    return (
-     <div className="h-full w-full p-6 text-center">
-       <LoadingAnimation />
-     </div>
-   );
- }
+    <div className="h-full w-full flex justify-center items-center space-x-2">
+      <LoadingAnimation />
+    </div>
+    );
+  }
 
  return (
    <PageLayout title="회원 관리">

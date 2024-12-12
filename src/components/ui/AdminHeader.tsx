@@ -33,27 +33,31 @@ const Header: React.FC = () => {
   return (
     <header className="w-full h-[8vh] flex items-center justify-between px-4 bg-black">
       {/* 왼쪽: 로고 */}
-      <Link to="/" className="flex items-center gap-x-4">
-        <img src={HeaderLogo} alt="Header Logo" className="w-5 h-[26px]" />
-        <div className="text-xl font-normal text-white font-calistoga">
+      <Link to="/" className="flex items-center gap-x-2 sm:gap-x-4">
+        <img src={HeaderLogo} alt="Header Logo" className="w-4 sm:w-5 h-[20px] sm:h-[26px]" />
+        <div className="text-base sm:text-lg md:text-xl font-normal text-white font-calistoga whitespace-nowrap">
           NARRATIVA - ADMIN
         </div>
       </Link>
 
       {/* 오른쪽: 관리자 정보 */}
-      <div className="flex items-center gap-x-4">
-      <span 
-          className={`text-sm font-medium font-nanum ${remainingTime <= 300 ? 'text-red-500 animate-bounce' : 'text-white'}`}
+      <div className="flex items-center gap-x-2 sm:gap-x-4">
+        <span 
+          className={`text-xs sm:text-sm font-medium font-nanum ${
+            remainingTime <= 300 ? 'text-red-500 animate-bounce' : 'text-white'
+          }`}
         >
-          남은 시간: {formatTime(remainingTime)}분
+          <span className="hidden md:inline">남은 시간 : </span>
+          {formatTime(remainingTime)}
+          <span className="hidden md:inline">분</span>
         </span>
         <button 
           onClick={handleResetTimer} 
-          className="text-white bg-pointer2 hover:bg-pointer px-3 py-1 rounded"
+          className="text-white bg-pointer2 hover:bg-pointer px-2 sm:px-3 py-1 rounded text-xs sm:text-sm"
         >
           연장
         </button>
-        <span className="text-white text-sm font-medium font-nanum">{adminName}</span>
+        <span className="text-white text-xs sm:text-sm font-medium font-nanum">{adminName}</span>
       </div>
     </header>
   );

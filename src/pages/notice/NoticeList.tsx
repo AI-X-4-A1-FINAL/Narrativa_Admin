@@ -121,12 +121,7 @@ const NoticeList = () => {
 
   if (loading) {
     return (
-      <div className="h-full w-full p-6 text-center" 
-      style={{
-        backgroundImage: "linear-gradient(to top, #bdc2e8 0%, #bdc2e8 1%, #e6dee9 100%)",
-        backgroundSize: "cover",
-        backgroundRepeat: "no-repeat"
-      }}>
+      <div className="h-full w-full flex justify-center items-center space-x-2">
         <LoadingAnimation />
       </div>
     );

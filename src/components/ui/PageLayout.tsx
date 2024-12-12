@@ -18,11 +18,11 @@ const PageLayout = ({ title, rightElement, children }: PageLayoutProps) => {
         backgroundRepeat: "no-repeat",
       }}
     >
-      <div className="mx-8 mt-1 h-15">
+      <div className="mx-8 h-14">
         <PageTitle title={title} rightElement={rightElement} />
       </div>
 
-      <div className="p-6 h-full @apply bg-bg2">
+      <div className="p-6 pb-16 h-full @apply bg-bg2">
         <div className="h-full flex flex-col justify-center">{children}</div>
       </div>
     </div>
