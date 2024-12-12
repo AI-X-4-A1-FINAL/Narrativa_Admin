@@ -31,6 +31,11 @@ const Sidebar: React.FC = () => {
         V {packageJson.version}
       </div>
 
+      {/* Mascot */}
+      <div className="absolute bottom-24 hidden lg:block">
+        <Mascot className="w-180 h-auto text-gray-800 group-hover:text-white" />
+      </div>
+
       {/* Menu List */}
       <div className="w-full bg-white rounded-lg flex flex-col gap-3 p-2">
         {/* 데이터 및 통계 분석 */}
@@ -179,6 +184,24 @@ const Sidebar: React.FC = () => {
             </div>
           )}
         </div>
+        {/* 프롬프트 관리 */}
+        <Link
+          to="/prompts"
+          className={`flex lg:justify-start justify-center items-center w-full h-[36px] rounded-lg p-2 group ${
+            isPathActive("/prompts") ? "bg-pointer text-white" : "bg-white hover:bg-pointer hover:text-white"
+          }`}
+        >
+          <span
+            className={`material-icons w-5 h-5 group-hover:text-white ${
+              isPathActive("/prompts") ? "text-white" : "text-gray-800"
+            }`}
+          >
+            psychology_alt
+          </span>
+          <span className="text-sm font-nanum font-bold ml-4 hidden lg:block">
+            프롬프트 관리
+          </span>
+        </Link>
       </div>
 
       {/* Logout */}
@@ -192,11 +215,6 @@ const Sidebar: React.FC = () => {
         <span className="text-sm font-nanum font-bold text-gray-800 group-hover:text-white ml-4 hidden lg:block">
           Log out
         </span>
-      </div>
-
-      {/* Mascot */}
-      <div className="hidden lg:block">
-        <Mascot className="w-180 h-auto text-gray-800 group-hover:text-white" />
       </div>
     </div>
   );
