@@ -61,7 +61,7 @@ const PlaytimeStats: React.FC<PlaytimeStatsProps> = ({ gamePlaytimes, genrePlayt
       </div>
       
       {showGenreStats && (
-        <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-lg p-4">
+        <div className="absolute top-full left-0 right-0 mt-2 bg-white rounded-lg shadow-lg p-4 z-10">
           <table className="w-full">
             <thead>
               <tr className="border-b border-gray-200">

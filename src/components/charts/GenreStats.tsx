@@ -55,6 +55,7 @@ export const GenreBarChart: React.FC<GenreStatsProps> = ({ gamesByGenre }) => {
             />
             <YAxis 
               tickFormatter={(value) => value.toLocaleString()}
+              tick={{ fontSize: 12 }}
             />
             <RechartsTooltip 
               formatter={(value) => [value.toLocaleString() + '회', '실행 횟수']}

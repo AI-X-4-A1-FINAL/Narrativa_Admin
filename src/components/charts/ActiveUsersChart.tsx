@@ -8,8 +8,6 @@ interface ActiveUsersChartProps {
 
 type MetricType = 'dau' | 'mau';
 
-// ... imports 유지
-
 const ActiveUsersChart: React.FC<ActiveUsersChartProps> = ({ data }) => {
   const [selectedMetric, setSelectedMetric] = useState<MetricType>('dau');
 
@@ -88,9 +86,11 @@ const ActiveUsersChart: React.FC<ActiveUsersChartProps> = ({ data }) => {
             <XAxis 
               dataKey="date" 
               tickFormatter={formatXAxis}
+              tick={{ fontSize: 12 }}
             />
             <YAxis 
               tickFormatter={(value) => `${value.toLocaleString()}`}
+              tick={{ fontSize: 12 }}
             />
             <Tooltip 
               formatter={(value: number) => [`${value.toLocaleString()}명`, '사용자 수']}

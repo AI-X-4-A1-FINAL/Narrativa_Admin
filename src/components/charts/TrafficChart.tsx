@@ -61,11 +61,15 @@ const DailyTrafficView: React.FC<{ stats: BasicStats | null }> = ({ stats }) => 
           <XAxis 
             dataKey="hour"
             tickFormatter={(hour) => `${hour}시`}
+            tick={{ fontSize: 12 }}
           />
-          <YAxis />
+          <YAxis
+            tick={{ fontSize: 12 }}
+          />
           <Tooltip 
             formatter={(value) => [`${value}회`, '트래픽']}
             labelFormatter={(hour) => `${hour}시`}
+            contentStyle={{ fontSize: 12 }}
           />
           <Line
             type="monotone"
