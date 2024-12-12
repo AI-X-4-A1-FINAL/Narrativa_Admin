@@ -9,6 +9,7 @@ import { TrafficChart } from '../components/charts/TrafficChart';
 import { GenreBarChart, GenrePieChart } from '../components/charts/GenreStats';
 import { BasicStats, GamePlaytime, GenrePlaytime } from '../types/stats';
 import PlaytimeStats from '../components/charts/PlaytimeStats';
+import { useAuth } from '../components/auth/AuthContext';
 
 const StatisticsPage: React.FC = () => {
  const [stats, setStats] = useState<BasicStats | null>(null);
@@ -16,6 +17,7 @@ const StatisticsPage: React.FC = () => {
  const [isRefreshing, setIsRefreshing] = useState<boolean>(false);
  const [trafficView, setTrafficView] = useState<'daily' | 'weekly'>('daily');
  const { showToast } = useToast();
+ const { admin } = useAuth();
 
  const BASE_URL = process.env.REACT_APP_BACKEND_URL;
  const auth = getAuth();
@@ -113,22 +115,38 @@ const StatisticsPage: React.FC = () => {
  // 수동 새로고침 핸들러
  const handleRefresh = async () => {
    await fetchData();
-   setupInterval(); // 새로고침 시 인터벌 초기화
+   setupInterval();
    showToast("새로고침 완료", "success");
  };
 
- // 컴포넌트 마운트 시 초기 데이터 로드 및 인터벌 설정
  useEffect(() => {
-   fetchData();
-   setupInterval();
+  // admin과 currentUser 둘 다 체크
+  if (!admin || !auth.currentUser) {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+    return;
+  }
 
-   // 컴포넌트 언마운트 시 인터벌 제거
-   return () => {
-     if (intervalRef.current) {
-       clearInterval(intervalRef.current);
-     }
-   };
- }, []);
+  const initializeData = async () => {
+    try {
+      await fetchData();
+      setupInterval();
+    } catch (error) {
+      console.error('초기 데이터 로드 실패:', error);
+    }
+  };
+
+  initializeData();
+
+  return () => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+  };
+ }, [admin, auth.currentUser]);
 
  // 로딩 중이면 로딩 화면 표시
  if (loading) {
