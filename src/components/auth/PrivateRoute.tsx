@@ -5,34 +5,17 @@ const PrivateRoute = () => {
   const { admin } = useAuth();
   const location = useLocation();
 
-  // 로그인되지 않은 경우 로그인 페이지로 리다이렉트
+  // 로그인하지 않은 경우 로그인 페이지로 리다이렉트
   if (!admin) {
-    return <Navigate to="/login" replace />;
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
-  // 유효한 경로 확인
-  const isValidPath = (path: string) => {
-    const exactPaths = [
-      "/",
-      "/users",
-      "/notices",
-      "/notices/create",
-      "/admins",
-      "/music/list",
-      "/music/upload"
-    ];
-    if (exactPaths.includes(path)) return true;
-
-    const dynamicPathPatterns = [/^\/notices\/\d+$/, /^\/notices\/\d+\/edit$/];
-
-    return dynamicPathPatterns.some((pattern) => pattern.test(path));
-  };
-
-  // 유효하지 않은 경로로 접근 시 404 페이지로 리다이렉트
-  if (!isValidPath(location.pathname)) {
-    return <Navigate to="/404" replace />;
+  // 승인 대기 중인 사용자는 승인 대기 페이지로 리다이렉트
+  if (admin.role === 'WAITING') {
+    return <Navigate to="/approval-pending" replace />;
   }
 
+  // 승인된 사용자는 요청한 페이지 표시
   return <Outlet />;
 };
 

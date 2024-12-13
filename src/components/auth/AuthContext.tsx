@@ -13,20 +13,39 @@ if (!API_BASE_URL) {
   throw new Error("REACT_APP_BACKEND_URL is not defined in environment variables");
 }
 
+// 로그인 결과 타입 정의
+interface LoginResult {
+  status: 'WAITING' | 'APPROVED';
+}
+
 interface AuthContextProps {
   admin: AdminUser | null;
   userRole: AdminRole;
   setUserRole: (role: AdminRole) => void;
-  login: () => void;
-  logout: () => void;
+  login: () => Promise<LoginResult>;
+  logout: () => Promise<void>;
   updateUserRole: (userId: number, newRole: AdminRole) => void;
   isLoading: boolean;
   resetLogoutTimer: () => void;
   logoutStartTime: number | null;
   getIdToken: () => Promise<string>;
+  checkAdminStatus: () => Promise<AdminUser | undefined>;
 }
 
-const AuthContext = createContext<AuthContextProps | undefined>(undefined);
+// 기본값 설정
+const AuthContext = createContext<AuthContextProps>({
+  admin: null,
+  userRole: 'WAITING',
+  setUserRole: () => {},
+  login: async () => ({ status: 'WAITING' }),
+  logout: async () => {},
+  updateUserRole: () => {},
+  isLoading: false,
+  resetLogoutTimer: () => {},
+  logoutStartTime: null,
+  getIdToken: async () => '',
+  checkAdminStatus: async () => undefined,
+});
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const dispatch = useDispatch();
@@ -77,7 +96,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             });
             setUserRole(adminData.role);
             
-            // 저장된 로그아웃 시간이 없을 때만 새로운 타이머 시작
             if (!sessionStorage.getItem("logoutStartTime")) {
               startLogoutTimer();
             }
@@ -90,7 +108,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           setUserRole("WAITING");
         }
       } catch (error) {
-        console.error("Auth state sync error:", error);
         setAdmin(null);
         setUserRole("WAITING");
       } finally {
@@ -126,7 +143,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return user.getIdToken();
   };
 
-  const login = async () => {
+  const login = async (): Promise<LoginResult> => {
     try {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
@@ -138,46 +155,52 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({
-            idToken: idToken
-          })
+          body: JSON.stringify({ idToken })
         });
 
-        try {
-          const data = await response.json();
-          
-          if (!response.ok) {
-            if (response.status === 500 && data.message?.includes('승인 대기 중인 사용자')) {
-              setAdmin(null);
-              localStorage.removeItem('admin');
-              window.location.replace('/approval-pending');
-              return;
+        if (response.status === 500) {
+          try {
+            const registerResponse = await fetch(`${API_BASE_URL}/api/auth/register`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ idToken })
+            });
+
+            if (registerResponse.status === 201 || registerResponse.status === 400) {
+              const waitingUser = {
+                uid: result.user.uid,
+                email: result.user.email || '',
+                username: result.user.displayName || '',
+                role: 'WAITING' as AdminRole,
+                status: 'ACTIVE' as AdminStatus
+              };
+              setAdmin(waitingUser);
+              setUserRole('WAITING');
+              navigate('/approval-pending');
+              return { status: 'WAITING' };
             }
-            throw new Error(data.message || '인증에 실패했습니다.');
+          } catch (error) {
+            throw error;
           }
-
-          setAdmin(data);
-          setUserRole(data.role);
-          localStorage.setItem("admin", JSON.stringify(data));
-          resetLogoutTimer();
-
-        } catch (jsonError) {
-          // JSON 파싱 에러 처리
-          if (response.status === 500) {
-            setAdmin(null);
-            localStorage.removeItem('admin');
-            window.location.replace('/approval-pending');
-            return;
-          }
-          throw new Error('인증에 실패했습니다.');
         }
 
+        if (response.ok) {
+          const data = await response.json();
+          setAdmin(data);
+          setUserRole(data.role);
+          resetLogoutTimer();
+          navigate('/');
+          return { status: 'APPROVED' };
+        }
+
+        throw new Error('Verification failed');
+
       } catch (error) {
-        console.error('Server verification error:', error);
         throw error;
       }
     } catch (error) {
-      console.error('Login error:', error);
       throw error;
     }
   };
@@ -191,8 +214,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setAdmin(null);
       setUserRole("WAITING");
       sessionStorage.removeItem("logoutStartTime");
+      window.location.href = '/login';
     } catch (error) {
-      console.error("Logout error:", error);
       throw error;
     }
   };
@@ -221,7 +244,30 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setUserRole(newRole);
       }
     } catch (error) {
-      console.error("Role update error:", error);
+      throw error;
+    }
+  };
+
+  const checkAdminStatus = async () => {
+    try {
+      const idToken = await auth.currentUser?.getIdToken();
+      if (!idToken) throw new Error("인증 토큰이 없습니다.");
+
+      const response = await fetch(`${API_BASE_URL}/api/auth/verify`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ idToken })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setAdmin(data);
+        setUserRole(data.role);
+        return data;
+      }
+    } catch (error) {
       throw error;
     }
   };
@@ -238,7 +284,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         isLoading,
         resetLogoutTimer,
         logoutStartTime,
-        getIdToken
+        getIdToken,
+        checkAdminStatus,
       }}
     >
       {children}

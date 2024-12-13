@@ -9,14 +9,12 @@ export const useLogin = () => {
 
   const handleLogin = async () => {
     try {
-      await login();
-      showToast("로그인 성공!", "success");
-      navigate("/");
-    } catch (error: any) {
-      showToast(
-        error.message || "로그인 중 오류가 발생했습니다.",
-        "error"
-      );
+      const result = await login();
+      if (result?.status === 'APPROVED') {
+        showToast("로그인에 성공했습니다.", "success");
+      }
+    } catch (error) {
+      showToast("로그인에 실패했습니다.", "error");
     }
   };
 
