@@ -139,7 +139,7 @@ const AdminTable: React.FC<AdminTableProps> = ({
   return (
     <div className="space-y-4">
       <div className="relative overflow-hidden shadow-md sm:rounded-lg bg-white">
-        <div className="grid grid-cols-3 sm:grid-cols-7 bg-gray-50 text-xs uppercase font-medium text-gray-700 h-10 sm:h-12">
+        <div className="grid grid-cols-2 sm:grid-cols-7 bg-gray-50 text-xs uppercase font-medium text-gray-700 h-10 sm:h-12">
           {renderHeader("username", "이름")}
           {renderHeader("role", "권한")}
           {renderHeader("lastLoginAt", "최근 로그인", true, "hidden sm:flex")}
@@ -152,7 +152,7 @@ const AdminTable: React.FC<AdminTableProps> = ({
           {getCurrentPageData().map((admin, index) => (
             <div
               key={admin?.id || `empty-${index}`}
-              className="grid grid-cols-3 sm:grid-cols-7 hover:bg-gray-50 transition-colors"
+              className="grid grid-cols-2 sm:grid-cols-7 hover:bg-gray-50 transition-colors"
             >
               <div className="px-2 sm:px-4 py-3 sm:py-4 flex items-center font-medium text-gray-900 text-sm">
                 {admin?.username || "\u00A0"}

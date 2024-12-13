@@ -23,8 +23,8 @@ const MusicUpload: React.FC = () => {
 
     return (
         <PageLayout title="음악 버킷 업로드">
-            <div className="flex justify-center gap-6">
-                <div className="w-1/3">
+            <div className="flex justify-center px-4 sm:px-0">
+                <div className="w-full sm:w-2/3 md:w-1/2 lg:w-1/3">
                     <FileUploadCard
                         genres={genres as Genre[]}
                         selectedGenre={selectedGenre}
