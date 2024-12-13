@@ -5,6 +5,7 @@ import { auth } from '../../configs/firebaseConfig';
 import { RootState } from '../../store';
 import { setLogoutStartTime } from '../../store/authSlice';
 import { AdminUser, AdminRole, AdminStatus } from '../../types/admin';
+import { useNavigate } from 'react-router-dom';
 
 const API_BASE_URL = process.env.REACT_APP_BACKEND_URL;
 
@@ -31,6 +32,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const dispatch = useDispatch();
   const { logoutStartTime } = useSelector((state: RootState) => state.auth);
   const logoutTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const navigate = useNavigate();
   
   const [admin, setAdmin] = useState<AdminUser | null>(null);
   const [userRole, setUserRole] = useState<AdminRole>("WAITING");
@@ -56,7 +58,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       try {
         if (user) {
           const token = await user.getIdToken();
-          const response = await fetch(`${API_BASE_URL}/api/admin/auth/verify`, {
+          const response = await fetch(`${API_BASE_URL}/api/auth/verify`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
@@ -127,39 +129,55 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const login = async () => {
     try {
       const provider = new GoogleAuthProvider();
-      const userCredential = await signInWithPopup(auth, provider);
-      const user = userCredential.user;
+      const result = await signInWithPopup(auth, provider);
+      const idToken = await result.user.getIdToken();
 
-      if (!user) throw new Error("로그인에 실패했습니다.");
-
-      const idToken = await user.getIdToken();
-      const verifyResponse = await fetch(`${API_BASE_URL}/api/admin/auth/verify`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ idToken }),
-      });
-
-      if (verifyResponse.ok) {
-        const adminData = await verifyResponse.json();
-        setAdmin({
-          uid: adminData.uid,
-          email: adminData.email,
-          username: adminData.username,
-          role: adminData.role as AdminRole,
-          status: adminData.status as AdminStatus,
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/auth/verify`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            idToken: idToken
+          })
         });
-        setUserRole(adminData.role);
-        startLogoutTimer();
-      } else {
-        throw new Error("Login failed");
+
+        try {
+          const data = await response.json();
+          
+          if (!response.ok) {
+            if (response.status === 500 && data.message?.includes('승인 대기 중인 사용자')) {
+              setAdmin(null);
+              localStorage.removeItem('admin');
+              window.location.replace('/approval-pending');
+              return;
+            }
+            throw new Error(data.message || '인증에 실패했습니다.');
+          }
+
+          setAdmin(data);
+          setUserRole(data.role);
+          localStorage.setItem("admin", JSON.stringify(data));
+          resetLogoutTimer();
+
+        } catch (jsonError) {
+          // JSON 파싱 에러 처리
+          if (response.status === 500) {
+            setAdmin(null);
+            localStorage.removeItem('admin');
+            window.location.replace('/approval-pending');
+            return;
+          }
+          throw new Error('인증에 실패했습니다.');
+        }
+
+      } catch (error) {
+        console.error('Server verification error:', error);
+        throw error;
       }
     } catch (error) {
-      console.error("Login error:", error);
-      await auth.signOut();
-      setAdmin(null);
-      setUserRole("WAITING");
+      console.error('Login error:', error);
       throw error;
     }
   };

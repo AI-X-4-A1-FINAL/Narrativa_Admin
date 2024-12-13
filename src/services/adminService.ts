@@ -7,14 +7,14 @@ const BASE_URL = process.env.REACT_APP_BACKEND_URL;
 export const adminService = {
   // Auth 관련
   verifyToken: async (idToken: string) => {
-    const response = await axios.post(`${BASE_URL}/api/admin/auth/verify`, {
+    const response = await axios.post(`${BASE_URL}/api/auth/verify`, {
       idToken,
     });
     return response.data;
   },
 
   registerAdmin: async (idToken: string) => {
-    const response = await axios.post(`${BASE_URL}/api/admin/auth/register`, {
+    const response = await axios.post(`${BASE_URL}/api/auth/register`, {
       idToken,
     });
     return response.data;
@@ -37,7 +37,7 @@ export const adminService = {
         Authorization: `Bearer ${idToken}`,
       },
     });
-    return response.data;
+    return response.data.data;
   },
 
   updateAdminRole: async (
@@ -60,7 +60,7 @@ export const adminService = {
         headers: { Authorization: `Bearer ${idToken}` },
       }
     );
-    return response.data;
+    return response.data.data;
   },
 
   updateAdminStatus: async (userId: number, newStatus: AdminStatus) => {
@@ -87,6 +87,7 @@ export const adminService = {
       throw new Error("상태 수정에 실패했습니다.");
     }
 
-    return response.json();
+    const result = await response.json();
+    return result.data;
   },
 };

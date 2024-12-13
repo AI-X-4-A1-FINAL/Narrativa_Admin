@@ -29,9 +29,9 @@ import MusicUpload from "./pages/music/MusicUpload";
 
 const Root: React.FC = () => {
   return (
-    <AuthProvider>
-      <AuthLoadingGuard>
-        <Router>
+    <Router>
+      <AuthProvider>
+        <AuthLoadingGuard>
           <Routes>
             <Route element={<RedirectRoute />}>
               {/* 로그인 페이지 */}
@@ -65,9 +65,9 @@ const Root: React.FC = () => {
             {/* 모든 잘못된 경로를 404로 리다이렉트 */}
             <Route path="*" element={<Navigate to="/404" replace />} />
           </Routes>
-        </Router>
-      </AuthLoadingGuard>
-    </AuthProvider>
+        </AuthLoadingGuard>
+      </AuthProvider>
+    </Router>
   );
 };
 
