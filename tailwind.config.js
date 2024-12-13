@@ -16,6 +16,15 @@ module.exports = {
         pointer2: "#9DA3E5",
         main: "#2C2C2C",
       },
+      height: {
+        'screen-small': '100svh',
+      },
+      minHeight: {
+        'screen-small': '100svh',
+      },
+      maxHeight: {
+        'screen-small': '100svh',
+      }
     },
   },
   plugins: [require("tailwind-scrollbar")],

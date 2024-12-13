@@ -45,9 +45,7 @@ const AdminTable: React.FC<AdminTableProps> = ({
     const endIndex = startIndex + itemsPerPage;
     return [
       ...admins.slice(startIndex, endIndex),
-      ...Array(itemsPerPage - admins.slice(startIndex, endIndex).length).fill(
-        null
-      ),
+      ...Array(itemsPerPage - admins.slice(startIndex, endIndex).length).fill(null),
     ];
   };
 
@@ -63,9 +61,10 @@ const AdminTable: React.FC<AdminTableProps> = ({
   const renderHeader = (
     key: keyof AdminUser,
     label: string,
-    sortable = true
+    sortable = true,
+    className = ""
   ) => (
-    <div className="px-6 flex items-center">
+    <div className={`px-4 flex items-center ${className}`}>
       {sortable ? (
         <button
           onClick={() => handleSort(key)}
@@ -92,45 +91,45 @@ const AdminTable: React.FC<AdminTableProps> = ({
           onClick={() =>
             setOpenDropdownId(openDropdownId === admin.id ? null : admin.id)
           }
-          className={`flex items-center justify-between w-full px-3 py-2 text-sm font-medium rounded-md ${getRoleColor(
+          className={`flex items-center justify-between w-full px-1 sm:px-2 py-0.5 sm:py-1 text-xs sm:text-sm font-medium rounded ${getRoleColor(
             admin.role
           )} transition-colors`}
         >
           <span>{admin.role}</span>
-          <ChevronsUpDown className="w-4 h-4 ml-2" />
+          <ChevronsUpDown className="w-3 h-3 sm:w-4 sm:h-4 ml-1 sm:ml-2" />
         </button>
       </Tooltip>
       {openDropdownId === admin.id && (
         <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg">
           <div className="py-1">
-            {(
-              Object.keys(ADMIN_ROLE_DESCRIPTIONS) as Array<AdminUser["role"]>
-            ).map((role) => (
-              <button
-                key={role}
-                onClick={() => {
-                  onUpdateRole(admin.id, admin.role, role);
-                  setOpenDropdownId(null);
-                }}
-                className={`flex items-center justify-between w-full px-3 py-2 text-sm hover:bg-gray-50 ${
-                  role === admin.role ? getRoleColor(role) : ""
-                }`}
-                disabled={
-                  currentUserRole !== "SUPER_ADMIN" ||
-                  admin.role === "SUPER_ADMIN"
-                }
-              >
-                <div className="flex flex-col items-start w-full">
-                  <span className="font-medium">{role}</span>
-                  <span className="text-xs text-gray-500">
-                    {ADMIN_ROLE_DESCRIPTIONS[role]}
-                  </span>
-                </div>
-                {role === admin.role && (
-                  <Check className="w-4 h-4 ml-2 flex-shrink-0" />
-                )}
-              </button>
-            ))}
+            {(Object.keys(ADMIN_ROLE_DESCRIPTIONS) as Array<AdminUser["role"]>).map(
+              (role) => (
+                <button
+                  key={role}
+                  onClick={() => {
+                    onUpdateRole(admin.id, admin.role, role);
+                    setOpenDropdownId(null);
+                  }}
+                  className={`flex items-center justify-between w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm hover:bg-gray-50 ${
+                    role === admin.role ? getRoleColor(role) : ""
+                  }`}
+                  disabled={
+                    currentUserRole !== "SUPER_ADMIN" ||
+                    admin.role === "SUPER_ADMIN"
+                  }
+                >
+                  <div className="flex flex-col items-start w-full">
+                    <span className="text-[10px] sm:text-sm font-medium">{role}</span>
+                    <span className="text-xs text-gray-500 hidden sm:block">
+                      {ADMIN_ROLE_DESCRIPTIONS[role]}
+                    </span>
+                  </div>
+                  {role === admin.role && (
+                    <Check className="w-4 h-4 ml-2 flex-shrink-0" />
+                  )}
+                </button>
+              )
+            )}
           </div>
         </div>
       )}
@@ -140,31 +139,34 @@ const AdminTable: React.FC<AdminTableProps> = ({
   return (
     <div className="space-y-4">
       <div className="relative overflow-hidden shadow-md sm:rounded-lg bg-white">
-        <div className="grid grid-cols-7 bg-gray-50 text-xs uppercase font-medium text-gray-700 h-12">
+        <div className="grid grid-cols-3 sm:grid-cols-7 bg-gray-50 text-xs uppercase font-medium text-gray-700 h-10 sm:h-12">
           {renderHeader("username", "이름")}
-          {renderHeader("email", "이메일")}
           {renderHeader("role", "권한")}
-          {renderHeader("status", "상태", false)}
           {renderHeader("lastLoginAt", "최근 로그인")}
-          {renderHeader("createdAt", "가입 날짜")}
+          {renderHeader("email", "이메일", true, "hidden sm:flex")}
+          {renderHeader("status", "상태", false, "hidden sm:flex")}
+          {renderHeader("createdAt", "가입 날짜", true, "hidden sm:flex")}
         </div>
 
-        <div className="divide-y divide-gray-200 overflow-y-auto h-[500px]">
+        <div className="divide-y divide-gray-200 overflow-y-auto h-[400px] sm:h-[500px]">
           {getCurrentPageData().map((admin, index) => (
             <div
               key={admin?.id || `empty-${index}`}
-              className="grid grid-cols-7 hover:bg-gray-50 transition-colors"
+              className="grid grid-cols-3 sm:grid-cols-7 hover:bg-gray-50 transition-colors"
             >
-              <div className="px-4 py-4 flex items-center font-medium text-gray-900">
+              <div className="px-2 sm:px-4 py-3 sm:py-4 flex items-center font-medium text-gray-900 text-sm">
                 {admin?.username || "\u00A0"}
               </div>
-              <div className="px-4 py-4 flex items-center text-gray-500">
-                {admin?.email || "\u00A0"}
-              </div>
-              <div className="px-4 py-4 flex items-center relative">
+              <div className="px-2 sm:px-4 py-3 sm:py-4 flex items-center">
                 {admin ? renderRoleCell(admin) : "\u00A0"}
               </div>
-              <div className="px-4 py-4 flex items-center">
+              <div className="text-[10px] sm:text-sm px-2 sm:px-4 py-3 sm:py-4 flex items-center text-gray-500 text-sm">
+                {admin ? formatDate(admin.lastLoginAt) : "\u00A0"}
+              </div>
+              <div className="hidden sm:flex px-4 py-4 items-center text-gray-500">
+                {admin?.email || "\u00A0"}
+              </div>
+              <div className="hidden sm:flex px-4 py-4 items-center">
                 {admin && (
                   <span
                     className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(
@@ -175,10 +177,7 @@ const AdminTable: React.FC<AdminTableProps> = ({
                   </span>
                 )}
               </div>
-              <div className="px-4 py-4 flex items-center text-gray-500 text-sm">
-                {admin ? formatDate(admin.lastLoginAt) : "\u00A0"}
-              </div>
-              <div className="px-4 py-4 flex items-center text-gray-500 text-sm">
+              <div className="hidden sm:flex px-4 py-4 items-center text-gray-500 text-sm">
                 {admin ? formatDate(admin.createdAt) : "\u00A0"}
               </div>
             </div>
@@ -186,23 +185,22 @@ const AdminTable: React.FC<AdminTableProps> = ({
         </div>
       </div>
 
-      <div className="flex items-center justify-between px-4">
+      <div className="flex items-center justify-between px-2 sm:px-4">
         <div className="flex items-center space-x-2">
           <span className="text-sm text-gray-700">
-            총 <span className="font-semibold">{admins.length}</span> 명의
-            관리자
+            총 <span className="font-semibold">{admins.length}</span> 명의 관리자
           </span>
         </div>
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-1 sm:space-x-2">
           <button
             onClick={() => onPageChange(Math.max(currentPage - 1, 1))}
             disabled={currentPage === 1}
-            className="px-3 py-1 text-sm text-gray-700 bg-white border border-gray-300 rounded-md 
+            className="p-1 sm:px-3 sm:py-1 text-sm text-gray-700 bg-white border border-gray-300 rounded-md 
             hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <ChevronLeft className="w-4 h-4" />
           </button>
-          <div className="flex items-center space-x-1">
+          <div className="hidden sm:flex items-center space-x-1">
             {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
               <button
                 key={page}
@@ -217,10 +215,13 @@ const AdminTable: React.FC<AdminTableProps> = ({
               </button>
             ))}
           </div>
+          <div className="sm:hidden text-sm text-gray-700">
+            {currentPage} / {totalPages}
+          </div>
           <button
             onClick={() => onPageChange(Math.min(currentPage + 1, totalPages))}
             disabled={currentPage === totalPages}
-            className="px-3 py-1 text-sm text-gray-700 bg-white border border-gray-300 rounded-md 
+            className="p-1 sm:px-3 sm:py-1 text-sm text-gray-700 bg-white border border-gray-300 rounded-md 
             hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <ChevronRight className="w-4 h-4" />

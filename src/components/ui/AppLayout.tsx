@@ -11,13 +11,13 @@ const AppLayout: React.FC = () => {
     location.pathname === "/login" || location.pathname === "/404";
 
   return (
-    <div className="flex flex-col h-screen">
+    <div className="flex flex-col h-screen-small">
       {/* 로그인 페이지나 404 페이지가 아닐 경우 헤더와 사이드바 렌더링 */}
       {!isExcludedPage && <Header />}
       <div className="flex flex-1 overflow-hidden">
         {!isExcludedPage && <Sidebar />}
         <main className={`flex-1 overflow-y-hidden`}>
-          <Outlet /> {/* children 대신 Outlet 사용 */}
+          <Outlet />
         </main>
       </div>
       {!isExcludedPage && <Footer />}
