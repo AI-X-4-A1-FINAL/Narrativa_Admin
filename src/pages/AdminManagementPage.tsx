@@ -20,7 +20,6 @@ const AdminManagementPage: React.FC = () => {
   const { admin } = useAuth();
   const [isRefreshing, setIsRefreshing] = useState(false);
 
-
   const fetchAdmins = async () => {
     try {
       const data = await adminService.getAllAdmins();
@@ -123,40 +122,46 @@ const AdminManagementPage: React.FC = () => {
 
   if (isLoading) {
     return (
-      <div className="h-full w-full flex justify-center items-center space-x-2">
+      <div className="h-full w-full flex justify-center items-center p-4">
         <LoadingAnimation />
       </div>
-      );
+    );
   }
 
   return (
     <PageLayout title="관리자 권한 관리">
-      <div className="space-y-6">
-        <div className="flex flex-row justify-start gap-x-4">
-          <AdminSearchBar searchTerm={searchTerm} onSearch={handleSearch} />
+      <div className="space-y-4 sm:space-y-6 px-2 sm:px-0">
+        <div className="flex flex-row gap-2">
+          <div className="flex-1">
+            <AdminSearchBar searchTerm={searchTerm} onSearch={handleSearch} />
+          </div>
           <button 
             onClick={handleReFetchAdmin}
             disabled={isRefreshing}
             className="w-10 h-10 p-2 bg-white hover:bg-gray-100 rounded-xl transition-all 
-            hover:shadow-sm active:scale-95 disabled:opacity-50 flex items-center justify-center"
+              hover:shadow-sm active:scale-95 disabled:opacity-50 flex items-center justify-center"
             aria-label="새로고침"
           >
             <RefreshCw className={`w-5 h-5 text-gray-600 ${isRefreshing ? 'animate-spin' : ''}`} />
           </button>
         </div>
-        <AdminTable
-          admins={filteredAdmins}
-          onSort={handleSort}
-          onUpdateRole={handleUpdateRole}
-          onUpdateStatus={handleUpdateStatus}
-          currentPage={currentPage}
-          onPageChange={setCurrentPage}
-          currentUserRole={admin?.role || "WAITING"}
-        />
+
+        <div className="overflow-x-auto">
+          <AdminTable
+            admins={filteredAdmins}
+            onSort={handleSort}
+            onUpdateRole={handleUpdateRole}
+            onUpdateStatus={handleUpdateStatus}
+            currentPage={currentPage}
+            onPageChange={setCurrentPage}
+            currentUserRole={admin?.role || "WAITING"}
+          />
+        </div>
       </div>
+
       {isUpdating && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="p-4 rounded-lg">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white p-4 rounded-lg shadow-lg">
             <LoadingAnimation />
           </div>
         </div>

@@ -35,9 +35,7 @@ const UserTable: React.FC<UserTableProps> = ({
     direction: "asc" | "desc";
   }>({ key: null, direction: "asc" });
   const [openDropdownId, setOpenDropdownId] = useState<number | null>(null);
-  const [openStatusDropdownId, setOpenStatusDropdownId] = useState<
-    number | null
-  >(null);
+  const [openStatusDropdownId, setOpenStatusDropdownId] = useState<number | null>(null);
 
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
@@ -78,8 +76,8 @@ const UserTable: React.FC<UserTableProps> = ({
       <ChevronDown className="w-4 h-4" />
     );
 
-  const renderHeader = (key: keyof User, label: string, sortable = true) => (
-    <div className="px-6 flex items-center">
+  const renderHeader = (key: keyof User, label: string, sortable = true, className = "") => (
+    <div className={`px-4 flex items-center ${className}`}>
       {sortable ? (
         <button
           onClick={() => handleSort(key)}
@@ -100,10 +98,10 @@ const UserTable: React.FC<UserTableProps> = ({
         onClick={() =>
           setOpenDropdownId(openDropdownId === user.id ? null : user.id)
         }
-        className="flex items-center justify-between w-full px-3 py-2 text-sm font-medium rounded-md hover:bg-gray-50"
+        className="flex items-center justify-between w-full px-1 sm:px-2 py-0.5 sm:py-1 text-xs sm:text-sm font-medium rounded hover:bg-gray-50"
       >
         <span>{formatRole(user.role)}</span>
-        <ChevronsUpDown className="w-4 h-4 ml-2" />
+        <ChevronsUpDown className="w-3 h-3 sm:w-4 sm:h-4 ml-1 sm:ml-2" />
       </button>
       {openDropdownId === user.id && (
         <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg">
@@ -115,7 +113,7 @@ const UserTable: React.FC<UserTableProps> = ({
                   onUpdateRole(user.id, role);
                   setOpenDropdownId(null);
                 }}
-                className="flex items-center justify-between w-full px-3 py-2 text-sm hover:bg-gray-50"
+                className="flex items-center justify-between w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm hover:bg-gray-50"
               >
                 <span>{formatRole(role)}</span>
                 {user.role === role && <Check className="w-4 h-4 ml-2" />}
@@ -135,12 +133,12 @@ const UserTable: React.FC<UserTableProps> = ({
             openStatusDropdownId === user.id ? null : user.id
           )
         }
-        className={`flex items-center justify-between w-full px-3 py-2 text-sm font-medium rounded-md ${getStatusColor(
+        className={`flex items-center justify-between w-full px-1 sm:px-2 py-0.5 sm:py-1 text-xs sm:text-sm font-medium rounded ${getStatusColor(
           user.status
         )}`}
       >
         <span>{getStatusLabel(user.status)}</span>
-        <ChevronsUpDown className="w-4 h-4 ml-2" />
+        <ChevronsUpDown className="w-3 h-3 sm:w-4 sm:h-4 ml-1 sm:ml-2" />
       </button>
       {openStatusDropdownId === user.id && (
         <div className="absolute z-10 w-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg">
@@ -152,7 +150,7 @@ const UserTable: React.FC<UserTableProps> = ({
                   onUpdateStatus(user.id, status.value);
                   setOpenStatusDropdownId(null);
                 }}
-                className={`flex items-center justify-between w-full px-3 py-2 text-sm hover:bg-gray-50 ${status.color}`}
+                className={`flex items-center justify-between w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm hover:bg-gray-50 ${status.color}`}
               >
                 <span>{status.label}</span>
                 {user.status === status.value && (
@@ -172,7 +170,7 @@ const UserTable: React.FC<UserTableProps> = ({
     const end = Math.min(totalPages, start + pageRange - 1);
 
     return (
-      <div className="flex items-center space-x-2">
+      <>
         <button
           onClick={() => onPageChange(1)}
           disabled={currentPage === 1}
@@ -180,14 +178,6 @@ const UserTable: React.FC<UserTableProps> = ({
           hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           처음
-        </button>
-        <button
-          onClick={() => onPageChange(currentPage - 1)}
-          disabled={currentPage === 1}
-          className="px-3 py-1 text-sm text-gray-700 bg-white border border-gray-300 rounded-md 
-          hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          <ChevronLeft className="w-4 h-4" />
         </button>
 
         {start > 1 && (
@@ -232,14 +222,6 @@ const UserTable: React.FC<UserTableProps> = ({
         )}
 
         <button
-          onClick={() => onPageChange(currentPage + 1)}
-          disabled={currentPage === totalPages}
-          className="px-3 py-1 text-sm text-gray-700 bg-white border border-gray-300 rounded-md 
-          over:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          <ChevronRight className="w-4 h-4" />
-        </button>
-        <button
           onClick={() => onPageChange(totalPages)}
           disabled={currentPage === totalPages}
           className="px-3 py-1 text-sm text-gray-700 bg-white border border-gray-300 rounded-md 
@@ -247,32 +229,38 @@ const UserTable: React.FC<UserTableProps> = ({
         >
           마지막
         </button>
-      </div>
+      </>
     );
   };
 
   return (
     <div className="space-y-4">
       <div className="relative overflow-hidden shadow-md sm:rounded-lg bg-white">
-        <div className="grid grid-cols-6 bg-gray-50 text-xs uppercase font-medium text-gray-700 h-12">
+        <div className="grid grid-cols-3 sm:grid-cols-6 bg-gray-50 text-xs uppercase font-medium text-gray-700 h-10 sm:h-12">
           {renderHeader("username", "이름")}
-          {renderHeader("profileUrl", "프로필 이미지", false)}
-          {renderHeader("loginType", "로그인 타입")}
           {renderHeader("role", "권한")}
           {renderHeader("status", "상태")}
-          {renderHeader("createdAt", "가입일")}
+          {renderHeader("profileUrl", "프로필 이미지", false, "hidden sm:flex")}
+          {renderHeader("loginType", "로그인 타입", true, "hidden sm:flex")}
+          {renderHeader("createdAt", "가입일", true, "hidden sm:flex")}
         </div>
 
-        <div className="divide-y divide-gray-200 overflow-y-auto h-[500px]">
+        <div className="divide-y divide-gray-200 overflow-y-auto h-[400px] sm:h-[500px]">
           {getCurrentPageData().map((user, index) => (
             <div
               key={user?.id || `empty-${index}`}
-              className="grid grid-cols-6 hover:bg-gray-50 transition-colors"
+              className="grid grid-cols-3 sm:grid-cols-6 hover:bg-gray-50 transition-colors"
             >
-              <div className="px-4 py-4 flex items-center font-medium text-gray-900">
+              <div className="px-2 sm:px-4 py-3 sm:py-4 flex items-center font-medium text-gray-900 text-sm">
                 {user?.username || "\u00A0"}
               </div>
-              <div className="px-4 py-4 flex items-center">
+              <div className="px-2 sm:px-4 py-3 sm:py-4 flex items-center relative">
+                {user && renderRoleCell(user)}
+              </div>
+              <div className="px-2 sm:px-4 py-3 sm:py-4 flex items-center">
+                {user && renderStatusCell(user)}
+              </div>
+              <div className="hidden sm:flex px-4 py-4 items-center">
                 {user?.profileUrl && (
                   <img
                     src={user.profileUrl}
@@ -281,16 +269,10 @@ const UserTable: React.FC<UserTableProps> = ({
                   />
                 )}
               </div>
-              <div className="px-4 py-4 flex items-center text-gray-500">
+              <div className="hidden sm:flex px-4 py-4 items-center text-gray-500">
                 {user?.loginType || "\u00A0"}
               </div>
-              <div className="px-4 py-4 flex items-center relative">
-                {user && renderRoleCell(user)}
-              </div>
-              <div className="px-4 py-4 flex items-center">
-                {user && renderStatusCell(user)}
-              </div>
-              <div className="px-4 py-4 flex items-center text-gray-500 text-sm">
+              <div className="hidden sm:flex px-4 py-4 items-center text-gray-500 text-sm">
                 {user ? formatDate(user.createdAt) : "\u00A0"}
               </div>
             </div>
@@ -298,11 +280,34 @@ const UserTable: React.FC<UserTableProps> = ({
         </div>
       </div>
 
-      <div className="flex items-center justify-between px-4">
+      <div className="flex items-center justify-between px-2 sm:px-4">
         <span className="text-sm text-gray-700">
           총 <span className="font-semibold">{totalItems}</span> 명의 사용자
         </span>
-        {renderPageNumbers()}
+        <div className="flex items-center space-x-1 sm:space-x-2">
+          <button
+            onClick={() => onPageChange(Math.max(currentPage - 1, 1))}
+            disabled={currentPage === 1}
+            className="p-1 sm:px-3 sm:py-1 text-sm text-gray-700 bg-white border border-gray-300 rounded-md 
+            hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <ChevronLeft className="w-4 h-4" />
+          </button>
+          <div className="hidden sm:flex items-center space-x-1">
+            {renderPageNumbers()}
+          </div>
+          <div className="sm:hidden text-sm text-gray-700">
+            {currentPage} / {totalPages}
+          </div>
+          <button
+            onClick={() => onPageChange(Math.min(currentPage + 1, totalPages))}
+            disabled={currentPage === totalPages}
+            className="p-1 sm:px-3 sm:py-1 text-sm text-gray-700 bg-white border border-gray-300 rounded-md 
+            hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <ChevronRight className="w-4 h-4" />
+          </button>
+        </div>
       </div>
     </div>
   );
