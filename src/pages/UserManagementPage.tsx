@@ -157,10 +157,8 @@ const UserManagementPage: React.FC = () => {
   return (
     <PageLayout title="회원 관리">
       <div className="space-y-4 sm:space-y-6 px-2 sm:px-0">
-        <div className="flex flex-row gap-2">
-          <div className="flex-1">
-            <SearchBar searchTerm={searchTerm} onSearch={handleSearch} />
-          </div>
+        <div className="flex flex-row justify-start gap-x-4">
+          <SearchBar searchTerm={searchTerm} onSearch={handleSearch} />
           <button 
             onClick={handleReFetchUsers}
             disabled={isRefreshing}
@@ -172,7 +170,7 @@ const UserManagementPage: React.FC = () => {
           </button>
         </div>
 
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto pb-4">
           <UserTable
             users={filteredUsers.slice(
               (currentPage - 1) * itemsPerPage,

@@ -146,7 +146,7 @@ const Sidebar: React.FC = () => {
 
           {/* 버킷 서브메뉴 */}
           {isMusicSubmenuOpen && (
-            <div className="ml-4 mt-2 flex flex-col gap-2">
+            <div className="sm:ml-4 mt-2 flex flex-col gap-2">
               <Link
                 to="/music/list"
                 className={`flex lg:justify-start justify-center items-center w-full h-[32px] rounded-lg p-2 group ${

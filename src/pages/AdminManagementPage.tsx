@@ -129,12 +129,10 @@ const AdminManagementPage: React.FC = () => {
   }
 
   return (
-    <PageLayout title="관리자 권한 관리">
-      <div className="space-y-4 sm:space-y-6 px-2 sm:px-0">
-        <div className="flex flex-row gap-2">
-          <div className="flex-1">
-            <AdminSearchBar searchTerm={searchTerm} onSearch={handleSearch} />
-          </div>
+    <PageLayout title="관리자 관리">
+      <div className="space-y-4 sm:space-y-6 p-2 sm:p-0">
+        <div className="flex flex-row justify-start gap-x-4">
+          <AdminSearchBar searchTerm={searchTerm} onSearch={handleSearch} />
           <button 
             onClick={handleReFetchAdmin}
             disabled={isRefreshing}
@@ -146,7 +144,7 @@ const AdminManagementPage: React.FC = () => {
           </button>
         </div>
 
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto pb-4">
           <AdminTable
             admins={filteredAdmins}
             onSort={handleSort}

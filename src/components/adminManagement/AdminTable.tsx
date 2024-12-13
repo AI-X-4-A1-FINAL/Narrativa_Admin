@@ -142,7 +142,7 @@ const AdminTable: React.FC<AdminTableProps> = ({
         <div className="grid grid-cols-3 sm:grid-cols-7 bg-gray-50 text-xs uppercase font-medium text-gray-700 h-10 sm:h-12">
           {renderHeader("username", "이름")}
           {renderHeader("role", "권한")}
-          {renderHeader("lastLoginAt", "최근 로그인")}
+          {renderHeader("lastLoginAt", "최근 로그인", true, "hidden sm:flex")}
           {renderHeader("email", "이메일", true, "hidden sm:flex")}
           {renderHeader("status", "상태", false, "hidden sm:flex")}
           {renderHeader("createdAt", "가입 날짜", true, "hidden sm:flex")}
@@ -157,10 +157,10 @@ const AdminTable: React.FC<AdminTableProps> = ({
               <div className="px-2 sm:px-4 py-3 sm:py-4 flex items-center font-medium text-gray-900 text-sm">
                 {admin?.username || "\u00A0"}
               </div>
-              <div className="px-2 sm:px-4 py-3 sm:py-4 flex items-center">
+              <div className="px-2 sm:px-4 py-3 sm:py-4 items-center">
                 {admin ? renderRoleCell(admin) : "\u00A0"}
               </div>
-              <div className="text-[10px] sm:text-sm px-2 sm:px-4 py-3 sm:py-4 flex items-center text-gray-500 text-sm">
+              <div className="hidden sm:flex text-[10px] sm:text-sm px-2 sm:px-4 py-3 sm:py-4 items-center text-gray-500 text-sm">
                 {admin ? formatDate(admin.lastLoginAt) : "\u00A0"}
               </div>
               <div className="hidden sm:flex px-4 py-4 items-center text-gray-500">
