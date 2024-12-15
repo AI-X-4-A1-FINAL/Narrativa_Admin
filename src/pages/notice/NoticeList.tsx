@@ -112,7 +112,7 @@ const NoticeList = () => {
   const TitleRight = (
     <button
       onClick={handleCreateClick}
-      className="flex items-center gap-2 px-4 py-2 bg-pointer font-nanum text-white rounded-lg hover:bg-pointer"
+      className="flex items-center gap-1 px-2 py-2 bg-pointer font-nanum text-white rounded-lg hover:bg-pointer"
     >
       <Plus className="w-4 h-4 font-nanum" />
       새 공지사항

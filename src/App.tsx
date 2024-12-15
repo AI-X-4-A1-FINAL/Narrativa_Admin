@@ -27,6 +27,8 @@ import NoticeEdit from "./pages/notice/NoticeEdit";
 import MusicList from "./pages/music/MusicList";
 import MusicUpload from "./pages/music/MusicUpload";
 
+import PromptList from "./pages/PromptManagementPage";
+
 const Root: React.FC = () => {
   return (
     <Router>
@@ -56,6 +58,7 @@ const Root: React.FC = () => {
                   <Route path="list" element={<MusicList />} />
                   <Route path="upload" element={<MusicUpload />} />
                 </Route>
+                <Route path="prompts" element={<PromptList />} />
               </Route>
             </Route>
 

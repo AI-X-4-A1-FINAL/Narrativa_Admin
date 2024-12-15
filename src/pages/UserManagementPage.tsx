@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import SearchBar from "../components/userManagement/SearchBar";
-import UserTable from "../components/userManagement/UserTable";
+import SearchBar from "../components/UserManagement/SearchBar";
+import UserTable from "../components/UserManagement/UserTable";
 import { useToast } from "../hooks/useToast";
 import LoadingAnimation from "../components/ui/LoadingAnimation";
 import PageLayout from "../components/ui/PageLayout";
