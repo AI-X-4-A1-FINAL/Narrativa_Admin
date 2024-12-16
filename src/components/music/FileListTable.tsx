@@ -27,11 +27,11 @@ const FileListTable: React.FC<FileListTableProps> = ({ files, onDelete }) => {
             {/* 고정 헤더 */}
             <div className="sticky top-0 z-10">
                 <div className="grid grid-cols-12 sm:grid-cols-12 gap-2 sm:gap-4 bg-pointer2 px-3 sm:px-6 py-2 sm:py-3 border-b">
-                    <div className="col-span-7 sm:col-span-4 text-left text-xs font-nanum font-medium text-white uppercase">파일명</div>
-                    <div className="col-span-3 sm:col-span-2 text-left text-xs font-nanum font-medium text-white uppercase">장르</div>
-                    <div className="hidden sm:block col-span-2 text-left text-xs font-nanum font-medium text-white uppercase">크기</div>
-                    <div className="hidden sm:block col-span-3 text-left text-xs font-nanum font-medium text-white uppercase">수정일</div>
-                    <div className="col-span-2 sm:col-span-1 text-right text-xs font-nanum font-medium text-white uppercase">삭제</div>
+                    <div className="col-span-7 sm:col-span-4 text-left text-xs font-contents font-medium text-white uppercase">파일명</div>
+                    <div className="col-span-3 sm:col-span-2 text-left text-xs font-contents font-medium text-white uppercase">장르</div>
+                    <div className="hidden sm:block col-span-2 text-left text-xs font-contents font-medium text-white uppercase">크기</div>
+                    <div className="hidden sm:block col-span-3 text-left text-xs font-contents font-medium text-white uppercase">수정일</div>
+                    <div className="col-span-2 sm:col-span-1 text-right text-xs font-contents font-medium text-white uppercase">삭제</div>
                 </div>
             </div>
 
@@ -45,7 +45,7 @@ const FileListTable: React.FC<FileListTableProps> = ({ files, onDelete }) => {
                             <div className="col-span-7 sm:col-span-4 overflow-hidden text-ellipsis whitespace-nowrap">
                                 <a
                                     href={file.presignedUrl}
-                                    className="font-nanum text-sm sm:text-base text-blue-600 hover:text-blue-800"
+                                    className="font-contents text-sm sm:text-base text-blue-600 hover:text-blue-800"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                 >
@@ -53,17 +53,17 @@ const FileListTable: React.FC<FileListTableProps> = ({ files, onDelete }) => {
                                 </a>
                             </div>
                             <div className="col-span-3 sm:col-span-2">
-                                <span className={`inline-flex items-center px-2 sm:px-2.5 py-0.5 rounded-full font-nanum text-xs font-medium ${getGenreColor(file.genre)}`}>
+                                <span className={`inline-flex items-center px-2 sm:px-2.5 py-0.5 rounded-full font-contents text-xs font-medium ${getGenreColor(file.genre)}`}>
                                     {file.genre}
                                 </span>
                             </div>
-                            <div className="hidden sm:block col-span-2 font-nanum text-gray-600 text-sm">
+                            <div className="hidden sm:block col-span-2 font-contents text-gray-600 text-sm">
                                 {(file.size / 1024 / 1024).toFixed(2)} MB
                             </div>
-                            <div className="hidden sm:block col-span-3 font-nanum text-gray-600 text-sm">
+                            <div className="hidden sm:block col-span-3 font-contents text-gray-600 text-sm">
                                 {new Date(file.lastModified).toLocaleDateString()}
                             </div>
-                            <div className="col-span-2 sm:col-span-1 font-nanum text-right pr-2">
+                            <div className="col-span-2 sm:col-span-1 font-contents text-right pr-2">
                                 <button
                                     onClick={() => onDelete(file.name)}
                                     className="text-red-600 hover:text-red-900"

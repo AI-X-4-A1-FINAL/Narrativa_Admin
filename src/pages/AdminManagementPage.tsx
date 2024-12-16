@@ -129,7 +129,7 @@ const AdminManagementPage: React.FC = () => {
   }
 
   return (
-    <PageLayout title="관리자 관리">
+    <PageLayout title="Administrators Management">
       <div className="space-y-4 sm:space-y-6 p-2 sm:p-0">
         <div className="flex flex-row justify-start gap-x-4">
           <AdminSearchBar searchTerm={searchTerm} onSearch={handleSearch} />

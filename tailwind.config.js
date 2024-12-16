@@ -5,9 +5,8 @@ module.exports = {
   theme: {
     extend: {
       fontFamily: {
-        calistoga: ["Calistoga", ...defaultTheme.fontFamily.serif],
-        gothic: ["Gothic A1", ...defaultTheme.fontFamily.sans],
-        nanum: ["nanum", ...defaultTheme.fontFamily.sans],
+        title: ["FlightSans-Title", "sans-serif"],
+        contents: ["RIDIBatang", "sans-serif"],
       },
       colors: {
         black: "#000000",

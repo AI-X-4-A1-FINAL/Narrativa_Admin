@@ -98,7 +98,7 @@ const UserTable: React.FC<UserTableProps> = ({
         onClick={() =>
           setOpenDropdownId(openDropdownId === user.id ? null : user.id)
         }
-        className="flex items-center justify-between w-full px-1 sm:px-2 py-0.5 sm:py-1 text-xs sm:text-sm font-medium rounded hover:bg-gray-50"
+        className="flex items-center justify-between w-full px-1 sm:px-2 py-0.5 sm:py-1 text-xs sm:text-sm font-contents font-medium rounded hover:bg-gray-50"
       >
         <span>{formatRole(user.role)}</span>
         <ChevronsUpDown className="w-3 h-3 sm:w-4 sm:h-4 ml-1 sm:ml-2" />
@@ -113,7 +113,7 @@ const UserTable: React.FC<UserTableProps> = ({
                   onUpdateRole(user.id, role);
                   setOpenDropdownId(null);
                 }}
-                className="flex items-center justify-between w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm hover:bg-gray-50"
+                className="flex items-center justify-between w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm font-contents font-medium hover:bg-gray-50"
               >
                 <span>{formatRole(role)}</span>
                 {user.role === role && <Check className="w-4 h-4 ml-2" />}
@@ -133,7 +133,7 @@ const UserTable: React.FC<UserTableProps> = ({
             openStatusDropdownId === user.id ? null : user.id
           )
         }
-        className={`flex items-center justify-between w-full px-1 sm:px-2 py-0.5 sm:py-1 text-xs sm:text-sm font-medium rounded ${getStatusColor(
+        className={`flex items-center justify-between w-full px-1 sm:px-2 py-0.5 sm:py-1 text-xs sm:text-sm font-contents font-medium rounded ${getStatusColor(
           user.status
         )}`}
       >
@@ -150,7 +150,7 @@ const UserTable: React.FC<UserTableProps> = ({
                   onUpdateStatus(user.id, status.value);
                   setOpenStatusDropdownId(null);
                 }}
-                className={`flex items-center justify-between w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm hover:bg-gray-50 ${status.color}`}
+                className={`flex items-center justify-between w-full px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm font-contents font-medium hover:bg-gray-50 ${status.color}`}
               >
                 <span>{status.label}</span>
                 {user.status === status.value && (
@@ -174,7 +174,7 @@ const UserTable: React.FC<UserTableProps> = ({
         <button
           onClick={() => onPageChange(1)}
           disabled={currentPage === 1}
-          className="px-3 py-1 text-sm text-gray-700 bg-white border border-gray-300 rounded-md 
+          className="px-3 py-1 text-sm font-contents text-gray-700 bg-white border border-gray-300 rounded-md 
           hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           처음
@@ -184,7 +184,7 @@ const UserTable: React.FC<UserTableProps> = ({
           <>
             <button
               onClick={() => onPageChange(1)}
-              className="px-3 py-1 text-sm text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+              className="px-3 py-1 text-sm font-contents text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
             >
               1
             </button>
@@ -198,7 +198,7 @@ const UserTable: React.FC<UserTableProps> = ({
             <button
               key={page}
               onClick={() => onPageChange(page)}
-              className={`px-3 py-1 text-sm rounded-md ${
+              className={`px-3 py-1 text-sm font-contents rounded-md ${
                 currentPage === page
                   ? "bg-blue-500 text-white"
                   : "text-gray-700 bg-white border border-gray-300 hover:bg-gray-50"
@@ -224,7 +224,7 @@ const UserTable: React.FC<UserTableProps> = ({
         <button
           onClick={() => onPageChange(totalPages)}
           disabled={currentPage === totalPages}
-          className="px-3 py-1 text-sm text-gray-700 bg-white border border-gray-300 rounded-md 
+          className="px-3 py-1 text-sm font-contents text-gray-700 bg-white border border-gray-300 rounded-md 
           hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           마지막
@@ -236,7 +236,7 @@ const UserTable: React.FC<UserTableProps> = ({
   return (
     <div className="space-y-4">
       <div className="relative overflow-hidden shadow-md sm:rounded-lg bg-white">
-        <div className="grid grid-cols-3 sm:grid-cols-6 bg-gray-50 text-xs uppercase font-medium text-gray-700 h-10 sm:h-12">
+        <div className="grid grid-cols-3 sm:grid-cols-6 bg-gray-50 text-xs uppercase font-medium font-contents text-gray-700 h-10 sm:h-12">
           {renderHeader("username", "이름")}
           {renderHeader("role", "권한")}
           {renderHeader("status", "상태")}
@@ -251,7 +251,7 @@ const UserTable: React.FC<UserTableProps> = ({
               key={user?.id || `empty-${index}`}
               className="grid grid-cols-3 sm:grid-cols-6 hover:bg-gray-50 transition-colors"
             >
-              <div className="px-2 sm:px-4 py-3 sm:py-4 flex items-center font-medium text-gray-900 text-sm">
+              <div className="px-2 sm:px-4 py-3 sm:py-4 flex items-center font-contents font-medium text-gray-900 text-sm">
                 {user?.username || "\u00A0"}
               </div>
               <div className="px-2 sm:px-4 py-3 sm:py-4 flex items-center relative">
@@ -269,10 +269,10 @@ const UserTable: React.FC<UserTableProps> = ({
                   />
                 )}
               </div>
-              <div className="hidden sm:flex px-4 py-4 items-center text-gray-500">
+              <div className="hidden sm:flex px-4 py-4 items-center font-contents text-gray-500">
                 {user?.loginType || "\u00A0"}
               </div>
-              <div className="hidden sm:flex px-4 py-4 items-center text-gray-500 text-sm">
+              <div className="hidden sm:flex px-4 py-4 items-center font-contents text-gray-500 text-sm">
                 {user ? formatDate(user.createdAt) : "\u00A0"}
               </div>
             </div>
@@ -281,14 +281,14 @@ const UserTable: React.FC<UserTableProps> = ({
       </div>
 
       <div className="flex items-center justify-between px-2 sm:px-4">
-        <span className="text-sm text-gray-700">
+        <span className="text-sm font-contents text-gray-700">
           총 <span className="font-semibold">{totalItems}</span> 명의 사용자
         </span>
         <div className="flex items-center space-x-1 sm:space-x-2">
           <button
             onClick={() => onPageChange(Math.max(currentPage - 1, 1))}
             disabled={currentPage === 1}
-            className="p-1 sm:px-3 sm:py-1 text-sm text-gray-700 bg-white border border-gray-300 rounded-md 
+            className="p-1 sm:px-3 sm:py-1 text-sm font-contents text-gray-700 bg-white border border-gray-300 rounded-md 
             hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <ChevronLeft className="w-4 h-4" />
@@ -296,13 +296,13 @@ const UserTable: React.FC<UserTableProps> = ({
           <div className="hidden sm:flex items-center space-x-1">
             {renderPageNumbers()}
           </div>
-          <div className="sm:hidden text-sm text-gray-700">
+          <div className="sm:hidden text-sm font-contents text-gray-700">
             {currentPage} / {totalPages}
           </div>
           <button
             onClick={() => onPageChange(Math.min(currentPage + 1, totalPages))}
             disabled={currentPage === totalPages}
-            className="p-1 sm:px-3 sm:py-1 text-sm text-gray-700 bg-white border border-gray-300 rounded-md 
+            className="p-1 sm:px-3 sm:py-1 text-sm font-contents text-gray-700 bg-white border border-gray-300 rounded-md 
             hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <ChevronRight className="w-4 h-4" />

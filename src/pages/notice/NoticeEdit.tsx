@@ -317,7 +317,7 @@ const NoticeEdit = () => {
         <p className="text-red-500">{error}</p>
         <button
           onClick={() => navigate('/notices')}
-          className="mt-4 px-4 py-2 text-pointer hover:text-white font-nanum"
+          className="mt-4 px-4 py-2 text-pointer hover:text-white font-contents"
         >
           목록으로 돌아가기
         </button>
@@ -337,7 +337,7 @@ const NoticeEdit = () => {
       <div className="flex items-center justify-between mb-6">
         <button
           onClick={handleBack}
-          className="flex items-center gap-2 font-nanum font-bold text-pointer hover:text-gray-800"
+          className="flex items-center gap-2 font-contents font-bold text-pointer hover:text-gray-800"
         >
           <ArrowLeft className="w-5 h-5" />
           목록으로

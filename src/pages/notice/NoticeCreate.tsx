@@ -157,7 +157,7 @@ const NoticeCreate = () => {
         <div className="flex items-center gap-2">
           <button
             onClick={handleBack}
-            className="flex items-center gap-2 font-nanum font-bold text-pointer hover:text-gray-800"
+            className="flex items-center gap-2 font-contents font-bold text-pointer hover:text-gray-800"
           >
             <ArrowLeft className="w-5 h-5" />
             목록으로
@@ -174,7 +174,7 @@ const NoticeCreate = () => {
         <div>
           <label
             htmlFor="title"
-            className="block font-nanum text-sm font-medium text-gray-700 mb-1"
+            className="block font-contents text-sm font-medium text-gray-700 mb-1"
           >
             제목
           </label>
@@ -192,7 +192,7 @@ const NoticeCreate = () => {
         <div className="min-h-[50dvh] max-h-[45dvh] overflow-auto">
           <label
             htmlFor="content"
-            className="block font-nanum text-sm font-medium text-gray-700 mb-1"
+            className="block font-contents text-sm font-medium text-gray-700 mb-1"
           >
             내용
           </label>
@@ -214,7 +214,7 @@ const NoticeCreate = () => {
             <select
               value={status}
               onChange={(e) => setStatus(e.target.value as 'ACTIVE' | 'INACTIVE')}
-              className="px-3 py-2 border font-nanum border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pointer"
+              className="px-3 py-2 border font-contents border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pointer"
             >
               <option value="INACTIVE">임시저장</option>
               <option value="ACTIVE">게시</option>
@@ -225,14 +225,14 @@ const NoticeCreate = () => {
             <button
               type="button"
               onClick={handleBack}
-              className="px-4 py-2 font-nanum text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+              className="px-4 py-2 font-contents text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
             >
               취소
             </button>
             <button
               type="submit"
               disabled={isLoading}
-              className="px-4 py-2 font-nanum text-white bg-pointer rounded-lg hover:bg-blue-700 disabled:opacity-50"
+              className="px-4 py-2 font-contents text-white bg-pointer rounded-lg hover:bg-blue-700 disabled:opacity-50"
             >
               {isLoading
                 ? "저장 중..."

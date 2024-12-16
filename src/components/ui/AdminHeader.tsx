@@ -35,7 +35,7 @@ const Header: React.FC = () => {
       {/* 왼쪽: 로고 */}
       <Link to="/" className="flex items-center gap-x-2 sm:gap-x-4">
         <img src={HeaderLogo} alt="Header Logo" className="w-4 sm:w-5 h-[20px] sm:h-[26px]" />
-        <div className="text-base sm:text-lg md:text-xl font-normal text-white font-calistoga whitespace-nowrap">
+        <div className="text-base sm:text-lg md:text-xl font-normal text-white font-title whitespace-nowrap">
           NARRATIVA - ADMIN
         </div>
       </Link>
@@ -43,7 +43,7 @@ const Header: React.FC = () => {
       {/* 오른쪽: 관리자 정보 */}
       <div className="flex items-center gap-x-2 sm:gap-x-4">
         <span 
-          className={`text-xs sm:text-sm font-medium font-nanum ${
+          className={`text-xs sm:text-sm font-medium font-contents ${
             remainingTime <= 300 ? 'text-red-500 animate-bounce' : 'text-white'
           }`}
         >
@@ -53,11 +53,11 @@ const Header: React.FC = () => {
         </span>
         <button 
           onClick={handleResetTimer} 
-          className="text-white bg-pointer2 hover:bg-pointer px-2 sm:px-3 py-1 rounded text-xs sm:text-sm"
+          className="text-white font-contents bg-pointer2 hover:bg-pointer px-2 sm:px-3 py-1 rounded text-xs sm:text-sm"
         >
           연장
         </button>
-        <span className="text-white text-xs sm:text-sm font-medium font-nanum">{adminName}</span>
+        <span className="text-white text-xs sm:text-sm font-medium font-contents">{adminName}</span>
       </div>
     </header>
   );

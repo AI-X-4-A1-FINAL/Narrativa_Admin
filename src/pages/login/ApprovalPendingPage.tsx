@@ -36,22 +36,22 @@ const ApprovalPendingPage: React.FC = () => {
       }}
     >
       <div className="bg-white/75 p-8 rounded-lg shadow-md w-full max-w-md backdrop-blur">
-        <h1 className="text-2xl font-nanum font-bold text-pointer text-center mb-4">
+        <h1 className="text-2xl font-contents font-bold text-pointer text-center mb-4">
           권한 승인 대기 중
         </h1>
-        <p className="text-base font-nanum text-center mb-4">
+        <p className="text-base font-contents text-center mb-4">
           관리자 권한 승인이 완료될 때까지 기다려 주세요!
         </p>
         <div className="flex gap-2">
           <button
             onClick={handleLogout}
-            className="w-1/2 bg-red-500 font-nanum text-white py-2 px-4 rounded hover:bg-red-600"
+            className="w-1/2 bg-red-500 font-contents text-white py-2 px-4 rounded hover:bg-red-600"
           >
             로그아웃
           </button>
           <button
             onClick={handleAdminAccess}
-            className="w-1/2 bg-blue-500 font-nanum text-white py-2 px-4 rounded hover:bg-blue-600"
+            className="w-1/2 bg-blue-500 font-contents text-white py-2 px-4 rounded hover:bg-blue-600"
           >
             관리자 페이지
           </button>

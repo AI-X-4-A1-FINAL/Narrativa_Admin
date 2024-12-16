@@ -155,7 +155,7 @@ const UserManagementPage: React.FC = () => {
   }
 
   return (
-    <PageLayout title="회원 관리">
+    <PageLayout title="User Management">
       <div className="space-y-4 sm:space-y-6 px-2 sm:px-0">
         <div className="flex flex-row justify-start gap-x-4">
           <SearchBar searchTerm={searchTerm} onSearch={handleSearch} />

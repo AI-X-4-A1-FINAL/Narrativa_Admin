@@ -79,19 +79,19 @@ const FileUploadCard: React.FC<FileUploadCardProps> = ({
     return (
         <Card className="w-full">
             <CardHeader className="pb-3 sm:pb-4">
-                <CardTitle className="text-lg sm:text-xl">음악 파일 업로드</CardTitle>
+                <CardTitle className="font-contents text-lg sm:text-xl">음악 파일 업로드</CardTitle>
             </CardHeader>
             <CardContent>
                 <div className="space-y-3 sm:space-y-4">
                     {/* 장르 선택 */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                        <label className="block text-sm font-contents font-medium text-gray-700 mb-1">
                             장르
                         </label>
                         <select
                             value={selectedGenre}
                             onChange={handleGenreChange}
-                            className="w-full p-2 border border-gray-300 rounded-md text-sm sm:text-base"
+                            className="w-full p-2 border border-gray-300 rounded-md text-sm sm:text-base font-contents"
                         >
                             {genres.map((genre) => (
                                 <option key={genre} value={genre}>
@@ -121,7 +121,7 @@ const FileUploadCard: React.FC<FileUploadCardProps> = ({
                     {/* 선택된 파일 목록 */}
                     {selectedFiles.length > 0 && (
                         <div className="mt-3 sm:mt-4">
-                            <h3 className="text-xs sm:text-sm font-medium text-gray-700 mb-2">
+                            <h3 className="text-xs sm:text-sm font-contents font-medium text-gray-700 mb-2">
                                 선택된 파일 ({selectedFiles.length})
                             </h3>
                             <div className="space-y-1.5 sm:space-y-2 max-h-32 sm:max-h-40 overflow-y-auto">
@@ -130,7 +130,7 @@ const FileUploadCard: React.FC<FileUploadCardProps> = ({
                                         key={index}
                                         className="flex items-center justify-between p-1.5 sm:p-2 bg-gray-50 rounded-md"
                                     >
-                                        <span className="text-xs sm:text-sm text-gray-600 truncate max-w-[85%]">
+                                        <span className="text-xs sm:text-sm font-contents text-gray-600 truncate max-w-[85%]">
                                             {file.name}
                                         </span>
                                         <button
@@ -150,7 +150,7 @@ const FileUploadCard: React.FC<FileUploadCardProps> = ({
                         <button
                             onClick={handleUpload}
                             className="w-full mt-3 sm:mt-4 px-3 sm:px-4 py-1.5 sm:py-2 bg-pointer2 text-white rounded-md
-                                text-sm sm:text-base hover:bg-pointer1 transition-colors"
+                                text-sm sm:text-base font-contents hover:bg-pointer1 transition-colors"
                         >
                             {selectedFiles.length}개 파일 업로드
                         </button>

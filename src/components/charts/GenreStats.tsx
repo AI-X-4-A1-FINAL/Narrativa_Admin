@@ -37,7 +37,7 @@ export const GenreBarChart: React.FC<GenreStatsProps> = ({ gamesByGenre }) => {
   return (
     <div className="bg-white rounded-lg shadow-md p-6 flex flex-col h-[300px]">
       <div className="mb-1">
-        <h2 className="text-lg font-nanum font-semibold text-gray-700">장르별 게임 실행 횟수</h2>
+        <h2 className="text-lg font-title font-semibold text-gray-700">장르별 게임 실행 횟수</h2>
       </div>
       
       <div className="flex-1">
@@ -73,8 +73,8 @@ export const GenreBarChart: React.FC<GenreStatsProps> = ({ gamesByGenre }) => {
 
       <div className="mt-1 border-gray-200">
         <div className="flex justify-between items-center">
-          <span className="text-sm font-nanum font-semibold text-gray-600">총계</span>
-          <span className="text-sm font-nanum font-semibold text-blue-600">
+          <span className="text-sm font-contents font-semibold text-gray-600">총계</span>
+          <span className="text-sm font-contents font-semibold text-blue-600">
             {total.toLocaleString()}회
           </span>
         </div>
@@ -169,7 +169,7 @@ export const GenrePieChart: React.FC<GenreStatsProps> = ({ gamesByGenre }) => {
   return (
     <div className="bg-white rounded-lg shadow-md p-6 flex flex-col h-[300px]">
       <div className="mb-4">
-        <h2 className="text-lg font-nanum font-semibold text-gray-700">장르별 게임 실행 비율</h2>
+        <h2 className="text-lg font-title font-title font-semibold text-gray-700">장르별 게임 실행 비율</h2>
       </div>
       
       <div className="flex-1">

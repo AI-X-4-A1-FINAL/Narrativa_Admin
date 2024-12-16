@@ -16,7 +16,7 @@ const StatusBadge = ({ status }: { status: NoticeStatus }) => {
 
   const { className, label } = statusStyles[status];
   return (
-    <span className={`px-2 py-1 text-xs rounded font-nanum ${className}`}>
+    <span className={`px-2 py-1 text-xs rounded font-contents ${className}`}>
       {label}
     </span>
   );
@@ -125,7 +125,7 @@ const NoticeDetail = () => {
         <p className="text-red-500">{error || '공지사항을 찾을 수 없습니다.'}</p>
         <button
           onClick={handleBack}
-          className="mt-4 px-4 py-2 text-pointer hover:text-white font-nanum"
+          className="mt-4 px-4 py-2 text-pointer hover:text-white font-contents"
         >
           목록으로 돌아가기
         </button>
@@ -147,7 +147,7 @@ const NoticeDetail = () => {
       <div className="flex items-center justify-between mb-6">
         <button
           onClick={handleBack}
-          className="flex items-center gap-2 font-nanum font-bold text-pointer hover:text-white"
+          className="flex items-center gap-2 font-contents font-bold text-pointer hover:text-white"
         >
           <ArrowLeft className="w-5 h-5" />
           목록으로
@@ -155,14 +155,14 @@ const NoticeDetail = () => {
         <div className="flex items-center gap-2">
           <button
             onClick={handleEdit}
-            className="flex items-center gap-2 px-4 py-2 font-nanum font-bold text-gray-600 bg-white hover:text-gray-800 border border-gray-300 rounded-lg hover:bg-gray-50"
+            className="flex items-center gap-2 px-4 py-2 font-contents font-bold text-gray-600 bg-white hover:text-gray-800 border border-gray-300 rounded-lg hover:bg-gray-50"
           >
             <Edit2 className="w-4 h-4" />
             수정
           </button>
           <button
             onClick={handleDelete}
-            className="flex items-center gap-2 px-4 py-2 font-nanum font-bold text-red-600 bg-white hover:text-red-700 border border-red-200 rounded-lg hover:bg-red-50"
+            className="flex items-center gap-2 px-4 py-2 font-contents font-bold text-red-600 bg-white hover:text-red-700 border border-red-200 rounded-lg hover:bg-red-50"
           >
             <Trash2 className="w-4 h-4" />
             삭제
@@ -174,17 +174,17 @@ const NoticeDetail = () => {
       <div className="bg-white rounded-lg shadow p-6">
         <div className="flex items-center gap-3 mb-2">
           <StatusBadge status={notice.status} />
-          <h1 className="text-2xl font-nanum font-bold text-gray-800">
+          <h1 className="text-2xl font-contents font-bold text-gray-800">
             {notice.title}
           </h1>
         </div>
 
-        <div className="flex items-center gap-4 font-nanum text-sm text-gray-500 mb-6">
+        <div className="flex items-center gap-4 font-contents text-sm text-gray-500 mb-6">
           <div className="flex items-center gap-1">
             <User className="w-4 h-4" />
             관리자 {notice.createdBy}
           </div>
-          <div className="flex items-center gap-1 font-nanum">
+          <div className="flex items-center gap-1 font-contents">
             <Clock className="w-4 h-4" />
             {formatDate(notice.createdAt)}
           </div>
@@ -197,7 +197,7 @@ const NoticeDetail = () => {
 
         <div className="prose max-w-none">
           {notice.content.split('\n').map((paragraph, index) => (
-            <p key={index} className="mb-4 font-nanum text-gray-700 leading-relaxed">
+            <p key={index} className="mb-4 font-contents text-gray-700 leading-relaxed">
               {paragraph}
             </p>
           ))}

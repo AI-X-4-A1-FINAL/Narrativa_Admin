@@ -21,11 +21,11 @@ const MusicList: React.FC = () => {
     }, []);
 
     return (
-        <PageLayout title="음악 관리">
+        <PageLayout title="Music List">
             <div className="space-y-4 sm:space-y-6">
                 {/* 장르 필터 버튼 */}
                 <div className="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-4">
-                    <div className="font-nanum font-bold text-lg sm:text-xl text-gray-700 mb-2 sm:mb-3">장르 필터</div>
+                    <div className="font-contents font-bold text-lg sm:text-xl text-gray-700 mb-2 sm:mb-3">장르 필터</div>
                     <div className="grid grid-cols-4 gap-1 sm:gap-2">
                         {genres
                             .filter(genre => genre !== 'UnKnown')
@@ -33,7 +33,7 @@ const MusicList: React.FC = () => {
                                 <button
                                     key={genre}
                                     onClick={() => setSelectedGenre(genre)}
-                                    className={`px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-full font-nanum text-xs sm:text-sm transition-colors
+                                    className={`px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-full font-contents text-xs sm:text-sm transition-colors
                                         text-center overflow-hidden
                                         ${selectedGenre === genre
                                             ? 'bg-pointer2 text-white'
@@ -63,7 +63,7 @@ const MusicList: React.FC = () => {
                     </div>
                 ) : (
                     <div className="min-h-[50dvh] sm:min-h-[60dvh] max-h-[50dvh] sm:max-h-[60dvh] flex justify-center items-center bg-white rounded-xl sm:rounded-2xl p-4 sm:p-8">
-                        <p className="text-center text-sm sm:text-base text-gray-500">장르를 선택하여 파일 목록을 확인하세요</p>
+                        <p className="text-center font-contents text-sm sm:text-base text-gray-500">장르를 선택하여 파일 목록을 확인하세요</p>
                     </div>
                 )}
             </div>

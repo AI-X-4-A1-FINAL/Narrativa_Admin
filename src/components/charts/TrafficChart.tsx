@@ -12,21 +12,21 @@ export const TrafficChart: React.FC<TrafficChartProps> = ({ view, stats, onViewC
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-nanum font-semibold text-gray-700">트래픽 통계</h2>
+        <h2 className="text-lg font-title font-semibold text-gray-700">트래픽 통계</h2>
         <div className="flex space-x-2">
           <button
             onClick={() => onViewChange('daily')}
             className={`px-3 py-1 font-nanum text-sm rounded-md transition-all ${
               view === 'daily'
                 ? 'bg-pointer2 text-white'
-                : 'text-gray-600 font-nanum hover:bg-gray-200'
+                : 'text-gray-600 font-contents hover:bg-gray-200'
             }`}
           >
             일간
           </button>
           <button
             onClick={() => onViewChange('weekly')}
-            className={`px-3 py-1 font-nanum text-sm rounded-md transition-all ${
+            className={`px-3 py-1 font-contents text-sm rounded-md transition-all ${
               view === 'weekly'
                 ? 'bg-pointer2 text-white'
                 : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
@@ -49,7 +49,7 @@ export const TrafficChart: React.FC<TrafficChartProps> = ({ view, stats, onViewC
 const DailyTrafficView: React.FC<{ stats: BasicStats | null }> = ({ stats }) => (
   <>
     <div className="mb-4">
-      <p className="text-3xl font-nanum font-bold text-pointer">{stats?.totalDailyTraffic || 0}</p>
+      <p className="text-3xl font-contents font-bold text-pointer">{stats?.totalDailyTraffic || 0}</p>
     </div>
     <div className="h-2/3 w-full flex justify-center items-center">
       <ResponsiveContainer width="100%" height="80%">

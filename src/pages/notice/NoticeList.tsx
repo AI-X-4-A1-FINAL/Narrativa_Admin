@@ -112,9 +112,9 @@ const NoticeList = () => {
   const TitleRight = (
     <button
       onClick={handleCreateClick}
-      className="flex items-center gap-1 px-2 py-2 bg-pointer font-nanum text-white rounded-lg hover:bg-pointer"
+      className="flex items-center gap-1 px-2 py-2 bg-pointer font-contents text-white rounded-lg hover:bg-pointer"
     >
-      <Plus className="w-4 h-4 font-nanum" />
+      <Plus className="w-4 h-4 font-contents" />
       새 공지사항
     </button>
   );
@@ -137,7 +137,7 @@ const NoticeList = () => {
 
   return (
     <PageLayout 
-      title="공지사항" 
+      title="Notice Management" 
       rightElement={TitleRight}
     >
       <form onSubmit={handleSearch} className="mb-4">
@@ -154,7 +154,7 @@ const NoticeList = () => {
           </div>
           <button
             type="submit"
-            className="px-6 py-2 bg-gray-800 font-nanum text-white rounded-lg hover:bg-gray-900"
+            className="px-6 py-2 bg-gray-800 font-contents text-white rounded-lg hover:bg-gray-900"
           >
             검색
           </button>
@@ -163,7 +163,7 @@ const NoticeList = () => {
 
       <div className="bg-white rounded-lg shadow">
         {getFilteredNotices().length === 0 ? (
-          <div className="h-[480px] p-8 text-center font-nanum text-gray-500">
+          <div className="h-[480px] p-8 text-center font-contents text-gray-500">
             {searchKeyword ? "검색 결과가 없습니다." : "공지사항이 없습니다."}
           </div>
         ) : (
@@ -178,21 +178,21 @@ const NoticeList = () => {
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-3">
                       <StatusBadge status={notice.status} />
-                      <h3 className="font-medium font-nanum text-gray-800">{notice.title}</h3>
+                      <h3 className="font-medium font-contents text-gray-800">{notice.title}</h3>
                     </div>
                     <div className="lg:flex lg:flex-col items-end hidden">
-                      <span className="text-sm font-nanum text-gray-500">
+                      <span className="text-sm font-contents text-gray-500">
                         작성: {formatDate(notice.createdAt)}
                       </span>
                       {notice.updatedAt !== notice.createdAt && (
-                        <span className="text-xs font-nanum text-gray-400">
+                        <span className="text-xs font-contents text-gray-400">
                           수정: {formatDate(notice.updatedAt)}
                         </span>
                       )}
                     </div>
                   </div>
                   <p className="text-sm text-gray-600 line-clamp-2">{notice.content}</p>
-                  <div className="mt-2 text-xs font-nanum text-gray-500 hidden lg:block">
+                  <div className="mt-2 text-xs font-contents text-gray-500 hidden lg:block">
                     관리자 ID: {notice.createdBy}
                   </div>
                 </div>

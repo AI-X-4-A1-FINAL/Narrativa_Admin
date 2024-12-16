@@ -43,14 +43,14 @@ const PlaytimeStats: React.FC<PlaytimeStatsProps> = ({ gamePlaytimes, genrePlayt
   return (
     <div className="flex justify-between items-center">
       <div>
-        <p className="text-2xl font-nanum font-bold text-pointer">
+        <p className="text-2xl font-contents font-bold text-pointer">
           {formatTime(calculateTotalAverage())}
         </p>
       </div>
       <div>
         <button
           onClick={() => setShowGenreStats(!showGenreStats)}
-          className={`px-3 py-1 font-nanum text-sm rounded-md transition-all ${
+          className={`px-3 py-1 font-contents text-sm rounded-md transition-all ${
             showGenreStats
               ? 'bg-pointer2 text-white'
               : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
@@ -65,15 +65,15 @@ const PlaytimeStats: React.FC<PlaytimeStatsProps> = ({ gamePlaytimes, genrePlayt
           <table className="w-full">
             <thead>
               <tr className="border-b border-gray-200">
-                <th className="text-left pb-3 text-sm font-nanum font-medium text-gray-500">장르</th>
-                <th className="text-right pb-3 text-sm font-nanum font-medium text-gray-500">평균 플레이타임</th>
+                <th className="text-left pb-3 text-sm font-title font-medium text-gray-500">장르</th>
+                <th className="text-right pb-3 text-sm font-title font-medium text-gray-500">평균 플레이타임</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200">
               {allGenres.map((genre) => (
                 <tr key={genre} className="hover:bg-gray-50">
-                  <td className="py-3 text-sm font-nanum text-gray-900">{genre}</td>
-                  <td className="py-3 text-sm font-nanum text-gray-900 text-right">
+                  <td className="py-3 text-sm font-contents text-gray-900">{genre}</td>
+                  <td className="py-3 text-sm font-contents text-gray-900 text-right">
                     {formatTime(getGenreData(genre))}
                   </td>
                 </tr>

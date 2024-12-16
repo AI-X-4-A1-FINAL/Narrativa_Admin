@@ -45,7 +45,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ searchTerm, onSearch }) => {
           onChange={handleChange}
           onFocus={() => setIsFocused(true)}
           onBlur={() => setIsFocused(false)}
-          className="flex-1 outline-none text-sm sm:text-base font-nanum text-gray-700 placeholder-gray-400 bg-transparent"
+          className="flex-1 outline-none text-sm sm:text-base font-contents text-gray-700 placeholder-gray-400 bg-transparent"
         />
         {searchTerm && (
           <button

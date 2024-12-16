@@ -11,8 +11,6 @@ export const Tooltip: React.FC<TooltipProps> = ({ children, content }) => {
   return (
     <div
       className="relative inline-block"
-      onMouseEnter={() => setIsVisible(true)}
-      onMouseLeave={() => setIsVisible(false)}
     >
       {children}
       {isVisible && (

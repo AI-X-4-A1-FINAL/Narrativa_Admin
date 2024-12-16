@@ -27,13 +27,13 @@ const Sidebar: React.FC = () => {
   return (
     <div className="h-[calc(90vh)] w-[20%] min-w-[80px] max-w-[300px] bg-main flex flex-col justify-start items-center p-5 gap-12">
       {/* Version */}
-      <div className="absolute bottom-12 text-sm font-nanum font-bold text-white tracking-widest">
+      <div className="absolute bottom-12 text-sm font-title font-bold text-white tracking-widest">
         V {packageJson.version}
       </div>
 
       {/* Mascot */}
       <div className="absolute bottom-24 hidden lg:block">
-        <Mascot className="w-180 h-auto text-gray-800 group-hover:text-white" />
+        <Mascot className="w-28 h-auto text-gray-800 group-hover:text-white" />
       </div>
 
       {/* Menu List */}
@@ -46,14 +46,14 @@ const Sidebar: React.FC = () => {
           }`}
         >
           <span
-            className={`material-icons w-5 h-5 group-hover:text-white ${
+            className={`material-icons group-hover:text-white ${
               location.pathname === "/" ? "text-white" : "text-gray-800"
             }`}
           >
             bar_chart
           </span>
-          <span className="text-sm font-nanum font-bold ml-4 hidden lg:block">
-            통계 대시보드
+          <span className="text-sm font-title font-bold ml-4 hidden lg:block">
+            Statistics
           </span>
         </Link>
 
@@ -65,14 +65,14 @@ const Sidebar: React.FC = () => {
           }`}
         >
           <span
-            className={`material-icons w-5 h-5 group-hover:text-white ${
+            className={`material-icons group-hover:text-white ${
               location.pathname === "/admins" ? "text-white" : "text-gray-800"
             }`}
           >
             admin_panel_settings
           </span>
-          <span className="text-sm font-nanum font-bold ml-4 hidden lg:block">
-            관리자 관리
+          <span className="text-sm font-title font-bold ml-4 hidden lg:block">
+            Administrators
           </span>
         </Link>
 
@@ -84,14 +84,14 @@ const Sidebar: React.FC = () => {
           }`}
         >
           <span
-            className={`material-icons w-5 h-5 group-hover:text-white ${
+            className={`material-icons group-hover:text-white ${
               location.pathname === "/users" ? "text-white" : "text-gray-800"
             }`}
           >
             person
           </span>
-          <span className="text-sm font-nanum font-bold ml-4 hidden lg:block">
-            회원 관리
+          <span className="text-sm font-title font-bold ml-4 hidden lg:block">
+            Users
           </span>
         </Link>
 
@@ -103,14 +103,14 @@ const Sidebar: React.FC = () => {
           }`}
         >
           <span
-            className={`material-icons w-5 h-5 group-hover:text-white ${
+            className={`material-icons group-hover:text-white ${
               isPathActive("/notices") ? "text-white" : "text-gray-800"
             }`}
           >
             campaign
           </span>
-          <span className="text-sm font-nanum font-bold ml-4 hidden lg:block">
-            공지 관리
+          <span className="text-sm font-title font-bold ml-4 hidden lg:block">
+            Notices
           </span>
         </Link>
 
@@ -133,8 +133,8 @@ const Sidebar: React.FC = () => {
               </span>
             </div>
             <div className="hidden lg:flex flex-1 items-center">
-              <span className="text-sm font-nanum font-bold ml-4">
-                음악 관리
+              <span className="text-sm font-title font-bold ml-4">
+                Musics
               </span>
               {isMusicSubmenuOpen ? (
                 <ChevronDown className="w-4 h-4 ml-auto" />
@@ -160,8 +160,8 @@ const Sidebar: React.FC = () => {
                     format_list_bulleted
                   </span>
                 </div>
-                <span className="text-sm font-nanum font-bold ml-4 hidden lg:block">
-                  음악 목록
+                <span className="text-sm font-title font-bold ml-4 hidden lg:block">
+                  Music List
                 </span>
               </Link>
               <Link
@@ -177,8 +177,8 @@ const Sidebar: React.FC = () => {
                     upload_file
                   </span>
                 </div>
-                <span className="text-sm font-nanum font-bold ml-4 hidden lg:block">
-                  음악 업로드
+                <span className="text-sm font-title font-bold ml-4 hidden lg:block">
+                  Music Upload
                 </span>
               </Link>
             </div>
@@ -192,14 +192,14 @@ const Sidebar: React.FC = () => {
           }`}
         >
           <span
-            className={`material-icons w-5 h-5 group-hover:text-white ${
+            className={`material-icons group-hover:text-white ${
               isPathActive("/prompts") ? "text-white" : "text-gray-800"
             }`}
           >
             psychology_alt
           </span>
-          <span className="text-sm font-nanum font-bold ml-4 hidden lg:block">
-            프롬프트 관리
+          <span className="text-sm font-title font-bold ml-4 hidden lg:block">
+            Prompts
           </span>
         </Link>
         {/* 템플릿 관리 */}
@@ -216,8 +216,8 @@ const Sidebar: React.FC = () => {
           >
             description
           </span>
-          <span className="text-sm font-nanum font-bold ml-4 hidden lg:block">
-            템플릿 관리
+          <span className="text-sm font-title font-bold ml-4 hidden lg:block">
+            Templates
           </span>
         </Link>
       </div>
@@ -227,10 +227,10 @@ const Sidebar: React.FC = () => {
         className="w-full bg-white rounded-lg flex justify-center items-center p-2 hover:bg-pointer group cursor-pointer"
         onClick={handleLogout}
       >
-        <span className="material-icons w-5 h-5 group-hover:text-white text-gray-800">
+        <span className="material-icons group-hover:text-white text-gray-800">
           logout
         </span>
-        <span className="text-sm font-nanum font-bold text-gray-800 group-hover:text-white ml-4 hidden lg:block">
+        <span className="text-sm font-title font-bold text-gray-800 group-hover:text-white ml-4 hidden lg:block">
           Log out
         </span>
       </div>

@@ -319,7 +319,7 @@ const PromptManagementPage = () => {
   }
 
   return (
-    <PageLayout title="프롬프트 관리">
+    <PageLayout title="Prompts Management">
       <div className="h-[calc(100vh-120px)] w-full space-y-4 sm:space-y-6 p-2 sm:p-0 overflow-auto font-nanum">
         {/* 검색 및 버튼 영역 */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-4 p-2 sm:p-4 bg-white rounded-lg shadow-sm">
@@ -327,7 +327,7 @@ const PromptManagementPage = () => {
             <select
               value={searchGenre}
               onChange={handleGenreChange}
-              className="w-full sm:w-auto px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 font-nanum"
+              className="w-full sm:w-auto px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 font-contents"
             >
               <option value="">전체 장르</option>
               {genres.map(genre => (
@@ -347,7 +347,7 @@ const PromptManagementPage = () => {
                 onChange={(e) => handleShowInactiveChange(e.target.checked)}
                 className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
               />
-              <label htmlFor="showInactive" className="text-xs sm:text-sm text-gray-600 font-nanum">
+              <label htmlFor="showInactive" className="text-xs sm:text-sm text-gray-600 font-contents">
                 비활성 프롬프트 포함
               </label>
             </div>
@@ -363,7 +363,7 @@ const PromptManagementPage = () => {
               </button>
               <button 
                 onClick={() => setIsCreating(true)}
-                className="w-full sm:w-auto px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base bg-pointer text-white rounded-lg hover:bg-pointer2 transition-colors"
+                className="w-full sm:w-auto px-3 py-1.5 font-contents sm:px-4 sm:py-2 text-sm sm:text-base bg-pointer text-white rounded-lg hover:bg-pointer2 transition-colors"
               >
                 새 프롬프트
               </button>
@@ -376,7 +376,7 @@ const PromptManagementPage = () => {
           {/* 프롬프트 목록 */}
           <div className="lg:col-span-1">
             <div className="bg-white rounded-lg shadow-sm p-3 sm:p-4 h-[300px] sm:h-[600px]">
-              <h2 className="text-base sm:text-lg font-semibold mb-2 sm:mb-4 text-gray-800 font-nanum">프롬프트 목록</h2>
+              <h2 className="text-base sm:text-lg font-semibold mb-2 sm:mb-4 text-gray-800 font-title">프롬프트 목록</h2>
               <div className="space-y-2 overflow-y-auto h-[calc(100%-80px)]">
                 {currentItems.length > 0 ? (
                   currentItems.map((prompt) => (
@@ -390,7 +390,7 @@ const PromptManagementPage = () => {
                         ${!prompt.active && 'opacity-75'}`}
                     >
                       <div className="flex justify-between items-center">
-                        <h3 className="text-sm sm:text-base font-semibold text-gray-800 font-nanum">{prompt.title}</h3>
+                        <h3 className="text-sm sm:text-base font-semibold text-gray-800 font-contents">{prompt.title}</h3>
                         <span className={`text-xs px-2 py-1 rounded-full ${
                           prompt.active 
                             ? 'bg-green-100 text-green-600' 
@@ -399,12 +399,12 @@ const PromptManagementPage = () => {
                           {prompt.active ? '활성' : '비활성'}
                         </span>
                       </div>
-                      <p className="text-xs sm:text-sm text-gray-600 font-nanum mt-1">장르: {prompt.genre}</p>
+                      <p className="text-xs sm:text-sm text-gray-600 font-contents mt-1">장르: {prompt.genre}</p>
                     </div>
                   ))
                 ) : (
                   <div className="h-full flex items-center justify-center">
-                    <p className="text-sm sm:text-base text-gray-500 font-nanum">
+                    <p className="text-sm sm:text-base text-gray-500 font-contents">
                       {searchGenre ? 
                         "검색 결과가 없습니다." : 
                         "등록된 프롬프트가 없습니다."
@@ -419,7 +419,7 @@ const PromptManagementPage = () => {
                   <button
                     onClick={() => handlePageChange(currentPage - 1)}
                     disabled={currentPage === 1}
-                    className="px-2 py-1 sm:px-3 sm:py-1 text-xs sm:text-sm rounded-md bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
+                    className="px-2 py-1 sm:px-3 sm:py-1 text-xs sm:text-sm rounded-md bg-gray-100 hover:bg-gray-200 disabled:opacity-50 font-contents"
                   >
                     이전
                   </button>
@@ -441,7 +441,7 @@ const PromptManagementPage = () => {
                   <button
                     onClick={() => handlePageChange(currentPage + 1)}
                     disabled={currentPage === totalPages}
-                    className="px-2 py-1 sm:px-3 sm:py-1 text-xs sm:text-sm rounded-md bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
+                    className="px-2 py-1 sm:px-3 sm:py-1 text-xs sm:text-sm rounded-md bg-gray-100 hover:bg-gray-200 disabled:opacity-50 font-contents"
                   >
                     다음
                   </button>
@@ -455,10 +455,10 @@ const PromptManagementPage = () => {
             <div className="bg-white rounded-lg shadow-sm p-3 sm:p-6 h-[300px] sm:h-[600px] overflow-y-auto">
               {isCreating ? (
                 <div className="space-y-3 sm:space-y-4">
-                  <h2 className="text-base sm:text-xl font-bold text-gray-800">새 프롬프트 작성</h2>
+                  <h2 className="text-base sm:text-xl font-bold text-gray-800 font-title">새 프롬프트 작성</h2>
                   <div className="space-y-3 sm:space-y-4">
                     <div>
-                      <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
+                      <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 font-contents">
                         제목
                       </label>
                       <input
@@ -474,7 +474,7 @@ const PromptManagementPage = () => {
                     </div>
 
                     <div>
-                      <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
+                      <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 font-contents">
                         장르
                       </label>
                       <select
@@ -492,7 +492,7 @@ const PromptManagementPage = () => {
                     </div>
 
                     <div>
-                      <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
+                      <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 font-contents">
                         내용
                       </label>
                       <textarea
@@ -510,13 +510,13 @@ const PromptManagementPage = () => {
                     <div className="flex justify-end gap-2 mt-2 sm:mt-4">
                       <button 
                         onClick={() => setIsCreating(false)}
-                        className="px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                        className="px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-contents"
                       >
                         취소
                       </button>
                       <button 
                         onClick={handleCreate}
-                        className="px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base bg-pointer2 text-white rounded-lg hover:bg-pointer transition-colors"
+                        className="px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base bg-pointer2 text-white rounded-lg hover:bg-pointer transition-colors font-contents"
                       >
                         등록하기
                       </button>
@@ -528,10 +528,10 @@ const PromptManagementPage = () => {
                   {isEditing ? (
                     // 수정 폼
                     <div className="space-y-3 sm:space-y-4">
-                      <h2 className="text-base sm:text-xl font-bold text-gray-800">프롬프트 수정</h2>
+                      <h2 className="text-base sm:text-xl font-bold text-gray-800 font-title">프롬프트 수정</h2>
                       <div className="space-y-3 sm:space-y-4">
                         <div>
-                          <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
+                          <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 font-contents">
                             제목
                           </label>
                           <input
@@ -546,7 +546,7 @@ const PromptManagementPage = () => {
                         </div>
 
                         <div>
-                          <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
+                          <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 font-contents">
                             장르
                           </label>
                           <select
@@ -564,7 +564,7 @@ const PromptManagementPage = () => {
                         </div>
 
                         <div>
-                          <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
+                          <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1 font-contents">
                             내용
                           </label>
                           <textarea
@@ -581,13 +581,13 @@ const PromptManagementPage = () => {
                         <div className="flex justify-end gap-2">
                           <button 
                             onClick={() => setIsEditing(false)}
-                            className="px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                            className="px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-contents"
                           >
                             취소
                           </button>
                           <button 
                             onClick={handleEdit}
-                            className="px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base bg-pointer2 text-white rounded-lg hover:bg-pointer transition-colors"
+                            className="px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base bg-pointer2 text-white rounded-lg hover:bg-pointer transition-colors font-contents"
                           >
                             저장하기
                           </button>
@@ -598,28 +598,28 @@ const PromptManagementPage = () => {
                     // 상세 보기
                     <div className="space-y-3 sm:space-y-4">
                       <div className="flex justify-between items-center">
-                        <h2 className="text-base sm:text-xl font-bold text-gray-800">프롬프트 상세</h2>
+                        <h2 className="text-base sm:text-xl font-bold text-gray-800 font-title">프롬프트 상세</h2>
                         <div className="flex gap-2">
                           <button 
                             onClick={() => handleStatusToggle(selectedPrompt.id)}
-                            className="px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors"
+                            className="px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-colors font-contents"
                           >
                             {selectedPrompt.active ? '비활성화' : '활성화'}
                           </button>
                           <button 
                             onClick={() => setIsEditing(true)}
-                            className="px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base bg-pointer2 text-white rounded-lg hover:bg-pointer transition-colors"
+                            className="px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base bg-pointer2 text-white rounded-lg hover:bg-pointer transition-colors font-contents"
                           >
                             수정하기
                           </button>
                         </div>
                       </div>
                       <div className="border-b pb-3 sm:pb-4">
-                        <h3 className="text-sm sm:text-lg font-semibold text-gray-800">{selectedPrompt.title}</h3>
-                        <p className="text-xs sm:text-sm text-gray-600">장르: {selectedPrompt.genre}</p>
+                        <h3 className="text-sm sm:text-lg font-semibold text-gray-800 font-contents">{selectedPrompt.title}</h3>
+                        <p className="text-xs sm:text-sm text-gray-600 font-contents">장르: {selectedPrompt.genre}</p>
                       </div>
                       <div className="py-2 sm:py-4">
-                        <p className="text-sm sm:text-base whitespace-pre-wrap text-gray-700">{selectedPrompt.content}</p>
+                        <p className="text-sm sm:text-base whitespace-pre-wrap text-gray-700 font-contents">{selectedPrompt.content}</p>
                       </div>
                     </div>
                   )}
@@ -627,7 +627,7 @@ const PromptManagementPage = () => {
               ) : filteredPrompts.length === 0 ? (
                 // 검색 결과 없음 표시
                 <div className="h-full flex items-center justify-center">
-                  <p className="text-sm sm:text-base text-gray-500 font-nanum">
+                  <p className="text-sm sm:text-base text-gray-500 font-contents">
                     {searchGenre ? 
                       "검색 결과가 없습니다." : 
                       "등록된 프롬프트가 없습니다."
@@ -637,7 +637,7 @@ const PromptManagementPage = () => {
               ) : (
                 // 기본 빈 상태 메시지
                 <div className="h-full flex items-center justify-center">
-                  <p className="text-sm sm:text-base text-gray-500 font-nanum">
+                  <p className="text-sm sm:text-base text-gray-500 font-contents">
                     프롬프트를 선택하거나 새로 작성해주세요
                   </p>
                 </div>

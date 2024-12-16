@@ -180,10 +180,10 @@ const StatisticsPage: React.FC = () => {
 
  return (
    <PageLayout 
-     title="통계 대시보드"
+     title="Statistics Dashboard"
      rightElement={stats?.timestamp && (
        <div className="flex items-center space-x-2">
-         <span className="font-nanum text-sm text-gray-500 hidden md:block">
+         <span className="font-contents text-sm text-gray-500 hidden md:block">
            조회시간: {new Date(stats.timestamp).toLocaleString('ko-KR')}
          </span>
          <button 
@@ -218,12 +218,12 @@ const StatisticsPage: React.FC = () => {
 
          <div className="grid grid-cols-1 gap-6">
            <div className="bg-white rounded-lg shadow-md p-6">
-             <h2 className="text-lg font-nanum font-semibold text-gray-700">총 사용자 수</h2>
-             <p className="text-3xl font-nanum font-bold text-pointer">{stats?.totalUsers}</p>
+             <h2 className="text-lg font-title font-semibold text-gray-700">총 사용자 수</h2>
+             <p className="text-3xl font-contents font-bold text-pointer">{stats?.totalUsers}</p>
            </div>
 
            <div className="bg-white rounded-lg shadow-md p-6 relative">
-             <h2 className="text-lg font-nanum font-semibold text-gray-700 mb-4">평균 플레이타임</h2>
+             <h2 className="text-lg font-title font-semibold text-gray-700 mb-4">평균 플레이타임</h2>
              <PlaytimeStats 
                gamePlaytimes={gamePlaytimes}   
                genrePlaytimes={genrePlaytimes} 
@@ -242,19 +242,19 @@ const StatisticsPage: React.FC = () => {
           </div>
           {/* AWS 배포현황 섹션 */}
          <div className="bg-white rounded-lg shadow-md p-6 col-span-1 md:col-span-2">
-           <h2 className="text-lg font-nanum font-semibold text-gray-700">AWS 현황</h2>
+           <h2 className="text-lg font-title font-semibold text-gray-700">AWS 현황</h2>
            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
              {Object.entries(targetGroupHealth).map(([groupName, healthDescriptions]) => (
                <div key={groupName} className="p-4 bg-gray-50 rounded-lg">
                  {healthDescriptions.map((description, index) => (
                    <div key={index}>
-                     <h3 className="text-md font-nanum font-semibold text-gray-600">{description.targetId}</h3>
+                     <h3 className="text-md font-contents font-semibold text-gray-600">{description.targetId}</h3>
                      <div className="flex justify-between items-center mt-2">
-                       <span className="text-sm font-nanum text-gray-600">{groupName}</span>
-                       <span className={`px-2 py-1 rounded-full font-nanum text-xs font-medium ${
+                       <span className="text-sm font-contents text-gray-600">{groupName}</span>
+                       <span className={`px-2 py-1 rounded-full font-contents text-xs font-medium ${
                          description.state === 'healthy' ? 'bg-green-100 text-green-800' :
                          description.state === 'unhealthy' ? 'bg-red-100 text-red-800' :
-                         'bg-gray-100 font-nanum text-gray-800'
+                         'bg-gray-100 font-contents text-gray-800'
                        }`}>
                          {description.state}
                        </span>

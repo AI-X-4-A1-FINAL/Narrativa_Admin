@@ -2,29 +2,23 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Calistoga&family=Gothic+A1&family=Nanum+Gothic+Coding&display=swap');
-
-.calistoga-regular {
-  font-family: "Calistoga", serif;
-  font-weight: 400;
+@font-face {
+  font-family: 'FlightSans-Title';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/2410-1@1.0/FlightSans-Title.woff2') format('woff2');
+  font-weight: normal;
   font-style: normal;
 }
 
-.gothic-a1-regular {
-  font-family: "Gothic A1", sans-serif;
-  font-weight: 400;
+@font-face {
+  font-family: 'RIDIBatang';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_twelve@1.0/RIDIBatang.woff') format('woff');
+  font-weight: normal;
   font-style: normal;
 }
 
-.nanum-gothic-coding-regular {
-  font-family: "Nanum Gothic Coding", monospace;
-  font-weight: 400;
-  font-style: normal;
-}
 
 @layer utilities {
   * {
     @apply scrollbar-none;
   }
 }
-

@@ -16,10 +16,10 @@ const LoginPage: React.FC = () => {
       }}
     >
       <div className="bg-white/75 p-8 rounded-lg shadow-md w-full max-w-md backdrop-blur">
-        <h1 className="text-4xl font-nanum font-bold text-pointer text-center mb-4">
+        <h1 className="text-4xl font-title font-bold text-pointer text-center mb-4">
           NARRATIVA
         </h1>
-        <h1 className="text-2xl font-nanum font-bold text-center mb-4">
+        <h1 className="text-2xl font-contents font-bold text-center mb-4">
           관리자 로그인
         </h1>
         <div className="flex justify-center">
