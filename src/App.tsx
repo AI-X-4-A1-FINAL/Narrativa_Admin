@@ -28,6 +28,7 @@ import MusicList from "./pages/music/MusicList";
 import MusicUpload from "./pages/music/MusicUpload";
 
 import PromptList from "./pages/PromptManagementPage";
+import TemplateManagementPage from "./pages/TemplateManagementPage";
 
 const Root: React.FC = () => {
   return (
@@ -59,6 +60,7 @@ const Root: React.FC = () => {
                   <Route path="upload" element={<MusicUpload />} />
                 </Route>
                 <Route path="prompts" element={<PromptList />} />
+                <Route path="/templates" element={<TemplateManagementPage />} />
               </Route>
             </Route>
 

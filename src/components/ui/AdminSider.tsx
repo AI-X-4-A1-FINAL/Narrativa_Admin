@@ -202,6 +202,24 @@ const Sidebar: React.FC = () => {
             프롬프트 관리
           </span>
         </Link>
+        {/* 템플릿 관리 */}
+        <Link
+          to="/templates"
+          className={`flex lg:justify-start justify-center items-center w-full h-[36px] rounded-lg p-2 group ${
+            isPathActive("/templates") ? "bg-pointer text-white" : "bg-white hover:bg-pointer hover:text-white"
+          }`}
+        >
+          <span
+            className={`material-icons w-5 h-5 group-hover:text-white ${
+              isPathActive("/templates") ? "text-white" : "text-gray-800"
+            }`}
+          >
+            description
+          </span>
+          <span className="text-sm font-nanum font-bold ml-4 hidden lg:block">
+            템플릿 관리
+          </span>
+        </Link>
       </div>
 
       {/* Logout */}
