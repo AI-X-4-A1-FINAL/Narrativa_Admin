@@ -4,35 +4,44 @@ import { getAuth } from "firebase/auth";
 
 const BASE_URL = process.env.REACT_APP_BACKEND_URL;
 
+// axios 인스턴스 생성
+const api = axios.create({
+  baseURL: BASE_URL,
+  withCredentials: true,
+  headers: {
+    'Content-Type': 'application/json',
+  }
+});
+
+// 인증 토큰을 가져오는 헬퍼 함수
+const getAuthToken = async () => {
+  const auth = getAuth();
+  const idToken = await auth.currentUser?.getIdToken();
+  if (!idToken) throw new Error("로그인이 필요합니다.");
+  return idToken;
+};
+
 export const adminService = {
   // Auth 관련
   verifyToken: async (idToken: string) => {
-    const response = await axios.post(`${BASE_URL}/api/auth/verify`, {
-      idToken,
-    });
+    const response = await api.post('/api/auth/verify', { idToken });
     return response.data;
   },
 
   registerAdmin: async (idToken: string) => {
-    const response = await axios.post(`${BASE_URL}/api/auth/register`, {
-      idToken,
-    });
+    const response = await api.post('/api/auth/register', { idToken });
     return response.data;
   },
 
   updateLastLogin: async (userId: number) => {
-    const response = await axios.patch(
-      `${BASE_URL}/api/admin/users/${userId}/last-login`
-    );
+    const response = await api.patch(`/api/admin/users/${userId}/last-login`);
     return response.data;
   },
 
   // Admin 관리 관련
   getAllAdmins: async () => {
-    const auth = getAuth();
-    const idToken = await auth.currentUser?.getIdToken();
-
-    const response = await axios.get(`${BASE_URL}/api/admin/users`, {
+    const idToken = await getAuthToken();
+    const response = await api.get('/api/admin/users', {
       headers: {
         Authorization: `Bearer ${idToken}`,
       },
@@ -49,12 +58,9 @@ export const adminService = {
       throw new Error("이미 지정된 권한입니다.");
     }
 
-    const auth = getAuth();
-    const idToken = await auth.currentUser?.getIdToken();
-    if (!idToken) throw new Error("로그인이 필요합니다.");
-
-    const response = await axios.patch(
-      `${BASE_URL}/api/admin/users/${userId}/role`,
+    const idToken = await getAuthToken();
+    const response = await api.patch(
+      `/api/admin/users/${userId}/role`,
       { role: newRole },
       {
         headers: { Authorization: `Bearer ${idToken}` },
@@ -64,30 +70,14 @@ export const adminService = {
   },
 
   updateAdminStatus: async (userId: number, newStatus: AdminStatus) => {
-    const auth = getAuth();
-    const idToken = await auth.currentUser?.getIdToken();
-    
-    if (!idToken) {
-      throw new Error("인증 토큰이 없습니다.");
-    }
-
-    const response = await fetch(
-      `${BASE_URL}/api/admin/users/${userId}/status`,
+    const idToken = await getAuthToken();
+    const response = await api.patch(
+      `/api/admin/users/${userId}/status`,
+      { status: newStatus },
       {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${idToken}`,
-        },
-        body: JSON.stringify({ status: newStatus }),
+        headers: { Authorization: `Bearer ${idToken}` },
       }
     );
-
-    if (!response.ok) {
-      throw new Error("상태 수정에 실패했습니다.");
-    }
-
-    const result = await response.json();
-    return result.data;
+    return response.data.data;
   },
 };

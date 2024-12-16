@@ -9,7 +9,7 @@ import ConfirmDialog from '../components/ui/ConfirmDialog';
 
 interface PromptDTO {
   id: number;
-  genre: 'MYSTERY' | 'SURVIVAL' | 'ROMANCE' | 'SIMULATION';
+  genre: 'Mystery' | 'Survival' | 'Romance' | 'Simulation';
   title: string; 
   content: string;
   active: boolean;
@@ -28,7 +28,7 @@ const PromptManagementPage = () => {
   const [searchGenre, setSearchGenre] = useState<string>('');
   const [newPrompt, setNewPrompt] = useState<Omit<PromptDTO, 'id'>>({
     title: '',
-    genre: 'MYSTERY',
+    genre: 'Mystery',
     content: '',
     active: true
   });
@@ -45,7 +45,11 @@ const PromptManagementPage = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(6);
 
-  const genres = ['MYSTERY', 'SURVIVAL', 'ROMANCE', 'SIMULATION'];
+  const genres = ['Mystery', 'Survival', 'Romance', 'Simulation'];
+
+  const formatGenreForDisplay = (genre: string) => {
+    return genre.charAt(0).toUpperCase() + genre.slice(1).toLowerCase();
+  };
 
   const fetchPrompts = async (fetchAll: boolean = false) => {
     try {
@@ -146,9 +150,28 @@ const PromptManagementPage = () => {
   const handleEdit = async () => {
     if (editedPrompt && editedPrompt.id) {
       try {
-        await updatePrompt(editedPrompt.id, editedPrompt);
+        const token = await getIdToken();
+        const response = await axios.put<PromptDTO>(
+          `${BASE_URL}/api/admin/prompts/${editedPrompt.id}`, 
+          editedPrompt, 
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            },
+            withCredentials: true
+          }
+        );
+        
+        // 목록 업데이트
+        setPrompts(prompts.map(prompt => 
+          prompt.id === editedPrompt.id ? response.data : prompt
+        ));
+        
+        // 상세보기 업데이트
+        setSelectedPrompt(response.data);
+        setEditedPrompt(response.data);
         setIsEditing(false);
-        await fetchPrompts();
+        
         showToast("프롬프트가 성공적으로 수정되었습니다.", "success");
       } catch (error) {
         showToast("프롬프트 수정에 실패했습니다.", "error");
@@ -162,7 +185,7 @@ const PromptManagementPage = () => {
       setIsCreating(false);
       setNewPrompt({
         title: '',
-        genre: 'MYSTERY',
+        genre: 'Mystery',
         content: '',
         active: true
       });
@@ -230,16 +253,9 @@ const PromptManagementPage = () => {
     fetchPrompts(showInactive);
   }, [showInactive]);
 
-  const filteredPrompts = prompts.filter(prompt => {
-    const matchesSearch = searchQuery === '' || 
-      prompt.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      prompt.content.toLowerCase().includes(searchQuery.toLowerCase());
-    
-    const matchesGenre = searchGenre === '' || prompt.genre === searchGenre;
-    
-    return matchesSearch && matchesGenre &&
-      (showInactive || prompt.active);
-  });
+  const filteredPrompts = prompts.filter(prompt => 
+    (showInactive || prompt.active)
+  );
 
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -248,6 +264,50 @@ const PromptManagementPage = () => {
 
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
+  };
+
+  const handleGenreChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedGenre = e.target.value;
+    setSearchGenre(selectedGenre);
+    setCurrentPage(1);
+    setSelectedPrompt(null);
+    setEditedPrompt(null);
+    setIsEditing(false);
+    
+    try {
+      const token = await getIdToken();
+      let endpoint = `${BASE_URL}/api/admin/prompts`;
+      
+      if (selectedGenre) {
+        endpoint = `${BASE_URL}/api/admin/prompts/search?genre=${selectedGenre}`;
+      }
+      
+      const response = await axios.get<PromptDTO[]>(endpoint, {
+        headers: { Authorization: `Bearer ${token}` },
+        withCredentials: true
+      });
+      
+      setPrompts(response.data);
+    } catch (error) {
+      console.error('검색 실패:', error);
+      showToast("검색에 실패했습니다.", "error");
+    }
+  };
+
+  const handleSearchQueryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newSearchQuery = e.target.value;
+    setSearchQuery(newSearchQuery);
+    setCurrentPage(1);
+    setSelectedPrompt(null);
+    setEditedPrompt(null);
+    setIsEditing(false);
+    
+    // 현재 프롬프트 목록에서 텍스트 필터링
+    const filteredData = prompts.filter(prompt => 
+      prompt.title.toLowerCase().includes(newSearchQuery.toLowerCase()) ||
+      prompt.content.toLowerCase().includes(newSearchQuery.toLowerCase())
+    );
+    setPrompts(filteredData);
   };
 
   if (isLoading) {
@@ -264,29 +324,18 @@ const PromptManagementPage = () => {
         {/* 검색 및 버튼 영역 */}
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-4 p-2 sm:p-4 bg-white rounded-lg shadow-sm">
           <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="제목 또는 내용으로 검색"
-              className="w-full sm:w-auto px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 font-nanum"
-            />
             <select
               value={searchGenre}
-              onChange={(e) => setSearchGenre(e.target.value)}
+              onChange={handleGenreChange}
               className="w-full sm:w-auto px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 font-nanum"
             >
               <option value="">전체 장르</option>
               {genres.map(genre => (
-                <option key={genre} value={genre} className="font-nanum">{genre}</option>
+                <option key={genre} value={genre} className="font-nanum">
+                  {genre}
+                </option>
               ))}
             </select>
-            <button 
-              onClick={searchPromptsByGenre}
-              className="w-full sm:w-auto px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base bg-pointer2 text-white rounded-lg hover:bg-pointer transition-colors"
-            >
-              검색
-            </button>
           </div>
           
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 w-full sm:w-auto">
@@ -329,60 +378,75 @@ const PromptManagementPage = () => {
             <div className="bg-white rounded-lg shadow-sm p-3 sm:p-4 h-[300px] sm:h-[600px]">
               <h2 className="text-base sm:text-lg font-semibold mb-2 sm:mb-4 text-gray-800 font-nanum">프롬프트 목록</h2>
               <div className="space-y-2 overflow-y-auto h-[calc(100%-80px)]">
-                {currentItems.map((prompt) => (
-                  <div 
-                    key={prompt.id}
-                    onClick={() => handlePromptClick(prompt)}
-                    className={`p-2 sm:p-4 border rounded-lg cursor-pointer transition-colors
-                      ${selectedPrompt?.id === prompt.id 
-                        ? 'bg-blue-50 border-blue-500' 
-                        : 'hover:bg-gray-50 border-gray-200'}
-                      ${!prompt.active && 'opacity-75'}`}
-                  >
-                    <div className="flex justify-between items-center">
-                      <h3 className="text-sm sm:text-base font-semibold text-gray-800 font-nanum">{prompt.title}</h3>
-                      {!prompt.active && (
-                        <span className="text-xs px-1.5 py-0.5 sm:px-2 sm:py-1 bg-red-100 text-red-600 rounded-full">
-                          비활성
+                {currentItems.length > 0 ? (
+                  currentItems.map((prompt) => (
+                    <div 
+                      key={prompt.id}
+                      onClick={() => handlePromptClick(prompt)}
+                      className={`p-2 sm:p-3 border rounded-lg cursor-pointer transition-colors
+                        ${selectedPrompt?.id === prompt.id 
+                          ? 'bg-blue-50 border-blue-500' 
+                          : 'hover:bg-gray-50 border-gray-200'}
+                        ${!prompt.active && 'opacity-75'}`}
+                    >
+                      <div className="flex justify-between items-center">
+                        <h3 className="text-sm sm:text-base font-semibold text-gray-800 font-nanum">{prompt.title}</h3>
+                        <span className={`text-xs px-2 py-1 rounded-full ${
+                          prompt.active 
+                            ? 'bg-green-100 text-green-600' 
+                            : 'bg-red-100 text-red-600'
+                        }`}>
+                          {prompt.active ? '활성' : '비활성'}
                         </span>
-                      )}
+                      </div>
+                      <p className="text-xs sm:text-sm text-gray-600 font-nanum mt-1">장르: {prompt.genre}</p>
                     </div>
-                    <p className="text-xs sm:text-sm text-gray-600 font-nanum">장르: {prompt.genre}</p>
+                  ))
+                ) : (
+                  <div className="h-full flex items-center justify-center">
+                    <p className="text-sm sm:text-base text-gray-500 font-nanum">
+                      {searchGenre ? 
+                        "검색 결과가 없습니다." : 
+                        "등록된 프롬프트가 없습니다."
+                      }
+                    </p>
                   </div>
-                ))}
+                )}
               </div>
               
-              <div className="flex justify-center items-center mt-2 sm:mt-4 space-x-1 sm:space-x-2">
-                <button
-                  onClick={() => handlePageChange(currentPage - 1)}
-                  disabled={currentPage === 1}
-                  className="px-2 py-1 sm:px-3 sm:py-1 text-xs sm:text-sm rounded-md bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
-                >
-                  이전
-                </button>
-                
-                {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
+              {currentItems.length > 0 && (
+                <div className="flex justify-center items-center mt-2 sm:mt-4 space-x-1 sm:space-x-2">
                   <button
-                    key={number}
-                    onClick={() => handlePageChange(number)}
-                    className={`px-2 py-1 sm:px-3 sm:py-1 text-xs sm:text-sm rounded-md ${
-                      currentPage === number 
-                        ? 'bg-blue-500 text-white' 
-                        : 'bg-gray-100 hover:bg-gray-200'
-                    }`}
+                    onClick={() => handlePageChange(currentPage - 1)}
+                    disabled={currentPage === 1}
+                    className="px-2 py-1 sm:px-3 sm:py-1 text-xs sm:text-sm rounded-md bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
                   >
-                    {number}
+                    이전
                   </button>
-                ))}
-                
-                <button
-                  onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={currentPage === totalPages}
-                  className="px-2 py-1 sm:px-3 sm:py-1 text-xs sm:text-sm rounded-md bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
-                >
-                  다음
-                </button>
-              </div>
+                  
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((number) => (
+                    <button
+                      key={number}
+                      onClick={() => handlePageChange(number)}
+                      className={`px-2 py-1 sm:px-3 sm:py-1 text-xs sm:text-sm rounded-md ${
+                        currentPage === number 
+                          ? 'bg-blue-500 text-white' 
+                          : 'bg-gray-100 hover:bg-gray-200'
+                      }`}
+                    >
+                      {number}
+                    </button>
+                  ))}
+                  
+                  <button
+                    onClick={() => handlePageChange(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                    className="px-2 py-1 sm:px-3 sm:py-1 text-xs sm:text-sm rounded-md bg-gray-100 hover:bg-gray-200 disabled:opacity-50"
+                  >
+                    다음
+                  </button>
+                </div>
+              )}
             </div>
           </div>
 
@@ -438,7 +502,7 @@ const PromptManagementPage = () => {
                           content: e.target.value
                         }))}
                         className="w-full px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-                        style={{ minHeight: '120px', height: '120px' }}
+                        style={{ minHeight: '250px', height: '250px' }}
                         placeholder="프롬프트 내용을 입력하세요"
                       />
                     </div>
@@ -510,7 +574,7 @@ const PromptManagementPage = () => {
                               content: e.target.value
                             } : null)}
                             className="w-full px-3 py-1.5 sm:px-4 sm:py-2 text-sm sm:text-base border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-                            style={{ minHeight: '120px', height: '120px' }}
+                            style={{ minHeight: '250px', height: '250px' }}
                           />
                         </div>
 
@@ -560,25 +624,28 @@ const PromptManagementPage = () => {
                     </div>
                   )}
                 </div>
+              ) : filteredPrompts.length === 0 ? (
+                // 검색 결과 없음 표시
+                <div className="h-full flex items-center justify-center">
+                  <p className="text-sm sm:text-base text-gray-500 font-nanum">
+                    {searchGenre ? 
+                      "검색 결과가 없습니다." : 
+                      "등록된 프롬프트가 없습니다."
+                    }
+                  </p>
+                </div>
               ) : (
-                <div className="flex items-center justify-center h-full text-sm sm:text-base text-gray-500">
-                  프롬프트를 선택하거나 새로 작성해주세요
+                // 기본 빈 상태 메시지
+                <div className="h-full flex items-center justify-center">
+                  <p className="text-sm sm:text-base text-gray-500 font-nanum">
+                    프롬프트를 선택하거나 새로 작성해주세요
+                  </p>
                 </div>
               )}
             </div>
           </div>
         </div>
       </div>
-
-      {/* 빈 상태 표시 */}
-      {filteredPrompts.length === 0 && (
-        <div className="text-center py-8 font-nanum text-gray-500">
-          {searchQuery || searchGenre ? 
-            "검색 결과가 없습니다." : 
-            "등록된 프롬프트가 없습니다."
-          }
-        </div>
-      )}
 
       {/* 확인 다이얼로그 */}
       <ConfirmDialog

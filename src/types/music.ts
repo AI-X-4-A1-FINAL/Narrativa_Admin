@@ -18,5 +18,13 @@ export interface FileUploadCardProps {
     genres: Genre[];
     selectedGenre: Genre;
     onGenreChange: (genre: Genre) => void;
-    onFileSelect: (file: File) => Promise<void>;
+    onFileSelect: (file: File) => Promise<boolean>;
+    isUploading?: boolean;
 }
+
+export type GenrePath = {
+  MYSTERY: "DetectiveMystery/",
+  SURVIVAL: "SurvivalHorror/",
+  ROMANCE: "RomanticFantasy/",
+  SIMULATION: "RaisingSimulation/"
+};
