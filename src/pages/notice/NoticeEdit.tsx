@@ -61,27 +61,27 @@ const NoticeForm = ({
   const quillRef = useRef<ReactQuill>(null);
 
   return (
-  <form onSubmit={onSubmit} className="space-y-6 bg-white rounded-lg shadow p-6">
-    <div>
-      <label htmlFor="title" className="block text-sm font-nanum font-medium text-gray-700 mb-1">
-        제목
-      </label>
-      <input
-        id="title"
-        type="text"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        placeholder="공지사항 제목을 입력하세요"
-        className="w-full px-4 py-2 font-nanum text-lg border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pointer"
-      />
-    </div>
+    <form className="space-y-4 sm:space-y-6 bg-white rounded-lg shadow p-4 sm:p-6">
+      <div>
+        <label htmlFor="title" className="block text-sm font-contents font-medium text-gray-700 mb-1">
+          제목
+        </label>
+        <input
+          id="title"
+          type="text"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="공지사항 제목을 입력하세요"
+          className="w-full px-3 sm:px-4 py-2 text-base sm:text-lg font-contents border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pointer"
+        />
+      </div>
 
-    <div className="min-h-[50dvh] max-h-[45dvh] overflow-auto">
-      <label htmlFor="content" className="block text-sm font-nanum font-medium text-gray-700 mb-1">
-        내용
-      </label>
-      <div className="h-80 border rounded-lg lg:h-96">
-        <ReactQuill
+      <div className="min-h-[40vh] sm:min-h-[50vh] max-h-[45vh] overflow-auto">
+        <label htmlFor="content" className="block text-sm font-contents font-medium text-gray-700 mb-1">
+          내용
+        </label>
+        <div className="h-[300px] sm:h-[400px] border rounded-lg">
+          <ReactQuill
             ref={quillRef}
             theme="snow"
             value={content}
@@ -91,50 +91,48 @@ const NoticeForm = ({
             className="h-full"
             preserveWhitespace
           />
+        </div>
       </div>
-    </div>
 
-    <div className="flex items-start justify-between border-t pt-6 absolute bottom-0 left-0 right-0 bg-white shadow-lg px-6 py-4">
-      <div className="space-y-4">
-        <div>
+      <div className="flex flex-col sm:flex-row items-center justify-between gap-4 border-t pt-4 sm:pt-6 sticky bottom-0 bg-white px-4 sm:px-6 py-4">
+        <div className="w-full sm:w-auto space-y-2 sm:space-y-4">
           <select
             id="status"
             value={status}
             onChange={(e) => setStatus(e.target.value as 'ACTIVE' | 'INACTIVE')}
-            className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pointer"
+            className="w-full sm:w-auto px-3 py-2 font-contents border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pointer"
           >
             <option value="INACTIVE">임시저장</option>
             <option value="ACTIVE">게시</option>
           </select>
+          {originalNotice && (
+            <div className="text-sm font-contents text-gray-500 hidden lg:block">
+              <p>작성일: {new Date(originalNotice.createdAt).toLocaleString()}</p>
+              <p>최종 수정일: {new Date(originalNotice.updatedAt).toLocaleString()}</p>
+            </div>
+          )}
         </div>
-        {originalNotice && (
-          <div className="text-sm font-nanum text-gray-500 hidden lg:block">
-            <p>작성일: {new Date(originalNotice.createdAt).toLocaleString()}</p>
-            <p>최종 수정일: {new Date(originalNotice.updatedAt).toLocaleString()}</p>
-          </div>
-        )}
-      </div>
 
-      <div className="flex items-center gap-2">
-        <button
-          type="button"
-          onClick={onCancel}
-          className="px-4 py-2 font-nanum text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
-        >
-          취소
-        </button>
-        <button
-          type="submit"
-          disabled={isLoading || !hasChanges()}
-          className="px-4 py-2 font-nanum text-white bg-pointer rounded-lg hover:bg-blue-700 disabled:opacity-50"
-        >
-          {isLoading ? '저장 중...' : '수정하기'}
-        </button>
+        <div className="flex items-center gap-2 w-full sm:w-auto">
+          <button
+            type="button"
+            onClick={onCancel}
+            className="flex-1 sm:flex-none px-4 py-2 font-contents text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
+          >
+            취소
+          </button>
+          <button
+            type="submit"
+            disabled={isLoading || !hasChanges()}
+            className="flex-1 sm:flex-none px-4 py-2 font-contents text-white bg-pointer rounded-lg hover:bg-blue-700 disabled:opacity-50"
+          >
+            {isLoading ? '저장 중...' : '수정하기'}
+          </button>
+        </div>
       </div>
-    </div>
-  </form>
- );
-}
+    </form>
+  );
+};
 
 const NoticeEdit = () => {
   const { id } = useParams<{ id: string }>();
@@ -327,20 +325,20 @@ const NoticeEdit = () => {
 
   return (
     <div 
-      className="h-full w-full p-6 text-left relative"
+      className="h-full w-full p-4 sm:p-6 relative"
       style={{
         backgroundImage: "linear-gradient(to top, #bdc2e8 0%, #bdc2e8 1%, #e6dee9 100%)",
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat"
       }}
     >
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-4 sm:mb-6">
         <button
           onClick={handleBack}
           className="flex items-center gap-2 font-contents font-bold text-pointer hover:text-gray-800"
         >
           <ArrowLeft className="w-5 h-5" />
-          목록으로
+          <span className="font-contents">목록으로</span>
         </button>
       </div>
 

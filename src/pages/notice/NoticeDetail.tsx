@@ -136,7 +136,7 @@ const NoticeDetail = () => {
   // 메인 렌더링
   return (
     <div 
-      className="h-full w-full p-6"
+      className="h-full w-full p-4 sm:p-6"
       style={{
         backgroundImage: "linear-gradient(to top, #bdc2e8 0%, #bdc2e8 1%, #e6dee9 100%)",
         backgroundSize: "cover",
@@ -144,52 +144,52 @@ const NoticeDetail = () => {
       }}
     >
       {/* 헤더 섹션 */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-4 sm:mb-6">
         <button
           onClick={handleBack}
-          className="flex items-center gap-2 font-contents font-bold text-pointer hover:text-white"
+          className="flex items-center gap-2 font-contents font-bold text-pointer hover:text-gray-800"
         >
           <ArrowLeft className="w-5 h-5" />
-          목록으로
+          <span className="font-contents">목록으로</span>
         </button>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 w-full sm:w-auto">
           <button
             onClick={handleEdit}
-            className="flex items-center gap-2 px-4 py-2 font-contents font-bold text-gray-600 bg-white hover:text-gray-800 border border-gray-300 rounded-lg hover:bg-gray-50"
+            className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 font-contents text-gray-600 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
           >
             <Edit2 className="w-4 h-4" />
-            수정
+            <span>수정</span>
           </button>
           <button
             onClick={handleDelete}
-            className="flex items-center gap-2 px-4 py-2 font-contents font-bold text-red-600 bg-white hover:text-red-700 border border-red-200 rounded-lg hover:bg-red-50"
+            className="flex-1 sm:flex-none flex items-center justify-center gap-2 px-4 py-2 font-contents text-red-600 bg-white border border-red-200 rounded-lg hover:bg-red-50"
           >
             <Trash2 className="w-4 h-4" />
-            삭제
+            <span>삭제</span>
           </button>
         </div>
       </div>
 
       {/* 콘텐츠 섹션 */}
-      <div className="bg-white rounded-lg shadow p-6">
-        <div className="flex items-center gap-3 mb-2">
+      <div className="bg-white rounded-lg shadow p-4 sm:p-6">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 mb-2">
           <StatusBadge status={notice.status} />
-          <h1 className="text-2xl font-contents font-bold text-gray-800">
+          <h1 className="text-xl sm:text-2xl font-contents font-bold text-gray-800 break-all">
             {notice.title}
           </h1>
         </div>
 
-        <div className="flex items-center gap-4 font-contents text-sm text-gray-500 mb-6">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 font-contents text-sm text-gray-500 mb-6">
           <div className="flex items-center gap-1">
             <User className="w-4 h-4" />
             관리자 {notice.createdBy}
           </div>
-          <div className="flex items-center gap-1 font-contents">
+          <div className="flex items-center gap-1">
             <Clock className="w-4 h-4" />
             {formatDate(notice.createdAt)}
           </div>
           {notice.updatedAt !== notice.createdAt && (
-            <div className="text-gray-400 font-nanum">
+            <div className="text-gray-400">
               (수정됨: {formatDate(notice.updatedAt)})
             </div>
           )}
@@ -197,7 +197,7 @@ const NoticeDetail = () => {
 
         <div className="prose max-w-none">
           {notice.content.split('\n').map((paragraph, index) => (
-            <p key={index} className="mb-4 font-contents text-gray-700 leading-relaxed">
+            <p key={index} className="mb-4 font-contents text-gray-700 leading-relaxed break-all">
               {paragraph}
             </p>
           ))}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Search, Plus, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Notice, NoticeStatus } from '../../types/notice';
 import PageLayout from '../../components/ui/PageLayout';
 import LoadingAnimation from '../../components/ui/LoadingAnimation';
@@ -112,10 +112,9 @@ const NoticeList = () => {
   const TitleRight = (
     <button
       onClick={handleCreateClick}
-      className="flex items-center gap-1 px-2 py-2 bg-pointer font-contents text-white rounded-lg hover:bg-pointer"
+      className="flex items-center gap-1 px-3 py-1.5 bg-pointer font-contents text-sm text-white rounded-lg hover:bg-pointer2 transition-colors"
     >
-      <Plus className="w-4 h-4 font-contents" />
-      새 공지사항
+      공지사항 작성
     </button>
   );
 
@@ -140,21 +139,21 @@ const NoticeList = () => {
       title="Notice Management" 
       rightElement={TitleRight}
     >
-      <form onSubmit={handleSearch} className="mb-4">
-        <div className="flex gap-2">
+      <form onSubmit={handleSearch} className="my-4 sm:px-0">
+        <div className="flex flex-col sm:flex-row gap-2">
           <div className="relative flex-1">
             <input
               type="text"
               value={searchKeyword}
               onChange={(e) => setSearchKeyword(e.target.value)}
               placeholder="검색어를 입력하세요"
-              className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pointer"
+              className="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pointer font-contents"
             />
             <Search className="absolute right-3 top-2.5 w-5 h-5 text-gray-400" />
           </div>
           <button
             type="submit"
-            className="px-6 py-2 bg-gray-800 font-contents text-white rounded-lg hover:bg-gray-900"
+            className="px-6 py-2 bg-gray-800 font-contents text-white rounded-lg hover:bg-gray-900 w-full sm:w-auto"
           >
             검색
           </button>
@@ -175,24 +174,22 @@ const NoticeList = () => {
                 className="border-b border-gray-200 last:border-b-0"
               >
                 <div className="p-4 hover:bg-gray-50 cursor-pointer">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center gap-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-2 gap-2">
+                    <div className="flex items-center gap-3 flex-wrap">
                       <StatusBadge status={notice.status} />
-                      <h3 className="font-medium font-contents text-gray-800">{notice.title}</h3>
+                      <h3 className="font-medium font-contents text-gray-800 break-all">{notice.title}</h3>
                     </div>
-                    <div className="lg:flex lg:flex-col items-end hidden">
-                      <span className="text-sm font-contents text-gray-500">
-                        작성: {formatDate(notice.createdAt)}
-                      </span>
+                    <div className="text-sm font-contents text-gray-500">
+                      <span className="block sm:inline">작성: {formatDate(notice.createdAt)}</span>
                       {notice.updatedAt !== notice.createdAt && (
-                        <span className="text-xs font-contents text-gray-400">
+                        <span className="block sm:inline sm:ml-2 text-gray-400">
                           수정: {formatDate(notice.updatedAt)}
                         </span>
                       )}
                     </div>
                   </div>
-                  <p className="text-sm text-gray-600 line-clamp-2">{notice.content}</p>
-                  <div className="mt-2 text-xs font-contents text-gray-500 hidden lg:block">
+                  <p className="text-sm font-contents text-gray-600 line-clamp-2 break-all">{notice.content}</p>
+                  <div className="mt-2 text-xs font-contents text-gray-500">
                     관리자 ID: {notice.createdBy}
                   </div>
                 </div>
