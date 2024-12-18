@@ -1,35 +1,13 @@
-import React, { useState, useEffect, useRef } from 'react';
-import ReactQuill from 'react-quill';
-import 'react-quill/dist/quill.snow.css';
+import React, { useState, useEffect } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import { Notice } from '../../types/notice';
 import { useConfirm } from '../../hooks/useConfirm';
 import { useToast } from '../../hooks/useToast';
 import LoadingAnimation from '../../components/ui/LoadingAnimation';
+import Editor from '../../components/ui/Editor';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getAuth } from 'firebase/auth';
-
-const QUILL_MODULES = {
-  toolbar: [
-    [{ 'header': [1, 2, 3, false] }],
-    ['bold', 'italic', 'underline', 'strike'],
-    [{ 'color': [] }, { 'background': [] }],
-    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-    [{ 'align': [] }],
-    ['link', 'image'],
-    ['clean']
-  ]
-};
-
-const QUILL_FORMATS = [
-  'header',
-  'bold', 'italic', 'underline', 'strike',
-  'color', 'background',
-  'list', 'bullet',
-  'align',
-  'link', 'image'
-];
 
 interface NoticeFormProps {
   title: string;
@@ -58,10 +36,8 @@ const NoticeForm = ({
   onSubmit,
   onCancel
 }: NoticeFormProps) => {
-  const quillRef = useRef<ReactQuill>(null);
-
   return (
-    <form className="space-y-4 sm:space-y-6 bg-white rounded-lg shadow p-4 sm:p-6">
+    <form onSubmit={onSubmit} className="space-y-4 sm:space-y-6 bg-white rounded-lg shadow p-4 sm:p-6">
       <div>
         <label htmlFor="title" className="block text-sm font-contents font-medium text-gray-700 mb-1">
           제목
@@ -80,16 +56,11 @@ const NoticeForm = ({
         <label htmlFor="content" className="block text-sm font-contents font-medium text-gray-700 mb-1">
           내용
         </label>
-        <div className="h-[300px] sm:h-[400px] border rounded-lg">
-          <ReactQuill
-            ref={quillRef}
-            theme="snow"
+        <div className="w-full h-[300px] sm:h-[400px] border rounded-lg">
+          <Editor
             value={content}
             onChange={setContent}
-            modules={QUILL_MODULES}
-            formats={QUILL_FORMATS}
-            className="h-full"
-            preserveWhitespace
+            placeholder="내용을 입력하세요"
           />
         </div>
       </div>
@@ -218,32 +189,7 @@ const NoticeEdit = () => {
       return;
     }
   
-    const cleanContent = (html: string): string => {
-      const allowedTags = {
-        p: '\n',          // 단락
-        br: '\n',         // 줄바꿈
-      };
-    
-      let text = html;
-      
-      // 허용된 태그들을 텍스트로 변환
-      Object.entries(allowedTags).forEach(([tag, replacement]) => {
-        text = text.replace(new RegExp(`<${tag}[^>]*>`, 'g'), replacement)
-                  .replace(new RegExp(`</${tag}>`, 'g'), '');
-      });
-      
-      // 나머지 HTML 태그 제거
-      text = text.replace(/<[^>]*>/g, '');
-      
-      // 연속된 줄바꿈 정리
-      text = text.replace(/\n{3,}/g, '\n\n');
-      
-      return text.trim();
-    };
-  
-    const processedContent = cleanContent(content);
-  
-    if (!processedContent.trim()) {
+    if (!content.trim()) {
       showToast('내용을 입력해주세요.', 'error');
       return;
     }
@@ -273,7 +219,7 @@ const NoticeEdit = () => {
         `${process.env.REACT_APP_BACKEND_URL}/api/notices/${id}`,
         { 
           title, 
-          content: processedContent,  // 처리된 콘텐츠 사용
+          content,
           status 
         },
         {

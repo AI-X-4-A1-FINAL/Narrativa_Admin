@@ -1,7 +1,7 @@
 import { useState, useMemo, useCallback } from 'react';
 import axios from 'axios';
 import { useAuth } from '../components/auth/AuthContext';
-import { MusicFile, Genre } from '../types/music';
+import { MusicFile, Genre, GENRE_PATH_MAP } from '../types/music';
 import { useToast } from './useToast';
 import { auth } from '../configs/firebaseConfig';
 import { AdminRole } from '../types/admin';
@@ -47,7 +47,8 @@ export const useMusicApi = (): UseMusicApiReturn => {
         const token = await user.getIdToken();
         return {
             Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Firebase-Token': user.uid
         };
     };
 
@@ -87,39 +88,34 @@ export const useMusicApi = (): UseMusicApiReturn => {
             const headers = await getAuthHeaders();
             const { data } = await axios.get<MusicFile[]>(`${API_BASE_URL}/api/music/files`, {
                 headers,
+                withCredentials: true,
                 timeout: 30000
             });
             
             if (Array.isArray(data)) {
-                // 대소문자 통일 및 UNKNOWN 필터링
                 const processedData = data.filter(file => {
                     const normalizedGenre = file.genre?.toUpperCase();
-                    return normalizedGenre && 
-                           normalizedGenre !== 'UNKNOWN' && 
-                           normalizedGenre.trim() !== '';
-                }).map(file => ({
-                    ...file,
-                    genre: file.genre.toUpperCase()
-                }));
+                    return normalizedGenre && normalizedGenre !== 'UNKNOWN' && normalizedGenre.trim() !== '';
+                }).map(file => {
+                    const genreKey = Object.entries(GENRE_PATH_MAP).find(([_, path]) => 
+                        file.name.includes(path)
+                    )?.[0];
+                    
+                    return {
+                        ...file,
+                        genre: genreKey || file.genre
+                    };
+                });
                 
                 setFiles(processedData);
-            } else {
-                throw new Error('Invalid response format');
             }
         } catch (error) {
-            console.error('Error in fetchFiles:', error);
-            if (axios.isCancel(error)) {
-                console.error('요청이 취소되었습니다.');
-            } else if (error.code === 'ECONNABORTED') {
-                showToast('요청 시간이 초과되었습니다. 다시 시도해주세요.', 'error');
-            } else {
-                showToast('파일 목록을 불러오는데 실패했습니다.', 'error');
-            }
-            throw error;
+            console.error('Error fetching files:', error);
+            showToast('파일 목록을 불러오는데 실패했습니다.', 'error');
         } finally {
             setIsLoading(false);
         }
-    }, [showToast, isLoading]);
+    }, [showToast, isLoading, admin]);
 
     const uploadMusic = async (file: File, genre: Genre) => {
         try {
@@ -175,14 +171,34 @@ export const useMusicApi = (): UseMusicApiReturn => {
             }
 
             const headers = await getAuthHeaders();
-            await axios.delete(`${API_BASE_URL}/api/music/delete/${filename}`, {
-                headers
+            
+            // 파일명만 추출 (경로 제외)
+            const fileName = filename.split('/').pop();
+            
+            if (!fileName) {
+                showToast('잘못된 파일명입니다.', 'error');
+                return;
+            }
+
+            await axios({
+                method: 'DELETE',
+                url: `${API_BASE_URL}/api/music/delete/${encodeURIComponent(fileName)}`,
+                headers,
+                withCredentials: true,
+                timeout: 10000
             });
             
             showToast('파일이 삭제되었습니다.', 'success');
             await fetchFiles();
-        } catch (error) {
-            showToast('파일 삭제에 실패했습니다.', 'error');
+        } catch (error: any) {
+            console.error('Delete error:', error);
+            if (error.response?.status === 404) {
+                showToast('파일을 찾을 수 없습니다.', 'error');
+            } else if (error.message === 'Network Error') {
+                showToast('네트워크 연결을 확인해주세요.', 'error');
+            } else {
+                showToast('파일 삭제에 실패했습니다.', 'error');
+            }
         }
     };
 

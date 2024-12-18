@@ -1,5 +1,5 @@
 import React from 'react';
-import { MusicFile } from '../../types/music';
+import { MusicFile, GENRE_DISPLAY_NAMES, Genre } from '../../types/music';
 
 interface FileListTableProps {
     files: MusicFile[];
@@ -52,9 +52,14 @@ const FileListTable: React.FC<FileListTableProps> = ({ files, onDelete }) => {
                                     {file.name}
                                 </a>
                             </div>
-                            <div className="col-span-3 sm:col-span-2">
-                                <span className={`inline-flex items-center px-2 sm:px-2.5 py-0.5 rounded-full font-contents text-xs font-medium ${getGenreColor(file.genre)}`}>
-                                    {file.genre}
+                            <div className="col-span-3 sm:col-span-2 text-left">
+                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium
+                                    ${file.genre === 'MYSTERY' && 'bg-blue-100 text-blue-800'}
+                                    ${file.genre === 'SURVIVAL' && 'bg-red-100 text-red-800'}
+                                    ${file.genre === 'ROMANCE' && 'bg-pink-100 text-pink-800'}
+                                    ${file.genre === 'SIMULATION' && 'bg-green-100 text-green-800'}
+                                `}>
+                                    {GENRE_DISPLAY_NAMES[file.genre as Genre] || file.genre}
                                 </span>
                             </div>
                             <div className="hidden sm:block col-span-2 font-contents text-gray-600 text-sm">

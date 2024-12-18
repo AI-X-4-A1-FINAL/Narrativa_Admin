@@ -23,8 +23,22 @@ export interface FileUploadCardProps {
 }
 
 export type GenrePath = {
-  MYSTERY: "DetectiveMystery/",
-  SURVIVAL: "SurvivalHorror/",
-  ROMANCE: "RomanticFantasy/",
-  SIMULATION: "RaisingSimulation/"
+  MYSTERY: "DetectiveMystery",
+  SURVIVAL: "SurvivalHorror",
+  ROMANCE: "RomanticFantasy",
+  SIMULATION: "RaisingSimulation"
+};
+
+export const GENRE_PATH_MAP: GenrePath = {
+  MYSTERY: "DetectiveMystery",
+  SURVIVAL: "SurvivalHorror",
+  ROMANCE: "RomanticFantasy",
+  SIMULATION: "RaisingSimulation"
+};
+
+export const GENRE_DISPLAY_NAMES: Record<Genre, string> = {
+  MYSTERY: "추리",
+  SURVIVAL: "서바이벌",
+  ROMANCE: "로맨스",
+  SIMULATION: "육성"
 };

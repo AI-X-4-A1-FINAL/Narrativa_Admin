@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React from "react";
 import PageLayout from "../../components/ui/PageLayout";
 import { useMusicApi } from "../../hooks/useMusicApi";
 import LoadingAnimation from "../../components/ui/LoadingAnimation";
 import FileListTable from "../../components/music/FileListTable";
+import { Genre, GENRE_DISPLAY_NAMES } from "../../types/music";
 
 const MusicList: React.FC = () => {
     const {
@@ -16,7 +17,7 @@ const MusicList: React.FC = () => {
         isLoading
     } = useMusicApi();
 
-    useEffect(() => {
+    React.useEffect(() => {
         fetchFiles();
     }, []);
 
@@ -26,26 +27,20 @@ const MusicList: React.FC = () => {
                 {/* 장르 필터 버튼 */}
                 <div className="bg-white rounded-xl sm:rounded-2xl p-3 sm:p-4">
                     <div className="font-contents font-bold text-lg sm:text-xl text-gray-700 mb-2 sm:mb-3">장르 필터</div>
-                    <div className="grid grid-cols-4 gap-1 sm:gap-2">
-                        {genres
-                            .filter(genre => genre !== 'UnKnown')
-                            .map((genre) => (
-                                <button
-                                    key={genre}
-                                    onClick={() => setSelectedGenre(genre)}
-                                    className={`px-2.5 sm:px-4 py-1.5 sm:py-2 rounded-full font-contents text-xs sm:text-sm transition-colors
-                                        text-center overflow-hidden
-                                        ${selectedGenre === genre
-                                            ? 'bg-pointer2 text-white'
-                                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                                        }`}
-                                >
-                                    <span className="block truncate">
-                                        {genre} ({groupedFiles[genre]?.length || 0})
-                                    </span>
-                                </button>
-                            ))
-                        }
+                    <div className="flex flex-wrap gap-2">
+                        {Object.entries(GENRE_DISPLAY_NAMES).map(([genre, displayName]) => (
+                            <button
+                                key={genre}
+                                onClick={() => setSelectedGenre(genre as Genre)}
+                                className={`px-3 py-1.5 rounded-full text-sm font-contents transition-colors
+                                    ${selectedGenre === genre
+                                        ? 'bg-pointer2 text-white'
+                                        : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                                    }`}
+                            >
+                                {displayName} ({groupedFiles[genre]?.length || 0})
+                            </button>
+                        ))}
                     </div>
                 </div>
 

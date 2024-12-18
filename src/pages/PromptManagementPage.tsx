@@ -245,25 +245,7 @@ const PromptManagementPage = () => {
   const handleShowInactiveChange = async (checked: boolean) => {
     setCurrentPage(1);
     setShowInactive(checked);
-    setSearchGenre("");
     await fetchPrompts(checked);
-  };
-
-  useEffect(() => {
-    fetchPrompts(showInactive);
-  }, [showInactive]);
-
-  const filteredPrompts = prompts.filter(prompt => 
-    (showInactive || prompt.active)
-  );
-
-  const indexOfLastItem = currentPage * itemsPerPage;
-  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
-  const currentItems = filteredPrompts.slice(indexOfFirstItem, indexOfLastItem);
-  const totalPages = Math.ceil(filteredPrompts.length / itemsPerPage);
-
-  const handlePageChange = (pageNumber: number) => {
-    setCurrentPage(pageNumber);
   };
 
   const handleGenreChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -280,6 +262,12 @@ const PromptManagementPage = () => {
       
       if (selectedGenre) {
         endpoint = `${BASE_URL}/api/admin/prompts/search?genre=${selectedGenre}`;
+      }
+      
+      if (showInactive) {
+        endpoint = selectedGenre 
+          ? `${BASE_URL}/api/admin/prompts/search?genre=${selectedGenre}&includeInactive=true`
+          : `${BASE_URL}/api/admin/prompts/all`;
       }
       
       const response = await axios.get<PromptDTO[]>(endpoint, {
@@ -308,6 +296,31 @@ const PromptManagementPage = () => {
       prompt.content.toLowerCase().includes(newSearchQuery.toLowerCase())
     );
     setPrompts(filteredData);
+  };
+
+  useEffect(() => {
+    const loadPrompts = async () => {
+      if (searchGenre) {
+        await handleGenreChange({ target: { value: searchGenre } } as React.ChangeEvent<HTMLSelectElement>);
+      } else {
+        await fetchPrompts(showInactive);
+      }
+    };
+    
+    loadPrompts();
+  }, [showInactive]);
+
+  const filteredPrompts = prompts.filter(prompt => 
+    (showInactive || prompt.active)
+  );
+
+  const indexOfLastItem = currentPage * itemsPerPage;
+  const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+  const currentItems = filteredPrompts.slice(indexOfFirstItem, indexOfLastItem);
+  const totalPages = Math.ceil(filteredPrompts.length / itemsPerPage);
+
+  const handlePageChange = (pageNumber: number) => {
+    setCurrentPage(pageNumber);
   };
 
   if (isLoading) {

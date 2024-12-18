@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
 import { ArrowLeft } from "lucide-react";
 import { NoticeStatus } from "../../types/notice";
 import { useConfirm } from "../../hooks/useConfirm";
@@ -8,33 +6,7 @@ import { useToast } from "hooks/useToast";
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { getAuth } from 'firebase/auth';
-
-const modules = {
-  toolbar: [
-    [{ header: [1, 2, 3, false] }],
-    ["bold", "italic", "underline", "strike"],
-    [{ color: [] }, { background: [] }],
-    [{ list: "ordered" }, { list: "bullet" }],
-    [{ align: [] }],
-    ["link", "image"],
-    ["clean"],
-  ],
-};
-
-const formats = [
-  "header",
-  "bold",
-  "italic",
-  "underline",
-  "strike",
-  "color",
-  "background",
-  "list",
-  "bullet",
-  "align",
-  "link",
-  "image",
-];
+import Editor from '../../components/ui/Editor';
 
 const NoticeCreate = () => {
   const { showToast } = useToast();
@@ -76,7 +48,7 @@ const NoticeCreate = () => {
     const cleanContent = (html: string): string => {
       const allowedTags = {
         p: '\n',          // 단락
-        br: '\n',         // 줄바꿈
+        br: '\n',         // ��바꿈
       };
     
       let text = html;
@@ -195,13 +167,10 @@ const NoticeCreate = () => {
             내용
           </label>
           <div className="h-[300px] sm:h-[400px] border rounded-lg">
-            <ReactQuill
-              theme="snow"
+            <Editor
               value={content}
               onChange={setContent}
-              modules={modules}
-              formats={formats}
-              className="h-full"
+              placeholder="내용을 입력하세요"
             />
           </div>
         </div>
